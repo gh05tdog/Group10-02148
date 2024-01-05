@@ -53,63 +53,89 @@ public class AppController {
     @FXML
     private void handleConnectAction(){
         try {
-            // Disconnect from the current room
-            if (clientID != null) {
-                server.put("leave", chatroomField.getText(), clientID);
-                if (messageThread != null && messageThread.isAlive()) {
-                    messageThread.interrupt();
-                }
-                if (userThread != null && userThread.isAlive()) {
-                    userThread.interrupt();
-                }
-                // Clear the username list
-                Platform.runLater(() -> usernameList.clear());
+            // Check if a username is entered
+            String username = usernameField.getText().trim();
+            if (username.isEmpty()) {
+                System.out.println("Username is required to join the chat room.");
+                return;
             }
 
-            // Connect to the new room
-            String roomID = chatroomField.getText();
-            String clientID = UUID.randomUUID().toString();
+            // Disconnect from the current room if already connected
+            if (clientID != null && !clientID.isEmpty()) {
+                server.put("leave", chatroomField.getText(), clientID);
+                terminateThreads(); // Terminate existing threads
+                Platform.runLater(() -> usernameList.clear()); // Clear the username list
+            }
 
+            // Update the clientID with the provided username
+            clientID = username;
+
+            // Get the room ID from the chatroomField
+            String roomID = chatroomField.getText().trim();
+            if (roomID.isEmpty()) {
+                System.out.println("Room ID is required to join the chat room.");
+                return;
+            }
+
+            // Ensure server connection is established
             if (server == null) {
-                System.out.println("Server is null");
-                System.out.println("Server is now: " + config.getIp());
+                System.out.println("Server connection is not established.");
                 model.setServer(config.getIp());
                 server = model.getServer();
-                System.out.println("Server is now: " + server.toString());
             }
 
-            // Join the chat room
+            // Join the new chat room
             server.put("join", roomID, clientID);
 
-            new Thread(() -> {
-                try {
-                    System.out.println("Getting messages");
-                    while (true) {
-                        Object[] response = server.get(new ActualField("message"), new ActualField(roomID), new ActualField(clientID), new FormalField(String.class));
-                        messageArea.appendText((String) response[3]);
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.toString());
-                }
-            }).start();
-
-            new Thread(() -> {
-                try {
-                    System.out.println("Getting users");
-                    while (true) {
-                        Object[] response = server.get(new ActualField("users"), new ActualField(roomID), new ActualField(clientID), new FormalField(String.class));
-                        Platform.runLater(() -> {
-                            usernameList.clear();
-                            usernameList.appendText((String) response[3]);
-                        });
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error: " + e);
-                }
-            }).start();
+            // Start threads for handling messages and user updates
+            startMessageThread(roomID, clientID);
+            startUserThread(roomID, clientID);
 
         } catch (InterruptedException | IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error in handleConnectAction: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    private void terminateThreads() {
+        if (messageThread != null && messageThread.isAlive()) {
+            messageThread.interrupt();
+        }
+        if (userThread != null && userThread.isAlive()) {
+            userThread.interrupt();
+        }
+    }
+
+
+
+    private void startMessageThread(String roomID, String clientID) {
+        messageThread = new Thread(() -> {
+            try {
+                while (true) {
+                    Object[] response = server.get(new ActualField("message"), new ActualField(roomID), new ActualField(clientID), new FormalField(String.class));
+                    messageArea.appendText((String) response[3]);
+                }
+            } catch (Exception e) {
+                System.out.println("Message thread: " + e.toString());
+            }
+        });
+        messageThread.start();
+    }
+
+    private void startUserThread(String roomID, String clientID) {
+        userThread = new Thread(() -> {
+            try {
+                while (true) {
+                    Object[] response = server.get(new ActualField("users"), new ActualField(roomID), new ActualField(clientID), new FormalField(String.class));
+                    String userList = (String) response[3];
+                    Platform.runLater(() -> {
+                        usernameList.setText(userList);
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("User thread: " + e.toString());
+            }
+        });
+        userThread.start();
     }
 }

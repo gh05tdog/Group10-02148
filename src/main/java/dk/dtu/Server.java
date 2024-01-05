@@ -55,20 +55,43 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleRequest(String action, String room, String content, Map<String, Set<String>> roomClients) throws InterruptedException {
+    private void updateUserList(String room, Map<String, Set<String>> roomClients) throws InterruptedException {
+        Set<String> clients = roomClients.get(room);
+        String userList = String.join("\n", clients);
+        for (String clientID : clients) {
+            chatSpace.put("users", room, clientID, userList);
+        }
+    }
+
+
+    // Modify the handleRequest method
+
+
+    private void handleRequest(String action, String room, String username, Map<String, Set<String>> roomClients) throws InterruptedException {
         switch (action) {
             case "join" -> {
-                roomClients.get(room).add(content); // content is the client ID here
-                System.out.println("Client " + content + " joined room " + room);
+                roomClients.get(room).add(username);
+                System.out.println("User " + username + " joined room " + room);
+                updateUserList(room, roomClients); // Update user list
+                broadcastMessage(room, username + " has joined the chat.\n", roomClients); // use username instead of content
             }
-            case "leave" -> roomClients.get(room).remove(content); // content is the client ID here
-            case "message" -> {
-                for (String clientID : roomClients.get(room)) {
-                    chatSpace.put("message", room, clientID, content); // Broadcast message
-                    System.out.println("Broadcasting message to " + clientID + " in room " + room);
-                    System.out.println("Message: " + content);
-                }
+            case "leave" -> {
+                roomClients.get(room).remove(username);
+                System.out.println("User " + username + " left room " + room);
+                updateUserList(room, roomClients); // Update user list
+                broadcastMessage(room, username + " has left the chat.\n", roomClients); // use username instead of content
             }
+            case "message" -> broadcastMessage(room, username, roomClients); // This should likely be changed as well
+        }
+    }
+
+
+    // Add a new method to broadcast messages
+    private void broadcastMessage(String room, String message, Map<String, Set<String>> roomClients) throws InterruptedException {
+        for (String clientID : roomClients.get(room)) {
+            chatSpace.put("message", room, clientID, message);
+            System.out.println("Broadcasting message to " + clientID + " in room " + room);
+            System.out.println("Message: " + message);
         }
     }
 
