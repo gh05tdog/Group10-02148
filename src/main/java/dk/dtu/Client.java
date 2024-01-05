@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Client {
     public static void main(String[] args) {
         try {
-            RemoteSpace server = new RemoteSpace("tcp://127.0.0.1:9001/chat?keep");
+            RemoteSpace server = new RemoteSpace("tcp://10.209.220.33:9001/chat?keep");
             Scanner scanner = new Scanner(System.in);
             String clientID = UUID.randomUUID().toString(); // Unique ID for each client
 
