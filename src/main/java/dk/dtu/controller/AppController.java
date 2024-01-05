@@ -11,7 +11,7 @@ public class AppController {
     @FXML
     private TextArea messageArea;
 
-    private AppModel model;
+    private final AppModel model;
 
     public AppController() {
         model = new AppModel();
@@ -29,7 +29,8 @@ public class AppController {
         try {
             model.sendMessage(message);
             messageField.clear();
-            messageArea.appendText("Sent: " + message + "\n");
+            String getMess = model.receiveMessage();
+            messageArea.appendText("Sent: " + getMess + "\n");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
