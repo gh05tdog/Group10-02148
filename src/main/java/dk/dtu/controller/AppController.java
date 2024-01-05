@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class AppController {
+    private RemoteSpace server;
     public TextField usernameField;
     public TextField chatroomField;
     @FXML
@@ -22,31 +23,24 @@ public class AppController {
 
     private final AppModel model;
 
-    private RemoteSpace server;
 
     public AppController() throws IOException {
         model = new AppModel();
+        this.server = model.getServer();
     }
 
     @FXML
     private void initialize() throws IOException {
-        try {
-            server = model.getServer();
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
+        this.server = model.getServer();
     }
 
     @FXML
     private void handleSendAction() {
         String message = messageField.getText();
         try {
-            server = model.getServer();
             server.put("message", chatroomField.getText(), usernameField.getText() + ": " + message + "\n"); // Send message
         } catch (InterruptedException e) {
             System.out.println(e.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -54,11 +48,13 @@ public class AppController {
     private void handleConnectAction(){
         try {
             String roomID = chatroomField.getText();
-            String clientID = UUID.randomUUID().toString(); // Unique ID for each client
-            server = model.getServer();
+            String clientID = UUID.randomUUID().toString();
 
             if (server == null) {
                 System.out.println("Server is null");
+                model.setServer(config.getIp());
+                server = model.getServer();
+                System.out.println("Server is now: " + server.toString());
             }
 
             // Join the chat room
@@ -75,12 +71,9 @@ public class AppController {
                 }
             }).start();
 
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 
