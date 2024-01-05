@@ -1,7 +1,8 @@
+
 package dk.dtu.controller;
 
+import dk.dtu.Server;
 import dk.dtu.config;
-
 import dk.dtu.model.AppModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.jspace.RemoteSpace;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -24,10 +24,8 @@ public class StartController {
     public Button JoinGameIP;
     public TextField IpField;
 
-    private final AppModel model;
-
     public StartController() throws IOException {
-        model = new AppModel();
+        AppModel model = new AppModel();
     }
 
 
@@ -36,26 +34,26 @@ public class StartController {
         try {
 
             // Load the new FXML file
-            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUPID.fxml")));
+            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUpID.fxml")));
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.setScene(new Scene(newRoot));
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println("Error: " + e.toString());
         }
     }
 
     @FXML
-    private void CreateLobbyAction(ActionEvent event) throws IOException, InterruptedException {
-        //Set the server IP to the config file
-        config.setIp("localhost:9001");
+    private void CreateLobbyAction(ActionEvent event) {
         try {
+            Server server = new Server();
+            server.startServer();
             loadChatUI(event);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println("Error: " + e.toString());
         }
     }
 
-    public void JoinGameBasedOnIP(ActionEvent actionEvent) throws IOException {
+    public void JoinGameBasedOnIP(ActionEvent actionEvent) {
         try {
             config.setIp(IpField.getText());
             loadChatUI(actionEvent);

@@ -2,33 +2,42 @@ package dk.dtu;
 
 import org.jspace.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Server {
+public class Server implements Runnable {
     private SpaceRepository repository;
     private SequentialSpace chatSpace;
     private String serverIp;
+    private Thread serverThread;
 
-    public Server(String ip) {
-        serverIp = ip;
+    public Server() throws UnknownHostException {
+        serverIp = InetAddress.getLocalHost().getHostAddress();
         repository = new SpaceRepository();
         chatSpace = new SequentialSpace();
+        serverThread = new Thread(this);
     }
 
-    public void startServer() throws InterruptedException {
+    public void startServer() {
+        serverThread.start();
+    }
+
+    @Override
+    public void run() {
         try {
             repository.add("chat", chatSpace);
-            String gateUri = serverIp + "/?keep";
+            String gateUri = "tcp://" + serverIp + ":9001/?keep";
             repository.addGate(gateUri);
 
             System.out.println("Chat server running at " + gateUri);
 
             Map<String, Set<String>> roomClients = new HashMap<>();
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 Object[] request = chatSpace.get(new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String action = (String) request[0];
                 String room = (String) request[1];
@@ -38,35 +47,37 @@ public class Server {
 
                 handleRequest(action, room, content, roomClients);
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("Server thread interrupted");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Server error: " + e.toString());
         }
     }
 
     private void handleRequest(String action, String room, String content, Map<String, Set<String>> roomClients) throws InterruptedException {
         switch (action) {
-            case "join":
+            case "join" -> {
                 roomClients.get(room).add(content); // content is the client ID here
                 System.out.println("Client " + content + " joined room " + room);
-                break;
-            case "leave":
-                roomClients.get(room).remove(content); // content is the client ID here
-                break;
-            case "message":
+            }
+            case "leave" -> roomClients.get(room).remove(content); // content is the client ID here
+            case "message" -> {
                 for (String clientID : roomClients.get(room)) {
                     chatSpace.put("message", room, clientID, content); // Broadcast message
                     System.out.println("Broadcasting message to " + clientID + " in room " + room);
                     System.out.println("Message: " + content);
                 }
-                break;
+            }
         }
     }
 
     public static void main(String[] args) {
         try {
-            new Server("tcp://localhost:9001").startServer();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            new Server().startServer();
+        } catch (UnknownHostException e) {
+            System.out.println("Could not determine local host IP");
+            System.out.println(e.toString());
         }
     }
 }
