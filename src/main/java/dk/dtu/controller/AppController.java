@@ -1,5 +1,6 @@
 package dk.dtu.controller;
 
+import dk.dtu.config;
 import dk.dtu.model.AppModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -25,22 +26,27 @@ public class AppController {
 
     public AppController() throws IOException {
         model = new AppModel();
-        this.server = model.getServer();
     }
 
     @FXML
-    private void initialize() {
-        // You might want to start a new thread to listen for messages
-        // This is just a placeholder for the actual message receiving logic
+    private void initialize() throws IOException {
+        try {
+            server = model.getServer();
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
     }
 
     @FXML
     private void handleSendAction() {
         String message = messageField.getText();
         try {
+            server = model.getServer();
             server.put("message", chatroomField.getText(), usernameField.getText() + ": " + message + "\n"); // Send message
         } catch (InterruptedException e) {
             System.out.println(e.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -49,7 +55,11 @@ public class AppController {
         try {
             String roomID = chatroomField.getText();
             String clientID = UUID.randomUUID().toString(); // Unique ID for each client
+            server = model.getServer();
 
+            if (server == null) {
+                System.out.println("Server is null");
+            }
 
             // Join the chat room
             server.put("join", roomID, clientID);
@@ -66,6 +76,8 @@ public class AppController {
             }).start();
 
         } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
