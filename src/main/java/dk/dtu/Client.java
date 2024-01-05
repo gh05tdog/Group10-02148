@@ -7,6 +7,9 @@ import org.jspace.RemoteSpace;
 import java.util.Scanner;
 import java.util.UUID;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Client {
     public static void main(String[] args) {
         try {
@@ -36,8 +39,15 @@ public class Client {
 
             // Sending messages
             while (true) {
+                LocalDateTime now = LocalDateTime.now();
+
+                // Define the format of the date and time
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                // Format the date and time as a string
+                String dateTimeString = now.format(formatter);
                 String message = scanner.nextLine();
-                server.put("message", room, username + ": " + message); // Send message
+                server.put( "message", room, dateTimeString + username + ": " + message); // Send message
             }
 
         } catch (Exception e) {
