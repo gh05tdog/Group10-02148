@@ -47,6 +47,7 @@ public class Server {
         switch (action) {
             case "join":
                 roomClients.get(room).add(content); // content is the client ID here
+                System.out.println("Client " + content + " joined room " + room);
                 break;
             case "leave":
                 roomClients.get(room).remove(content); // content is the client ID here

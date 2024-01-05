@@ -19,7 +19,6 @@ import java.util.Objects;
 
 public class StartController {
 
-    private RemoteSpace server;
     public Button JoinLobby;
     public Button CreateLobby;
     public Button JoinGameIP;
@@ -45,10 +44,9 @@ public class StartController {
     }
 
     @FXML
-    private void CreateLobbyAction(ActionEvent event) throws IOException {
+    private void CreateLobbyAction(ActionEvent event) throws IOException, InterruptedException {
         //Set the server IP to the config file
-        System.out.println("CreateLobbyAction");
-        model.ChangeSeverIP(config.getIp());
+        config.setIp("localhost:9001");
         try {
             loadChatUI(event);
         } catch (Exception e) {
@@ -59,7 +57,6 @@ public class StartController {
     public void JoinGameBasedOnIP(ActionEvent actionEvent) throws IOException {
         try {
             config.setIp(IpField.getText());
-            model.ChangeSeverIP(config.getIp());
             loadChatUI(actionEvent);
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -67,6 +64,7 @@ public class StartController {
     }
 
     private void loadChatUI(ActionEvent event) throws IOException {
+
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.setScene(new Scene(newRoot));
