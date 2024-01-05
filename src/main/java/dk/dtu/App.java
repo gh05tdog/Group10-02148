@@ -1,14 +1,27 @@
 package dk.dtu;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import org.jspace.FormalField;
-import org.jspace.SequentialSpace;
-import org.jspace.Space;
+import java.util.Objects;
 
-public class App {
-    public static void main(String[] argv) throws InterruptedException {
-        Space inbox = new SequentialSpace();
-        inbox.put("Hello World!");
-        Object[] tuple = inbox.get(new FormalField(String.class));
-        System.out.println(tuple[0]);
+public class App extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("/dk/dtu/view/App_view.fxml"));
+
+
+        Scene scene = new Scene(root);
+
+        stage.setTitle("JSpace JavaFX Example");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] argv) {
+        launch(argv);
     }
 }
