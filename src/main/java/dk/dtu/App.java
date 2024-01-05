@@ -14,12 +14,10 @@ public class App extends Application {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/StartScreen.fxml")));
 
         Scene scene = new Scene(root);
-        stage.setTitle("JSpace JavaFX Example");
+        stage.setTitle("MoonLit Noir");
         stage.setScene(scene);
         stage.show();
     }
-
-
 
     public static void main(String[] argv) {
         launch(argv);

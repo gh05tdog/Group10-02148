@@ -6,11 +6,10 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="dk.dtu.controller.StartController">
-   <children>
-      <Label text="Write IP Of your game" />
-      <TextField fx:id="IpField" />
-      <Button fx:id="JoinGameIP" mnemonicParsing="false" onAction="#JoinGameBasedOnIP" text="JoinGame" />
-   </children>
+   <Label text="Write IP Of your game"/>
+   <TextField fx:id="IpField"/>
+   <Button fx:id="JoinGameIP" mnemonicParsing="false" onAction="#JoinGameBasedOnIP" text="JoinGame"/>
 </VBox>

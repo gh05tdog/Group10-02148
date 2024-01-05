@@ -2,6 +2,7 @@ package dk.dtu.controller;
 
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class AppController {
+    public TextArea usernameList;
     private RemoteSpace server;
     public TextField usernameField;
     public TextField chatroomField;
@@ -22,6 +24,10 @@ public class AppController {
     private TextArea messageArea;
 
     private final AppModel model;
+
+    private Thread messageThread;
+    private Thread userThread;
+    private String clientID;
 
 
     public AppController() throws IOException {
@@ -47,6 +53,20 @@ public class AppController {
     @FXML
     private void handleConnectAction(){
         try {
+            // Disconnect from the current room
+            if (clientID != null) {
+                server.put("leave", chatroomField.getText(), clientID);
+                if (messageThread != null && messageThread.isAlive()) {
+                    messageThread.interrupt();
+                }
+                if (userThread != null && userThread.isAlive()) {
+                    userThread.interrupt();
+                }
+                // Clear the username list
+                Platform.runLater(() -> usernameList.clear());
+            }
+
+            // Connect to the new room
             String roomID = chatroomField.getText();
             String clientID = UUID.randomUUID().toString();
 
@@ -63,6 +83,7 @@ public class AppController {
 
             new Thread(() -> {
                 try {
+                    System.out.println("Getting messages");
                     while (true) {
                         Object[] response = server.get(new ActualField("message"), new ActualField(roomID), new ActualField(clientID), new FormalField(String.class));
                         messageArea.appendText((String) response[3]);
@@ -72,10 +93,23 @@ public class AppController {
                 }
             }).start();
 
+            new Thread(() -> {
+                try {
+                    System.out.println("Getting users");
+                    while (true) {
+                        Object[] response = server.get(new ActualField("users"), new ActualField(roomID), new ActualField(clientID), new FormalField(String.class));
+                        Platform.runLater(() -> {
+                            usernameList.clear();
+                            usernameList.appendText((String) response[3]);
+                        });
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error: " + e);
+                }
+            }).start();
+
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-
 }

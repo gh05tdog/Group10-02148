@@ -6,20 +6,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="dk.dtu.controller.AppController">
+<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
    <HBox>
       <children>
          <VBox>
             <children>
                 <TextField fx:id="usernameField" promptText="Enter your username" />
-                <TextField fx:id="chatroomField" promptText="Enter chat room" />
+                <TextField fx:id="chatroomField" promptText="Enter chat room" text="lobby" />
                 <Button onAction="#handleConnectAction" text="Connect" />
                 <TextField fx:id="messageField" promptText="Enter message here" />
                 <Button onAction="#handleSendAction" text="Send" />
                 <TextArea fx:id="messageArea" editable="false" />
             </children>
          </VBox>
-         <TextArea prefHeight="200.0" prefWidth="200.0" />
+         <TextArea fx:id="usernameList" editable="false" prefHeight="200.0" prefWidth="200.0" />
       </children>
    </HBox>
 </VBox>
