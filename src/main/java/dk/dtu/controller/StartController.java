@@ -34,6 +34,7 @@ public class StartController {
     @FXML
     public void JoinLobbyAction(ActionEvent event) {
         try {
+
             // Load the new FXML file
             Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUPID.fxml")));
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
