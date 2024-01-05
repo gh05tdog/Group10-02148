@@ -11,7 +11,6 @@ import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 import java.io.IOException;
-import java.util.UUID;
 
 public class AppController {
     public TextArea usernameList;
@@ -36,7 +35,7 @@ public class AppController {
     }
 
     @FXML
-    private void initialize() throws IOException {
+    private void initialize() {
         this.server = model.getServer();
     }
 
@@ -46,8 +45,10 @@ public class AppController {
         try {
             server.put("message", chatroomField.getText(), usernameField.getText() + ": " + message + "\n"); // Send message
         } catch (InterruptedException e) {
-            System.out.println(e.toString());
+            System.out.println("error:" + e);
         }
+        //Clear the message field
+        messageField.clear();
     }
 
     @FXML
@@ -93,7 +94,6 @@ public class AppController {
 
         } catch (InterruptedException | IOException e) {
             System.out.println("Error in handleConnectAction: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -116,7 +116,7 @@ public class AppController {
                     messageArea.appendText((String) response[3]);
                 }
             } catch (Exception e) {
-                System.out.println("Message thread: " + e.toString());
+                System.out.println("Messagethread error: " + e);
             }
         });
         messageThread.start();
@@ -128,12 +128,10 @@ public class AppController {
                 while (true) {
                     Object[] response = server.get(new ActualField("users"), new ActualField(roomID), new ActualField(clientID), new FormalField(String.class));
                     String userList = (String) response[3];
-                    Platform.runLater(() -> {
-                        usernameList.setText(userList);
-                    });
+                    Platform.runLater(() -> usernameList.setText(userList));
                 }
             } catch (Exception e) {
-                System.out.println("User thread: " + e.toString());
+                System.out.println("User thread: " + e);
             }
         });
         userThread.start();

@@ -4,6 +4,7 @@ package dk.dtu.controller;
 import dk.dtu.Server;
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,9 +37,10 @@ public class StartController {
             // Load the new FXML file
             Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUpID.fxml")));
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setOnCloseRequest(e -> Platform.exit());
             currentStage.setScene(new Scene(newRoot));
         } catch (Exception e) {
-            System.out.println("Error: " + e.toString());
+            System.out.println("Error: " + e);
         }
     }
 
@@ -49,7 +51,7 @@ public class StartController {
             server.startServer();
             loadChatUI(event);
         } catch (Exception e) {
-            System.out.println("Error: " + e.toString());
+            System.out.println("Error: " + e);
         }
     }
 
@@ -58,7 +60,7 @@ public class StartController {
             config.setIp(IpField.getText());
             loadChatUI(actionEvent);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println("error: " + e);
         }
     }
 
@@ -66,6 +68,7 @@ public class StartController {
 
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
     }
 }
