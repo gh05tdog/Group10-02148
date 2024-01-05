@@ -52,6 +52,7 @@ public class AppController {
 
             if (server == null) {
                 System.out.println("Server is null");
+                System.out.println("Server is now: " + config.getIp());
                 model.setServer(config.getIp());
                 server = model.getServer();
                 System.out.println("Server is now: " + server.toString());
