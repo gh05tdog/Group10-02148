@@ -5,6 +5,9 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox spacing="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
+    <TextField fx:id="usernameField" promptText="Enter your username"/>
+    <TextField fx:id="chatroomField" promptText="Enter chat room"/>
+    <Button text="Connect" onAction="#handleConnectAction"/>
     <TextField fx:id="messageField" promptText="Enter message here"/>
     <Button text="Send" onAction="#handleSendAction"/>
     <TextArea fx:id="messageArea" editable="false"/>

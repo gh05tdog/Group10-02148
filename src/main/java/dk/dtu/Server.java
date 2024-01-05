@@ -13,7 +13,7 @@ public class Server {
             SpaceRepository repository = new SpaceRepository();
             SequentialSpace chatSpace = new SequentialSpace();
             repository.add("chat", chatSpace);
-            repository.addGate("tcp://127.0.0.1:9001/?keep");
+            repository.addGate("tcp://10.209.220.33:9001/?keep");
             System.out.println("Chat server running...");
 
             Map<String, Set<String>> roomClients = new HashMap<>();
@@ -36,6 +36,9 @@ public class Server {
                     case "message":
                         for (String clientID : roomClients.get(room)) {
                             chatSpace.put("message", room, clientID, content); // Broadcast message
+                            System.out.println("Broadcasting message to " + clientID + " in room " + room);
+                            System.out.println("Message: " + content);
+
                         }
                         break;
                 }
