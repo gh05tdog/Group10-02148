@@ -13,6 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,8 +22,8 @@ import java.util.Objects;
 
 public class StartController {
 
-    public Button JoinLobby;
-    public Button CreateLobby;
+    public AnchorPane joinGamePane;
+    public AnchorPane createGamePane;
     public Button JoinGameIP;
     public TextField IpField;
 
@@ -31,7 +33,7 @@ public class StartController {
 
 
     @FXML
-    public void JoinLobbyAction(ActionEvent event) {
+    public void JoinLobbyAction(MouseEvent event) {
         try {
 
             // Load the new FXML file
@@ -45,7 +47,7 @@ public class StartController {
     }
 
     @FXML
-    private void CreateLobbyAction(ActionEvent event) {
+    private void CreateLobbyAction(MouseEvent event) {
         try {
             Server server = new Server();
             server.startServer();
@@ -55,16 +57,16 @@ public class StartController {
         }
     }
 
-    public void JoinGameBasedOnIP(ActionEvent actionEvent) {
+    public void JoinGameBasedOnIP(MouseEvent mouseEvent) {
         try {
             config.setIp(IpField.getText());
-            loadChatUI(actionEvent);
+            loadChatUI(mouseEvent);
         } catch (Exception e) {
             System.out.println("error: " + e);
         }
     }
 
-    private void loadChatUI(ActionEvent event) throws IOException {
+    private void loadChatUI(MouseEvent event) throws IOException {
 
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
