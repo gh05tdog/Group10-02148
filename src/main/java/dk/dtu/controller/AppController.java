@@ -90,9 +90,10 @@ public class AppController {
             server.put("join", roomID, clientID);
 
             // Start threads for handling messages and user updates
+            listenForPublicMsg();
             startMessageThread(roomID, clientID);
             startUserThread(roomID, clientID);
-            listenForPublicMsg();
+
 
         } catch (InterruptedException | IOException e) {
             System.out.println("Error in handleConnectAction: " + e.getMessage());
@@ -128,10 +129,11 @@ public class AppController {
     }
 
     private void listenForPublicMsg(){
+        System.out.println("Listening for public messages");
         messageThread = new Thread(() -> {
             try {
                 while (true) {
-                    Object[] response = server.get(new ActualField("message"), new ActualField("public"), new ActualField(""), new FormalField(String.class));
+                    Object[] response = server.get(new ActualField("message"), new ActualField("public"), new ActualField("Admin"), new FormalField(String.class));
                     messageArea.appendText((String) response[3]);
                 }
             } catch (Exception e) {

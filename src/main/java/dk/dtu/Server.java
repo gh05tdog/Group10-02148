@@ -36,6 +36,7 @@ public class Server implements Runnable {
             System.out.println("Chat server running at " + gateUri);
 
             Map<String, Set<String>> roomClients = new HashMap<>();
+            broadcastGameInfo("Server is running at " + gateUri);
 
             while (!Thread.currentThread().isInterrupted()) {
                 Object[] request = chatSpace.get(new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
@@ -77,7 +78,7 @@ public class Server implements Runnable {
                 roomClients.get(room).add(username);
                 System.out.println("User " + username + " joined room " + room);
                 updateUserList(room, roomClients); // Update user list
-                broadcastMessage(room, username + " has joined the chat.\n", roomClients); // use username instead of content
+                broadcastMessage(room, username + " has joined the chat.\n", roomClients);
             }
             case "leave" -> {
                 roomClients.get(room).remove(username);
@@ -97,6 +98,15 @@ public class Server implements Runnable {
             System.out.println("Broadcasting message to " + clientID + " in room " + room);
             System.out.println("Message: " + message);
         }
+    }
+
+    private void broadcastGameInfo(String message){
+        try {
+            chatSpace.put("message", "public","Admin", message + "\n");
+        } catch (InterruptedException e) {
+            System.out.println("Error: " + e);
+        }
+
     }
 
     public static void main(String[] args) {
