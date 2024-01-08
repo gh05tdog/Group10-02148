@@ -79,13 +79,19 @@ public class StartController {
         }
     }
 
-    private void loadChatUI(ActionEvent event) throws IOException {
-
-
-
+    private void loadChatUI(ActionEvent event) throws Exception {
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
+    }
+
+    public void openStartScreen() throws Exception {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/StartScreen.fxml")));
+        Stage stage = new Stage();
+        stage.setTitle("MoonLit Noir");
+        stage.setScene(new Scene(root));
+        stage.setOnCloseRequest(e -> Platform.exit());
+        stage.show();
     }
 }
