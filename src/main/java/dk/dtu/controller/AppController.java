@@ -23,6 +23,8 @@ import java.util.TimerTask;
 public class AppController {
     public TextArea usernameList;
     public Label timerLabel;
+    @FXML
+    public ImageView background;
     private RemoteSpace server;
     public TextField usernameField;
     public TextField chatroomField;
@@ -48,6 +50,11 @@ public class AppController {
 
     public Image sun = new Image("/dk/dtu/view/images/sun.png");
 
+    public Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
+
+    public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
+
+    int managecycle = 0;
 
     public AppController() throws IOException {
         model = new AppModel();
@@ -188,9 +195,18 @@ public class AppController {
         if (timeSeconds > 0) {
             timeSeconds--;
         } else {
-            timeline.stop();
-            counter.setImage(moon);
-
-        }
+            if(managecycle == 0) {
+                managecycle = 1;
+                counter.setImage(moon);
+                background.setImage(night);
+                timeSeconds = 10;
+            }
+            else if(managecycle == 1) {
+                managecycle = 0;
+                counter.setImage(sun);
+                background.setImage(day);
+                timeSeconds = 10;
+            }
+    }
     }
 }
