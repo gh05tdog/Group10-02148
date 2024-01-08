@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+
+
+<Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.LobbyController">
+   <children>
+      <VBox layoutX="45.0" layoutY="39.0" prefHeight="16.0" prefWidth="166.0">
+         <children>
+            <TextField text="Enter Username" />
+            <TextField prefHeight="0.0" prefWidth="166.0" />
+         </children>
+      </VBox>
+      <VBox layoutX="300.0" layoutY="139.0" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <TextField text="Lobby" />
+            <TextArea prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </VBox>
+      <Rectangle fx:id="startGameRectangle" arcHeight="5.0" arcWidth="5.0" height="200.0" layoutX="100.0" layoutY="139.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+      <Rectangle fx:id="returnRectangle" arcHeight="5.0" arcWidth="5.0" height="200.0" layoutX="400.0" layoutY="-11.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+      <Text fill="WHITE" layoutX="489.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Return" />
+      <Text fill="WHITE" layoutX="189.0" layoutY="244.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start game" />
+   </children>
+</Pane>
