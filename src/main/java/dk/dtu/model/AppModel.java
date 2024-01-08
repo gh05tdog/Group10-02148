@@ -23,4 +23,12 @@ public class AppModel {
     public RemoteSpace getServer() {
         return this.server;
     }
+
+    public void killServer() {
+        try {
+            this.server.put("kill");
+        } catch (InterruptedException e) {
+            System.out.println("Error trying to kill server:" + e);
+        }
+    }
 }
