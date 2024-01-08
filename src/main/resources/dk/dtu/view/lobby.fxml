@@ -7,7 +7,6 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
-
 <Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.LobbyController">
    <children>
       <VBox layoutX="45.0" layoutY="39.0" prefHeight="16.0" prefWidth="166.0">
@@ -26,5 +25,7 @@
       <Rectangle fx:id="returnRectangle" arcHeight="5.0" arcWidth="5.0" height="200.0" layoutX="400.0" layoutY="-11.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
       <Text fill="WHITE" layoutX="489.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Return" />
       <Text fill="WHITE" layoutX="189.0" layoutY="244.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start game" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" layoutX="218.0" layoutY="39.0" stroke="BLACK" strokeType="INSIDE" width="107.0" />
+      <Text id="joinButton" layoutX="260.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Join" />
    </children>
 </Pane>
