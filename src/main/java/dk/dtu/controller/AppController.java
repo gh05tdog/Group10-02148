@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -36,8 +38,15 @@ public class AppController {
     private Thread listenForPublicMsg;
     private String clientID;
 
+    @FXML
+    public ImageView counter;
+
     private Timeline timeline;
-    private Integer timeSeconds = 120;
+    private Integer timeSeconds = 10;
+
+    public Image moon = new Image("/dk/dtu/view/images/Moon.png");
+
+    public Image sun = new Image("/dk/dtu/view/images/sun.png");
 
 
     public AppController() throws IOException {
@@ -180,7 +189,8 @@ public class AppController {
             timeSeconds--;
         } else {
             timeline.stop();
-            // Timer finished. Do something if needed.
+            counter.setImage(moon);
+
         }
     }
 }
