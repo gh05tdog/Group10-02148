@@ -1,7 +1,7 @@
 package dk.dtu;
 
+import dk.dtu.controller.PopUpController;
 import org.jspace.*;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class Server implements Runnable {
-    private SpaceRepository repository;
-    private SequentialSpace chatSpace;
-    private String serverIp;
-    private Thread serverThread;
+    private final SpaceRepository repository;
+    private final SequentialSpace chatSpace;
+    private final String serverIp;
+    private final Thread serverThread;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -51,7 +51,7 @@ public class Server implements Runnable {
             Thread.currentThread().interrupt();
             System.out.println("Server thread interrupted");
         } catch (Exception e) {
-            System.out.println("Server error: " + e.toString());
+            System.out.println("Server error: " + e);
         }
     }
 
@@ -65,11 +65,15 @@ public class Server implements Runnable {
 
 
     // Modify the handleRequest method
-
-
     private void handleRequest(String action, String room, String username, Map<String, Set<String>> roomClients) throws InterruptedException {
         switch (action) {
             case "join" -> {
+                //Check the username is not already in the room
+                if (roomClients.get(room).contains(username)) {
+                    System.out.println("User " + username + " is already in room " + room);
+                    PopUpController.showPopUp("Username already in use");
+                    return;
+                }
                 roomClients.get(room).add(username);
                 System.out.println("User " + username + " joined room " + room);
                 updateUserList(room, roomClients); // Update user list
@@ -100,7 +104,7 @@ public class Server implements Runnable {
             new Server().startServer();
         } catch (UnknownHostException e) {
             System.out.println("Could not determine local host IP");
-            System.out.println(e.toString());
+            System.out.println("Error msg:" + e);
         }
     }
 }
