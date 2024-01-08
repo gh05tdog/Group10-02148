@@ -2,18 +2,25 @@ package dk.dtu.controller;
 
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AppController {
     public TextArea usernameList;
+    public Label timerLabel;
     private RemoteSpace server;
     public TextField usernameField;
     public TextField chatroomField;
@@ -28,6 +35,9 @@ public class AppController {
     private Thread userThread;
     private String clientID;
 
+    private Timeline timeline;
+    private Integer timeSeconds = 120;
+
 
     public AppController() throws IOException {
         model = new AppModel();
@@ -37,6 +47,11 @@ public class AppController {
     @FXML
     private void initialize() {
         this.server = model.getServer();
+
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateTimer()));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
     }
 
     @FXML
@@ -135,5 +150,18 @@ public class AppController {
             }
         });
         userThread.start();
+    }
+
+    private void updateTimer() {
+        int minutes = timeSeconds / 60;
+        int seconds = timeSeconds % 60;
+        timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+
+        if (timeSeconds > 0) {
+            timeSeconds--;
+        } else {
+            timeline.stop();
+            // Timer finished. Do something if needed.
+        }
     }
 }
