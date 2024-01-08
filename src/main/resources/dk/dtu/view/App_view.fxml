@@ -59,7 +59,7 @@
             <Image url="@Images/sun.png" />
          </image>
       </ImageView>
-    <Label fx:id="timerLabel" layoutX="54.0" layoutY="51.0" text="02:00">
+    <Label fx:id="timerLabel" layoutX="60.0" layoutY="52.0" text="02:00">
          <font>
             <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
          </font></Label>
