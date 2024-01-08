@@ -15,15 +15,15 @@
 <Pane prefHeight="521.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
 <children>
     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="302.0" />
-    <ImageView fitHeight="521.0" fitWidth="746.0">
+    <ImageView fx:id="background" fitHeight="521.0" fitWidth="746.0">
         <image>
-            <Image url="@Images/Moonlit_main_page.jpg" />
+            <Image url="@Images/moonlit_main_day.jpg" />
         </image>
     </ImageView>
     <VBox layoutY="310.0" prefHeight="211.0" prefWidth="255.0">
         <children>
             <TextField fx:id="usernameField" promptText="Enter your username" />
-            <TextField fx:id="chatroomField" promptText="Enter chat room" text="lobby" />
+            <TextField fx:id="chatroomField" promptText="Enter chat room" />
             <Button onAction="#handleConnectAction" prefHeight="25.0" prefWidth="269.0" text="Connect" />
             <TextField fx:id="messageField" promptText="Enter message here" />
             <Button onAction="#handleSendAction" prefHeight="25.0" prefWidth="296.0" text="Send" />
@@ -32,13 +32,13 @@
     </VBox>
     <VBox layoutX="588.0" layoutY="95.0" prefHeight="211.0" prefWidth="144.0">
         <children>
-            <TextField text="Usernames:" />
+            <Label text="Usernames:" style="-fx-background-color: #FFFFFF;"/>
             <TextArea fx:id="usernameList" editable="false" prefHeight="213.0" prefWidth="144.0" />
         </children>
     </VBox>
     <VBox layoutX="14.0" layoutY="142.0" prefHeight="153.0" prefWidth="144.0">
         <children>
-            <TextField text="Status" />
+            <TextField text="Status" editable="false" />
             <TextArea prefHeight="200.0" prefWidth="200.0" />
         </children>
     </VBox>
