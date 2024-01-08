@@ -1,6 +1,7 @@
 
 package dk.dtu.controller;
 
+import dk.dtu.App;
 import dk.dtu.Server;
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
@@ -14,6 +15,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.jspace.ActualField;
+import org.jspace.FormalField;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -58,6 +61,18 @@ public class StartController {
     public void JoinGameBasedOnIP(ActionEvent actionEvent) {
         try {
             config.setIp(IpField.getText());
+            //Try to connect to the server
+            AppModel model = new AppModel();
+            try {
+                model.setServer(config.getIp());
+                model.getServer().get(new ActualField("server"), new FormalField(String.class));
+            } catch (Exception e) {
+                System.out.println("Error: " + e);
+                PopUpController.showPopUp("Could not connect to the server");
+                return;
+            }
+
+            model.killServer();
             loadChatUI(actionEvent);
         } catch (Exception e) {
             System.out.println("error: " + e);
@@ -65,6 +80,8 @@ public class StartController {
     }
 
     private void loadChatUI(ActionEvent event) throws IOException {
+
+
 
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

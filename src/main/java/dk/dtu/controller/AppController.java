@@ -26,6 +26,7 @@ public class AppController {
 
     private Thread messageThread;
     private Thread userThread;
+    private Thread listenForPublicMsg;
     private String clientID;
 
 
@@ -91,6 +92,7 @@ public class AppController {
             // Start threads for handling messages and user updates
             startMessageThread(roomID, clientID);
             startUserThread(roomID, clientID);
+            listenForPublicMsg();
 
         } catch (InterruptedException | IOException e) {
             System.out.println("Error in handleConnectAction: " + e.getMessage());
@@ -103,6 +105,9 @@ public class AppController {
         }
         if (userThread != null && userThread.isAlive()) {
             userThread.interrupt();
+        }
+        if(listenForPublicMsg != null && listenForPublicMsg.isAlive()){
+            listenForPublicMsg.interrupt();
         }
     }
 
@@ -117,6 +122,20 @@ public class AppController {
                 }
             } catch (Exception e) {
                 System.out.println("Messagethread error: " + e);
+            }
+        });
+        messageThread.start();
+    }
+
+    private void listenForPublicMsg(){
+        messageThread = new Thread(() -> {
+            try {
+                while (true) {
+                    Object[] response = server.get(new ActualField("message"), new ActualField("public"), new ActualField(""), new FormalField(String.class));
+                    messageArea.appendText((String) response[3]);
+                }
+            } catch (Exception e) {
+                System.out.println("Message-thread error: " + e);
             }
         });
         messageThread.start();
