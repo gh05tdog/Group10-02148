@@ -66,7 +66,8 @@ public class StartController {
         }
     }
 
-    private void loadChatUI(MouseEvent event) throws IOException {
+    private void
+    loadChatUI(MouseEvent event) throws IOException {
 
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
