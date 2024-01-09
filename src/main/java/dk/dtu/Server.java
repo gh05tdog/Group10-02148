@@ -5,7 +5,9 @@ import org.jspace.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Server implements Runnable {
@@ -16,6 +18,7 @@ public class Server implements Runnable {
     private final Thread messageThread;
     private final Set<String> playersInLobby;
     private boolean gameStarted;
+    private List<String> messages = new ArrayList<>();
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -61,9 +64,13 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleMessage(String username, String s) {
+    private void handleMessage(String username, String messageContent) throws InterruptedException {
+        // Add message to the list
+        String fullMessage = username + ": " + messageContent;
+        messages.add(fullMessage);
 
-        System.out.println("Message received to server from " + username + ": " + s);
+        // Update the space with the new list of messages
+        gameSpace.put("messages", messages);
     }
 
     private void handleJoinLobby(String username) {

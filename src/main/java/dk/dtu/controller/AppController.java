@@ -1,10 +1,10 @@
 package dk.dtu.controller;
 
 import dk.dtu.model.AppModel;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+
 import java.io.IOException;
 
 public class AppController {
@@ -48,7 +48,7 @@ public class AppController {
         }
         clientID = username;
         model.joinLobby(clientID);
-        model.startListeningForMessages(messageArea, clientID);
+        model.startListeningForMessages(messageArea);
         model.startListeningForUserUpdates(usernameList, clientID);
     }
 }
