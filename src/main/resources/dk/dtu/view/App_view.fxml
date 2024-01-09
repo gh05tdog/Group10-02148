@@ -4,28 +4,64 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
-   <HBox>
-      <children>
-         <VBox>
-            <children>
-                <TextField fx:id="usernameField" promptText="Enter your username" />
-                <TextField fx:id="chatroomField" promptText="Enter chat room" text="lobby" />
-                <Button onAction="#handleConnectAction" text="Connect" />
-                <TextField fx:id="messageField" promptText="Enter message here" />
-                <Button onAction="#handleSendAction" text="Send" />
-                <TextArea fx:id="messageArea" editable="false" />
-            </children>
-         </VBox>
-         <VBox>
-            <children>
-               <Label text="Usernames:" />
-               <TextArea fx:id="usernameList" editable="false" prefWidth="300.0" />
-            </children>
-         </VBox>
-      </children>
-   </HBox>
-</VBox>
+<Pane prefHeight="521.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
+<children>
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="302.0" />
+    <ImageView fx:id="background" fitHeight="521.0" fitWidth="746.0">
+        <image>
+            <Image url="@Images/moonlit_main_day.jpg" />
+        </image>
+    </ImageView>
+    <VBox layoutY="310.0" prefHeight="211.0" prefWidth="255.0">
+        <children>
+            <TextField fx:id="usernameField" promptText="Enter your username" />
+            <TextField fx:id="chatroomField" promptText="Enter chat room" />
+            <Button onAction="#handleConnectAction" prefHeight="25.0" prefWidth="269.0" text="Connect" />
+            <TextField fx:id="messageField" promptText="Enter message here" />
+            <Button onAction="#handleSendAction" prefHeight="25.0" prefWidth="296.0" text="Send" />
+            <TextArea fx:id="messageArea" editable="false" />
+        </children>
+    </VBox>
+    <VBox layoutX="588.0" layoutY="95.0" prefHeight="211.0" prefWidth="144.0">
+        <children>
+            <Label text="Usernames:" style="-fx-background-color: #FFFFFF;"/>
+            <TextArea fx:id="usernameList" editable="false" prefHeight="213.0" prefWidth="144.0" />
+        </children>
+    </VBox>
+    <VBox layoutX="14.0" layoutY="142.0" prefHeight="153.0" prefWidth="144.0">
+        <children>
+            <TextField text="Status" editable="false" />
+            <TextArea prefHeight="200.0" prefWidth="200.0" />
+        </children>
+    </VBox>
+    <VBox layoutX="547.0" layoutY="403.0" prefHeight="118.0" prefWidth="199.0">
+        <children>
+            <TextField />
+            <TextArea prefHeight="200.0" prefWidth="200.0" />
+        </children>
+    </VBox>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#06223b" height="45.0" layoutX="603.0" stroke="BLACK" strokeType="INSIDE" width="144.0" />
+      <Text fill="#7f0000" layoutX="630.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" textAlignment="CENTER" wrappingWidth="90.552001953125">
+         <font>
+            <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
+         </font>
+      </Text>
+      <ImageView fx:id="counter" fitHeight="225.0" fitWidth="290.0" layoutX="-60.0" layoutY="-48.0">
+         <image>
+            <Image url="@Images/sun.png" />
+         </image>
+      </ImageView>
+    <Label fx:id="timerLabel" layoutX="60.0" layoutY="52.0" text="02:00">
+         <font>
+            <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
+         </font></Label>
+</children>
+</Pane>
