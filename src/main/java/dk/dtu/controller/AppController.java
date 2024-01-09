@@ -1,5 +1,6 @@
 package dk.dtu.controller;
 
+import dk.dtu.App;
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
 import javafx.animation.KeyFrame;
@@ -11,6 +12,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -53,6 +57,9 @@ public class AppController {
     public Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
+
+    @FXML
+    private AnchorPane settings;
 
     int managecycle = 0;
 
@@ -188,11 +195,12 @@ public class AppController {
     }
 
     private void updateTimer() {
+
         int minutes = timeSeconds / 60;
         int seconds = timeSeconds % 60;
         timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
 
-        if (timeSeconds > 0) {
+        if (timeSeconds > -1) {
             timeSeconds--;
         } else {
             if(managecycle == 0) {
@@ -208,5 +216,11 @@ public class AppController {
                 timeSeconds = 10;
             }
     }
+    }
+    @FXML
+    private void returnToMenu() throws Exception {
+        Stage stage = (Stage) settings.getScene().getWindow();
+        stage.setScene(App.getScene());
+
     }
 }

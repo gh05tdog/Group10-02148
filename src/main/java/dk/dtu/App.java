@@ -7,9 +7,15 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class App extends Application {
+
+    public static Scene getScene() throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource("/dk/dtu/view/StartScreen.fxml")));
+        return new Scene(root);
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
