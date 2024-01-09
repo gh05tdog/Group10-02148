@@ -28,7 +28,7 @@ public class AppController {
         if (!message.isEmpty()) {
             try {
                 System.out.println("Sending message: " + message);
-                model.sendMessage(clientID, message);
+                model.sendMessage(clientID, message, "lobby");
             } catch (Exception e) {
                 System.out.println("Error sending message: " + e);
             }
