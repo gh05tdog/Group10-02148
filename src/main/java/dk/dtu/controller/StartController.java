@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,8 +26,8 @@ public class StartController {
 
     public AnchorPane joinGamePane;
     public AnchorPane createGamePane;
-    public Button JoinGameIP;
     public TextField IpField;
+    public Rectangle joinGameRectangle;
     private AppModel model;
     private Server server;
 
@@ -39,7 +40,7 @@ public class StartController {
         try {
 
             // Load the new FXML file
-            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUpID.fxml")));
+            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUpIP.fxml")));
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.setOnCloseRequest(e -> Platform.exit());
             currentStage.setScene(new Scene(newRoot));
@@ -53,20 +54,10 @@ public class StartController {
         try {
             server = new Server(); // Instantiate the Server here
             server.startServer();  // Start the server
-            loadChatUI(event);
+            loadLobbyUI(event);
         } catch (Exception e) {
             System.out.println("Error creating lobby: " + e);
         }
-    }
-
-    private void loadChatUI(MouseEvent event) throws IOException {
-
-
-
-        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
-        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        currentStage.setOnCloseRequest(e -> Platform.exit());
-        currentStage.setScene(new Scene(newRoot));
     }
 
     public void openStartScreen() throws IOException {
@@ -78,13 +69,20 @@ public class StartController {
         stage.show();
     }
 
+    public void loadLobbyUI(MouseEvent event) throws IOException {
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/lobby.fxml")));
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.setOnCloseRequest(e -> Platform.exit());
+        currentStage.setScene(new Scene(newRoot));
+    }
 
-    public void JoinGameBasedOnIP(ActionEvent actionEvent) {
+
+    public void JoinGameBasedOnIP(MouseEvent actionEvent) {
         try {
             //Set ip
             String ip = IpField.getText();
             config.setIp(ip);
-            loadChatUI(actionEvent);
+            loadLobbyUI(actionEvent);
         } catch (Exception e) {
             System.out.println("Error joining lobby: " + e);
         }
