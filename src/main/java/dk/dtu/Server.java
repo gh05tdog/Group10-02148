@@ -64,9 +64,9 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleMessage(String username, String messageContent) throws InterruptedException {
+    private void handleMessage(String username, String messageContent, String lobbyID) throws InterruptedException {
         // Add message to the list
-        String fullMessage = username + ": " + messageContent;
+        String fullMessage = "(" + lobbyID + ")" + username + ": " + messageContent ;
         messages.add(fullMessage);
 
         // Update the space with the new list of messages
@@ -117,10 +117,11 @@ public class Server implements Runnable {
         System.out.println("Message listener running");
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                Object[] messageRequest = gameSpace.get(new ActualField("message"), new FormalField(String.class), new FormalField(String.class));
+                Object[] messageRequest = gameSpace.get(new ActualField("message"),new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String username = (String) messageRequest[1];
                 String message = (String) messageRequest[2];
-                handleMessage(username, message);
+                String lobbyID = (String) messageRequest[3];
+                handleMessage(username, message, lobbyID);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

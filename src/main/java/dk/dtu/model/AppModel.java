@@ -25,8 +25,8 @@ public class AppModel {
         this.server = new RemoteSpace(ip + "/game?keep");
     }
 
-    public void sendMessage(String clientID, String message) throws InterruptedException {
-        server.put("message", clientID, message); // Ensure these keys align with server's expectations
+    public void sendMessage(String clientID, String message, String roomId) throws InterruptedException {
+        server.put("message", clientID, message, roomId);
         System.out.println("Sent message: " + message);
     }
 
@@ -55,6 +55,7 @@ public class AppModel {
                             }
                         });
                         lastSeenMessages = new ArrayList<>(newMessages); // Update last seen messages
+                        server.put(response); // Acknowledge that we have seen the messages
                     }
 
                     // Sleep for a short duration before checking for new messages again
