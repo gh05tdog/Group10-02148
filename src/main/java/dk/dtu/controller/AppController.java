@@ -1,35 +1,44 @@
 package dk.dtu.controller;
 
+import dk.dtu.config;
 import dk.dtu.model.AppModel;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
-import org.jspace.ActualField;
-import org.jspace.FormalField;
+import javafx.stage.Stage;
 import org.jspace.RemoteSpace;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Objects;
 
 public class AppController {
-    public TextArea usernameList;
+    public TextArea usernameList; // LOBBY
     public Label timerLabel;
     @FXML
     public ImageView background;
+    public TextField chatroomField;
+    public Button StartGameButton;
+    public TextArea messageAreaLobby;
     private RemoteSpace server;
     public TextField usernameField;
+
     @FXML
     private TextField messageField;
+
     @FXML
-    private TextArea messageArea;
+    private TextArea messageArea; //Lobby
+
 
     private final AppModel model;
     private String clientID;
@@ -55,9 +64,10 @@ public class AppController {
     }
     @FXML
     private void initialize() {
+        /*
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateTimer()));
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        timeline.play();*/
     }
 
     @FXML
@@ -66,7 +76,7 @@ public class AppController {
         if (!message.isEmpty()) {
             try {
                 System.out.println("Sending message: " + message);
-                model.sendMessage(clientID, message, "lobby");
+                model.sendMessage(config.getUsername(), message, "lobby");
             } catch (Exception e) {
                 System.out.println("Error sending message: " + e);
             }
@@ -77,6 +87,9 @@ public class AppController {
     @FXML
     private void handleConnectAction() throws InterruptedException {
         String username = usernameField.getText().trim();
+        config.setUsername(username);
+
+
         if (username.isEmpty()) {
             System.out.println("Username is required to join the lobby.");
             return;
@@ -84,10 +97,9 @@ public class AppController {
         if (clientID != null && !clientID.isEmpty()) {
             model.leaveLobby(clientID);
         }
-        clientID = username;
-        model.joinLobby(clientID);
-        model.startListeningForMessages(messageArea);
-        model.startListeningForUserUpdates(usernameList, clientID);
+
+        model.joinLobby(config.getUsername());
+        model.startListeningForMessages(messageArea, messageAreaLobby);
     }
 
     private void updateTimer() {
@@ -112,4 +124,15 @@ public class AppController {
             }
     }
     }
+
+    public void StartGameAction(ActionEvent event) throws IOException {
+        //TODO: DO STUFF
+
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.setOnCloseRequest(e -> Platform.exit());
+        currentStage.setScene(new Scene(newRoot));
+        model.startListeningForMessages(messageArea, messageAreaLobby);
+    }
+
 }

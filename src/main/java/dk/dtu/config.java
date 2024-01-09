@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 
 public class config {
     public static String SERVER_IP;
+    public static String Username;
 
     static {
         try {
@@ -21,4 +22,14 @@ public class config {
     public static String getIp() {
         return SERVER_IP;
     }
+
+    public static void setUsername(String username) {
+        Username = username;
+    }
+
+    public static String getUsername() {
+        return Username;
+    }
+
+
 }

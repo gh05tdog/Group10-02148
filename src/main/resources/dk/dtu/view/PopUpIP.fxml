@@ -16,7 +16,6 @@
             <children>
                <Label text="Write IP Of your game" />
                <TextField fx:id="IpField" />
-               <Button fx:id="JoinGameIP" mnemonicParsing="false" onAction="#JoinGameBasedOnIP" text="JoinGame" />
             </children>
          </VBox>
          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#100447" height="49.0" layoutX="451.0" stroke="BLACK" strokeType="INSIDE" width="149.0" />
@@ -25,7 +24,7 @@
                <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
             </font>
          </Text>
-         <Rectangle id="joinGameRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="65.0" layoutX="115.0" layoutY="46.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+         <Rectangle fx:id="joinGameRectangle" onMouseClicked="#JoinGameBasedOnIP" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="65.0" layoutX="115.0" layoutY="46.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
          <Text layoutX="192.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Join" />
          <TextField layoutX="389.0" layoutY="110.0" promptText="Enter username" />
       </children>

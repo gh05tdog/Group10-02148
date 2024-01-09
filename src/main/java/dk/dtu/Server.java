@@ -122,6 +122,7 @@ public class Server implements Runnable {
                 String message = (String) messageRequest[2];
                 String lobbyID = (String) messageRequest[3];
                 handleMessage(username, message, lobbyID);
+                System.out.println("Message received: " + message);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

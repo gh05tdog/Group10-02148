@@ -3,7 +3,9 @@ package dk.dtu.model;
 import dk.dtu.config;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import org.jspace.*;
+import dk.dtu.controller.AppController;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,19 +41,28 @@ public class AppModel {
         server.put("leaveLobby", clientID);
     }
 
-    public void startListeningForMessages(TextArea messageArea) {
+    public void startListeningForMessages(TextArea messageArea, TextArea messageAreaLobby) {
         messageThread = new Thread(() -> {
             try {
                 List<String> lastSeenMessages = new ArrayList<>();
                 while (true) {
+
+
                     Object[] response = server.get(new ActualField("messages"), new FormalField(List.class));
                     List<String> newMessages = (List<String>) response[1];
 
                     if (!newMessages.equals(lastSeenMessages)) {
                         Platform.runLater(() -> {
-                            messageArea.clear();
+                            if (!(messageArea == null)){
+                                messageArea.clear();
+                            }
+                            messageAreaLobby.clear();
                             for (String msg : newMessages) {
-                                messageArea.appendText(msg + "\n");
+                                if(messageArea != null){
+                                    messageArea.appendText(msg + "\n");
+                                }
+
+                                messageAreaLobby.appendText(msg + "\n");
                             }
                         });
                         lastSeenMessages = new ArrayList<>(newMessages); // Update last seen messages
