@@ -47,6 +47,8 @@ public class LobbyController {
 //        timeline.play();
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this);
+        model.startListeningForUserUpdates(usernameList, config.getUsername());
+        System.out.println(config.getUsername());
     }
 
     public void handleSendAction() {

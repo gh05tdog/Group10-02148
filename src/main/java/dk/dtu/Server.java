@@ -19,6 +19,7 @@ public class Server implements Runnable {
     private List<String> messages = new ArrayList<>();
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
+    private Map<String, PlayerHandler> playerHandlers;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -27,6 +28,7 @@ public class Server implements Runnable {
         serverThread = new Thread(this);
         playersInLobby = new HashSet<>();
         messageThread = new Thread(this::runMessageListener);
+        playerHandlers = new HashMap<>();
 
         gameStarted = false;
     }
@@ -74,17 +76,18 @@ public class Server implements Runnable {
     }
 
     private void handleJoinLobby(String username) {
-        if (!gameStarted) {
-            if (!playersInLobby.contains(username)) {
-                playersInLobby.add(username);
-                System.out.println("User " + username + " joined the lobby");
-                // Notify players of the new user in the lobby
-                broadcastLobbyUpdate();
-            } else {
-                PopUpController.showPopUp("Username already in use");
-            }
+        if (!gameStarted && !playersInLobby.contains(username)) {
+            playersInLobby.add(username);
+            System.out.println("User " + username + " joined the lobby");
+            broadcastLobbyUpdate();
+
+            // Create a new PlayerHandler for this player and start its thread
+            PlayerHandler playerHandler = new PlayerHandler(username, gameSpace);
+            Thread playerThread = new Thread(playerHandler);
+            playerHandlers.put(username, playerHandler); // Store the PlayerHandler
+            playerThread.start();
         } else {
-            PopUpController.showPopUp("Game already started");
+                PopUpController.showPopUp("Username already in use");
         }
     }
 
@@ -92,6 +95,13 @@ public class Server implements Runnable {
         if (playersInLobby.remove(username)) {
             System.out.println("User " + username + " left the lobby");
             broadcastLobbyUpdate();
+
+            // Stop the player's handler
+            if (playerHandlers.containsKey(username)) {
+                PlayerHandler playerHandler = playerHandlers.get(username);
+                playerHandler.stop(); // Stop the PlayerHandler
+                playerHandlers.remove(username);
+            }
         }
     }
 
@@ -99,8 +109,8 @@ public class Server implements Runnable {
         if (!playersInLobby.isEmpty()) {
             gameStarted = true;
             manageDayNightCycle();
-
             System.out.println("Game is starting with players: " + playersInLobby);
+            broadcastLobbyUpdate();
             // Initialize game state and broadcast start message
         } else {
             System.out.println("Cannot start game with no players in lobby");
@@ -109,11 +119,19 @@ public class Server implements Runnable {
 
     private void broadcastLobbyUpdate() {
         try {
-            gameSpace.put("lobbyUpdate", String.join(", ", playersInLobby));
+            String userList = String.join(", ", playersInLobby);
+
+            // Broadcast the user list to each user in the lobby
+            for (String user : playersInLobby) {
+                gameSpace.put("userUpdate", user, userList);
+            }
+            System.out.println("Broadcasted lobby update to all users");
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting lobby update: " + e);
         }
     }
+
+
 
     private void runMessageListener() {
         System.out.println("Message listener running");
@@ -178,7 +196,6 @@ public class Server implements Runnable {
     private void broadcastToAllClients(String messageType, String messageContent) {
         try {
             for (String username : playersInLobby) {
-                // The format of the message can be adjusted as needed
                 gameSpace.put(messageType, username, messageContent);
             }
         } catch (InterruptedException e) {
