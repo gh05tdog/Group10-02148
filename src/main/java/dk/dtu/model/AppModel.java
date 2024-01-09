@@ -1,11 +1,10 @@
 package dk.dtu.model;
 
 import dk.dtu.config;
+import dk.dtu.controller.LobbyController;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import org.jspace.*;
-import dk.dtu.controller.AppController;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class AppModel {
         server.put("leaveLobby", clientID);
     }
 
-    public void startListeningForMessages(TextArea messageArea, TextArea messageAreaLobby) {
+    public void startListeningForMessages(TextArea messageAreaLobby) {
         messageThread = new Thread(() -> {
             try {
                 List<String> lastSeenMessages = new ArrayList<>();
@@ -53,15 +52,9 @@ public class AppModel {
 
                     if (!newMessages.equals(lastSeenMessages)) {
                         Platform.runLater(() -> {
-                            if (!(messageArea == null)){
-                                messageArea.clear();
-                            }
+
                             messageAreaLobby.clear();
                             for (String msg : newMessages) {
-                                if(messageArea != null){
-                                    messageArea.appendText(msg + "\n");
-                                }
-
                                 messageAreaLobby.appendText(msg + "\n");
                             }
                         });
@@ -80,6 +73,34 @@ public class AppModel {
         });
         messageThread.start();
     }
+    public void startListeningForDayNightCycle(LobbyController lobbyController) {
+        new Thread(() -> {
+            try {
+                while (true) {
+                    // Listen for any type of message
+                    Object[] response = server.get(new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
+                    String messageType = (String) response[0];
+                    String messageContent = (String) response[2];
+
+                    if ("dayNightCycle".equals(messageType)) {
+                        Platform.runLater(() -> lobbyController.updateDayNightCycle(messageContent));
+                    } else if ("timeUpdate".equals(messageType)) {
+                        Platform.runLater(() -> lobbyController.updateTimeLabel(messageContent));
+                    }
+                }
+            } catch (InterruptedException e) {
+                System.out.println("Updates listening thread interrupted");
+            } catch (Exception e) {
+                System.out.println("Error in updates listening thread: " + e);
+            }
+        }).start();
+    }
+
+    public void startGame() throws InterruptedException {
+        server.put("startGame", "some_identifier_or_info");
+        System.out.println("Requested to start game");
+    }
+
 
 
     public void startListeningForUserUpdates(TextArea usernameList, String clientID) {

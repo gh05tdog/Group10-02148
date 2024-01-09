@@ -5,10 +5,7 @@ import org.jspace.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Server implements Runnable {
     private final SpaceRepository repository;
@@ -18,7 +15,10 @@ public class Server implements Runnable {
     private final Thread messageThread;
     private final Set<String> playersInLobby;
     private boolean gameStarted;
+    private boolean isDay = true; // Initial state
     private List<String> messages = new ArrayList<>();
+    private int timeSeconds = 10;
+    private boolean isTimerRunning = false;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -98,6 +98,8 @@ public class Server implements Runnable {
     private void startGame() {
         if (!playersInLobby.isEmpty()) {
             gameStarted = true;
+            manageDayNightCycle();
+
             System.out.println("Game is starting with players: " + playersInLobby);
             // Initialize game state and broadcast start message
         } else {
@@ -140,4 +142,49 @@ public class Server implements Runnable {
             System.out.println("Error msg:" + e);
         }
     }
+
+    private void manageDayNightCycle() {
+        if (!isTimerRunning) {
+            isTimerRunning = true;
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+
+                    if (timeSeconds > 0) {
+                        timeSeconds--;
+                        broadcastTimeUpdate(timeSeconds);
+                    } else {
+                        isDay = !isDay; // Toggle state
+                        timeSeconds = 10; // Reset timer
+                        broadcastDayNightCycle();
+                    }
+                }
+            }, 0, 1000); // Update every second
+        }
+    }
+
+    private void broadcastDayNightCycle() {
+        String state = isDay ? "day" : "night";
+        broadcastToAllClients("dayNightCycle", state);
+        System.out.println("Broadcasted state" + state);
+    }
+
+    private void broadcastTimeUpdate(int timeSeconds) {
+        // Format time as needed
+        String time = String.format("%02d:%02d", timeSeconds / 60, timeSeconds % 60);
+        broadcastToAllClients("timeUpdate", time);
+    }
+
+    private void broadcastToAllClients(String messageType, String messageContent) {
+        try {
+            for (String username : playersInLobby) {
+                // The format of the message can be adjusted as needed
+                gameSpace.put(messageType, username, messageContent);
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Error broadcasting message: " + e.getMessage());
+            // Handle the exception appropriately
+        }
+    }
+
 }
