@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane prefHeight="521.0" prefWidth="746.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
+<Pane prefHeight="521.0" prefWidth="746.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.LobbyController">
 <children>
     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="302.0" />
     <ImageView fx:id="background" fitHeight="521.0" fitWidth="746.0">

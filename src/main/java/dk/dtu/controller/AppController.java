@@ -36,38 +36,13 @@ public class AppController {
     @FXML
     private TextField messageField;
 
-    @FXML
-    private TextArea messageArea; //Lobby
-
-
     private final AppModel model;
     private String clientID;
 
-    @FXML
-    public ImageView counter;
 
-    private Timeline timeline;
-    private Integer timeSeconds = 10;
-
-    public Image moon = new Image("/dk/dtu/view/images/Moon.png");
-
-    public Image sun = new Image("/dk/dtu/view/images/sun.png");
-
-    public Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
-
-    public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
-
-    int managecycle = 0;
 
     public AppController() throws IOException {
         model = new AppModel();
-    }
-    @FXML
-    private void initialize() {
-        /*
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateTimer()));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();*/
     }
 
     @FXML
@@ -89,7 +64,6 @@ public class AppController {
         String username = usernameField.getText().trim();
         config.setUsername(username);
 
-
         if (username.isEmpty()) {
             System.out.println("Username is required to join the lobby.");
             return;
@@ -99,40 +73,17 @@ public class AppController {
         }
 
         model.joinLobby(config.getUsername());
-        model.startListeningForMessages(messageArea, messageAreaLobby);
+        model.startListeningForMessages(messageAreaLobby);
     }
 
-    private void updateTimer() {
-        int minutes = timeSeconds / 60;
-        int seconds = timeSeconds % 60;
-        timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
 
-        if (timeSeconds > 0) {
-            timeSeconds--;
-        } else {
-            if(managecycle == 0) {
-                managecycle = 1;
-                counter.setImage(moon);
-                background.setImage(night);
-                timeSeconds = 10;
-            }
-            else if(managecycle == 1) {
-                managecycle = 0;
-                counter.setImage(sun);
-                background.setImage(day);
-                timeSeconds = 10;
-            }
-    }
-    }
-
-    public void StartGameAction(ActionEvent event) throws IOException {
+    public void StartGameAction(ActionEvent event) throws IOException, InterruptedException {
         //TODO: DO STUFF
-
+        model.startGame();
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
-        model.startListeningForMessages(messageArea, messageAreaLobby);
     }
 
 }
