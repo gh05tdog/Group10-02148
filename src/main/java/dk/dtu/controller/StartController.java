@@ -27,7 +27,10 @@ public class StartController {
 
     public AnchorPane joinGamePane;
     public AnchorPane createGamePane;
-    public Button JoinGameIP;
+    public AnchorPane join;
+
+    @FXML
+    public AnchorPane returnPane;
     public TextField IpField;
 
     public StartController() throws IOException {
@@ -47,6 +50,13 @@ public class StartController {
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
+    }
+
+    @FXML
+    private void returnToMenu() throws Exception {
+        Stage stage = (Stage) returnPane.getScene().getWindow();
+        stage.setScene(App.getScene());
+
     }
 
     @FXML
