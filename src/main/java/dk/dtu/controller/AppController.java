@@ -74,6 +74,7 @@ public class AppController {
 
         model.joinLobby(config.getUsername());
         model.startListeningForMessages(messageAreaLobby);
+        model.startListeningForUserUpdates(usernameList, username);
     }
 
 

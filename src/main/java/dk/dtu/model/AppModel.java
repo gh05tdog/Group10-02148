@@ -8,6 +8,7 @@ import org.jspace.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -31,7 +32,6 @@ public class AppModel {
         System.out.println("Sent message: " + message);
     }
 
-
     public void joinLobby(String clientID) throws InterruptedException {
         server.put("joinLobby", clientID);
     }
@@ -45,9 +45,7 @@ public class AppModel {
             try {
                 List<String> lastSeenMessages = new ArrayList<>();
                 while (true) {
-
-
-                    Object[] response = server.get(new ActualField("messages"), new FormalField(List.class));
+                    Object[] response = server.query(new ActualField("messages"), new FormalField(List.class));
                     List<String> newMessages = (List<String>) response[1];
 
                     if (!newMessages.equals(lastSeenMessages)) {
@@ -59,7 +57,6 @@ public class AppModel {
                             }
                         });
                         lastSeenMessages = new ArrayList<>(newMessages); // Update last seen messages
-                        server.put(response); // Acknowledge that we have seen the messages
                     }
 
                     // Sleep for a short duration before checking for new messages again
@@ -78,7 +75,9 @@ public class AppModel {
             try {
                 while (true) {
                     // Listen for any type of message
+
                     Object[] response = server.get(new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
+
                     String messageType = (String) response[0];
                     String messageContent = (String) response[2];
 
@@ -101,21 +100,32 @@ public class AppModel {
         System.out.println("Requested to start game");
     }
 
-
-
-    public void startListeningForUserUpdates(TextArea usernameList, String clientID) {
+    public void startListeningForUserUpdates(TextArea userListArea, String clientID) {
         userThread = new Thread(() -> {
             try {
                 while (true) {
-                    Object[] response = server.get(new ActualField("users"), new ActualField(clientID), new FormalField(String.class));
-                    String userList = (String) response[2];
-                    Platform.runLater(() -> usernameList.setText(userList));
+                    // Retrieve the user list update intended for this client
+                    Object[] response = server.get(new ActualField("userUpdate"), new ActualField(clientID), new FormalField(String.class));
+                    System.out.println("Received user list update: " + Arrays.toString(response));
+                    if (response != null) {
+                        String currentUserList = (String) response[2];
+                        System.out.println("Received user list update: " + currentUserList);
+                        Platform.runLater(() -> userListArea.setText(currentUserList));
+                    }
+
+                    // Sleep to prevent excessive querying
+                    Thread.sleep(500);
                 }
+            } catch (InterruptedException e) {
+                System.out.println("User update listening thread interrupted");
             } catch (Exception e) {
-                System.out.println("User thread error: " + e);
+                System.out.println("Error in user update listening thread: " + e);
             }
         });
         userThread.start();
     }
+
+
+
 
 }
