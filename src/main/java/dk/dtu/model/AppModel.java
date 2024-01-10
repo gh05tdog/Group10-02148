@@ -83,7 +83,6 @@ public class AppModel {
     public void startGame() throws InterruptedException {
         //Send message to server to start game
         server.put("startGame", "some_identifier_or_info");
-        System.out.println("Requested to start game");
     }
 
     public void startListeningForUserUpdates(TextArea userListArea, String clientID) {
@@ -94,11 +93,9 @@ public class AppModel {
                 while (true) {
                     // Retrieve the user list update intended for this client
                     Object[] response = server.get(new ActualField("userUpdate"), new ActualField(clientID), new FormalField(String.class));
-                    System.out.println("Received user list update: " + Arrays.toString(response));
                     if (response != null) {
                         // Update the user list
                         String currentUserList = (String) response[2];
-                        System.out.println("Received user list update: " + currentUserList);
                         Platform.runLater(() -> userListArea.setText(currentUserList));
                     }
                 }

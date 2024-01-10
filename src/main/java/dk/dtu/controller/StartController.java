@@ -23,6 +23,7 @@ public class StartController {
     public AnchorPane createGamePane;
     public TextField IpField;
     public Rectangle joinGameRectangle;
+    public TextField UserNameField;
 
 
     @FXML
@@ -55,16 +56,8 @@ public class StartController {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
+
     }
 
-    public void JoinGameBasedOnIP(MouseEvent actionEvent) {
-        try {
-            //Set ip
-            String ip = IpField.getText();
-            config.setIp(ip);
-            loadLobbyUI(actionEvent);
-        } catch (Exception e) {
-            System.out.println("Error joining lobby: " + e);
-        }
-    }
+
 }

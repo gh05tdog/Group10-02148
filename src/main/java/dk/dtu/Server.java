@@ -107,13 +107,12 @@ public class Server implements Runnable {
         }
     }
 
-    private void startGame() {
+    private void startGame() throws InterruptedException {
         if (!playersInLobby.isEmpty()) {
+            gameSpace.put("gameStarted");
             gameStarted = true;
             manageDayNightCycle();
             System.out.println("Game is starting with players: " + playersInLobby);
-            broadcastLobbyUpdate();
-            // Initialize game state and broadcast start message
         } else {
             System.out.println("Cannot start game with no players in lobby");
         }
@@ -127,7 +126,6 @@ public class Server implements Runnable {
             for (String user : playersInLobby) {
                 gameSpace.put("userUpdate", user, userList);
             }
-            System.out.println("Broadcasted lobby update to all users");
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting lobby update: " + e);
         }
@@ -144,7 +142,6 @@ public class Server implements Runnable {
                 String message = (String) messageRequest[2];
                 String lobbyID = (String) messageRequest[3];
                 handleMessage(username, message, lobbyID);
-                System.out.println("Message received: " + message);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -186,7 +183,6 @@ public class Server implements Runnable {
     private void broadcastDayNightCycle() {
         String state = isDay ? "day" : "night";
         broadcastToAllClients("dayNightCycle", state);
-        System.out.println("Broadcasted state" + state);
     }
 
     private void broadcastTimeUpdate(int timeSeconds) {
