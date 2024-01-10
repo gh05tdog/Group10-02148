@@ -65,9 +65,9 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleMessage(String username, String messageContent) throws InterruptedException {
+    private void handleMessage(String username, String messageContent, String lobbyID) throws InterruptedException {
         // Add message to the list
-        String fullMessage = username + ": " + messageContent ;
+        String fullMessage = "(" + lobbyID + ")" + username + ": " + messageContent ;
         messages.add(fullMessage);
 
         // Update the space with the new list of messages
@@ -79,7 +79,6 @@ public class Server implements Runnable {
             gameSpace.put("connected", username );
             playersInLobby.add(username);
             System.out.println("User " + username + " joined the lobby");
-            messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
 
             // Create a new PlayerHandler for this player and start its thread
@@ -141,7 +140,8 @@ public class Server implements Runnable {
                 Object[] messageRequest = gameSpace.get(new ActualField("message"),new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String username = (String) messageRequest[1];
                 String message = (String) messageRequest[2];
-                handleMessage(username, message);
+                String lobbyID = (String) messageRequest[3];
+                handleMessage(username, message, lobbyID);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
