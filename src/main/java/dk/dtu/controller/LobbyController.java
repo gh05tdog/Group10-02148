@@ -70,11 +70,6 @@ public class LobbyController {
             config.setUsername(usernameField.getText());
         }
 
-        usernameField.setVisible(false);
-        chatroomField.setVisible(false);
-        connectButton.setVisible(false);
-
-
         System.out.println("Username: " + config.getUsername());
 
         //Join the lobby
