@@ -6,11 +6,13 @@ public class PlayerHandler implements Runnable {
     private String username;
     private SequentialSpace gameSpace;
     private boolean isActive;
+    private int playerID;
 
-    public PlayerHandler(String username, SequentialSpace gameSpace) {
+    public PlayerHandler(String username, int playerID, SequentialSpace gameSpace) {
         this.username = username;
         this.gameSpace = gameSpace;
         this.isActive = true;
+        this.playerID = playerID;
     }
 
     @Override

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="dk.dtu.controller.AppController">
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="dk.dtu.controller.AppController">
    <HBox>
       <children>
          <VBox>

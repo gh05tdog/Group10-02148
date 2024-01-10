@@ -82,7 +82,7 @@ public class Server implements Runnable {
             broadcastLobbyUpdate();
 
             // Create a new PlayerHandler for this player and start its thread
-            PlayerHandler playerHandler = new PlayerHandler(username, gameSpace);
+            PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size(), gameSpace);
             Thread playerThread = new Thread(playerHandler);
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
             playerThread.start();
