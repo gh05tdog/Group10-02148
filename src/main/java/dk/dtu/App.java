@@ -1,4 +1,5 @@
 package dk.dtu;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        openStartScreen(stage);
+    }
+
+    public void openStartScreen(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/StartScreen.fxml")));
 
         Image icon = new Image("/dk/dtu/view/images/moonlit_icon.png");
@@ -31,7 +36,6 @@ public class App extends Application {
         stage.setOnCloseRequest(e -> Platform.exit());
         stage.show();
     }
-
 
 
     public static void main(String[] argv) {
