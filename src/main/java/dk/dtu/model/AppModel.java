@@ -1,7 +1,7 @@
 package dk.dtu.model;
 
 import dk.dtu.config;
-import dk.dtu.controller.LobbyController;
+import dk.dtu.controller.AppController;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import org.jspace.*;
@@ -13,18 +13,10 @@ import java.util.List;
 
 
 public class AppModel {
-    private RemoteSpace server;
-    private Thread messageThread;
-    private Thread userThread;
-
-
+    private final RemoteSpace server;
 
     public AppModel() throws IOException {
         this.server = new RemoteSpace(config.getIp() + "/chat?keep");
-    }
-
-    public void setServer(String ip) throws IOException {
-        this.server = new RemoteSpace(ip + "/game?keep");
     }
 
     public void sendMessage(String clientID, String message, String roomId) throws InterruptedException {
@@ -32,35 +24,29 @@ public class AppModel {
         System.out.println("Sent message: " + message);
     }
 
-    public void joinLobby(String clientID) throws InterruptedException {
-        server.put("joinLobby", clientID);
-    }
-
-    public void leaveLobby(String clientID) throws InterruptedException {
-        server.put("leaveLobby", clientID);
+    public void joinLobby(String userName) throws InterruptedException {
+        server.put("joinLobby", userName);
     }
 
     public void startListeningForMessages(TextArea messageAreaLobby) {
-        messageThread = new Thread(() -> {
+        // Update last seen messages
+        Thread messageThread = new Thread(() -> {
             try {
                 List<String> lastSeenMessages = new ArrayList<>();
                 while (true) {
                     Object[] response = server.query(new ActualField("messages"), new FormalField(List.class));
-                    List<String> newMessages = (List<String>) response[1];
 
-                    if (!newMessages.equals(lastSeenMessages)) {
+                    List<String> newMessages = (List<String>) response[1];
+                    if (!response[1].equals(lastSeenMessages)) {
                         Platform.runLater(() -> {
 
                             messageAreaLobby.clear();
-                            for (String msg : newMessages) {
+                            for (String msg :  newMessages) {
                                 messageAreaLobby.appendText(msg + "\n");
                             }
                         });
                         lastSeenMessages = new ArrayList<>(newMessages); // Update last seen messages
                     }
-
-                    // Sleep for a short duration before checking for new messages again
-                    Thread.sleep(500);
                 }
             } catch (InterruptedException e) {
                 System.out.println("Message listening thread interrupted");
@@ -70,21 +56,20 @@ public class AppModel {
         });
         messageThread.start();
     }
-    public void startListeningForDayNightCycle(LobbyController lobbyController) {
+    public void startListeningForDayNightCycle(AppController appController, String Username) {
         new Thread(() -> {
             try {
                 while (true) {
                     // Listen for any type of message
-
-                    Object[] response = server.get(new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
+                    Object[] response = server.get(new FormalField(String.class), new ActualField(Username), new FormalField(String.class));
 
                     String messageType = (String) response[0];
                     String messageContent = (String) response[2];
 
                     if ("dayNightCycle".equals(messageType)) {
-                        Platform.runLater(() -> lobbyController.updateDayNightCycle(messageContent));
+                        Platform.runLater(() -> appController.updateDayNightCycle(messageContent));
                     } else if ("timeUpdate".equals(messageType)) {
-                        Platform.runLater(() -> lobbyController.updateTimeLabel(messageContent));
+                        Platform.runLater(() -> appController.updateTimeLabel(messageContent));
                     }
                 }
             } catch (InterruptedException e) {
@@ -96,25 +81,26 @@ public class AppModel {
     }
 
     public void startGame() throws InterruptedException {
+        //Send message to server to start game
         server.put("startGame", "some_identifier_or_info");
         System.out.println("Requested to start game");
     }
 
     public void startListeningForUserUpdates(TextArea userListArea, String clientID) {
-        userThread = new Thread(() -> {
+        // Retrieve the user list update intended for this client
+        // Update the user list
+        Thread userThread = new Thread(() -> {
             try {
                 while (true) {
                     // Retrieve the user list update intended for this client
                     Object[] response = server.get(new ActualField("userUpdate"), new ActualField(clientID), new FormalField(String.class));
                     System.out.println("Received user list update: " + Arrays.toString(response));
                     if (response != null) {
+                        // Update the user list
                         String currentUserList = (String) response[2];
                         System.out.println("Received user list update: " + currentUserList);
                         Platform.runLater(() -> userListArea.setText(currentUserList));
                     }
-
-                    // Sleep to prevent excessive querying
-                    Thread.sleep(500);
                 }
             } catch (InterruptedException e) {
                 System.out.println("User update listening thread interrupted");
@@ -124,8 +110,4 @@ public class AppModel {
         });
         userThread.start();
     }
-
-
-
-
 }
