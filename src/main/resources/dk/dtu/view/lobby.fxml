@@ -8,16 +8,16 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="dk.dtu.controller.AppController">
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="dk.dtu.controller.LobbyController">
    <HBox>
       <children>
          <VBox>
             <children>
                <TextField fx:id="usernameField" promptText="Enter your username" />
                <TextField fx:id="chatroomField" promptText="Enter chat room" text="lobby" />
-               <Button onAction="#handleConnectAction" text="Connect" />
+               <Button fx:id ="connectButton" onAction="#handleConnectAction" text="Connect" />
                <TextField fx:id="messageField" promptText="Enter message here" />
-               <Button onAction="#handleSendAction" text="Send" />
+               <Button  onAction="#handleSendAction" text="Send" />
                <TextArea fx:id="messageAreaLobby" editable="false" />
             </children>
          </VBox>

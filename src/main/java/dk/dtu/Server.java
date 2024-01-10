@@ -1,6 +1,5 @@
 package dk.dtu;
 
-import dk.dtu.controller.PopUpController;
 import org.jspace.*;
 
 import java.net.InetAddress;
@@ -16,10 +15,10 @@ public class Server implements Runnable {
     private final Set<String> playersInLobby;
     private boolean gameStarted;
     private boolean isDay = true; // Initial state
-    private List<String> messages = new ArrayList<>();
+    private final List<String> messages = new ArrayList<>();
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
-    private Map<String, PlayerHandler> playerHandlers;
+    private final Map<String, PlayerHandler> playerHandlers;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -75,8 +74,9 @@ public class Server implements Runnable {
         gameSpace.put("messages", messages);
     }
 
-    private void handleJoinLobby(String username) {
+    private void handleJoinLobby(String username) throws Exception {
         if (!gameStarted && !playersInLobby.contains(username)) {
+            gameSpace.put("connected", username );
             playersInLobby.add(username);
             System.out.println("User " + username + " joined the lobby");
             broadcastLobbyUpdate();
@@ -86,8 +86,10 @@ public class Server implements Runnable {
             Thread playerThread = new Thread(playerHandler);
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
             playerThread.start();
-        } else {
-                PopUpController.showPopUp("Username already in use");
+
+        }else{
+            throw new Exception("Game already started or user already in lobby");
+
         }
     }
 
