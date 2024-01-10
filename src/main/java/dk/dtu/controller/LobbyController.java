@@ -35,6 +35,19 @@ public class LobbyController {
         model = new AppModel();
     }
 
+    @FXML
+    private void initialize() throws InterruptedException {
+        if (config.getUsername() != null) {
+            //Remove the connect button
+            connectButton.setVisible(false);
+            usernameField.setVisible(false);
+            chatroomField.setVisible(false);
+            //Join the lobby
+            handleConnectAction();
+            System.out.println("Username: " + config.getUsername());
+        }
+    }
+
 
     // When you click the send button, send the message
     @FXML
@@ -42,7 +55,6 @@ public class LobbyController {
         String message = messageField.getText();
         if (!message.isEmpty()) {
             try {
-                System.out.println("Sending message: " + message);
                 model.sendMessage(config.getUsername(), message, "lobby");
             } catch (Exception e) {
                 System.out.println("Error sending message: " + e);
@@ -52,24 +64,20 @@ public class LobbyController {
     }
 
     //Handle the connect button
-    @FXML
-    private void handleConnectAction() throws InterruptedException {
-        String username = usernameField.getText().trim();
-        config.setUsername(username);
+    public void handleConnectAction() throws InterruptedException {
 
-
-        // If username is empty, don't join the lobby
-        if (username.isEmpty()) {
-            System.out.println("Username is required to join the lobby.");
-            return;
+        if (usernameField.isVisible()) {
+            config.setUsername(usernameField.getText());
         }
+
+        System.out.println("Username: " + config.getUsername());
 
         //Join the lobby
         model.joinLobby(config.getUsername());
         // Start listening for messages
         model.startListeningForMessages(messageAreaLobby);
         // Start listening for user updates
-        model.startListeningForUserUpdates(usernameList, username);
+        model.startListeningForUserUpdates(usernameList, config.getUsername());
     }
 
     //Handle the start game button

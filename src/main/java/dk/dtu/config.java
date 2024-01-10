@@ -5,11 +5,13 @@ import java.net.UnknownHostException;
 
 public class config {
     public static String SERVER_IP;
-    public static String Username;
+    private static String Username = null;
+
 
     static {
         try {
             SERVER_IP = "tcp://"+ InetAddress.getLocalHost().getHostAddress() + ":9001/game?keep";
+
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
