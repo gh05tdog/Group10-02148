@@ -8,9 +8,7 @@ import org.jspace.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 
 public class AppModel {
     private final RemoteSpace server;
@@ -35,17 +33,22 @@ public class AppModel {
                 List<String> lastSeenMessages = new ArrayList<>();
                 while (true) {
                     Object[] response = server.query(new ActualField("messages"), new FormalField(List.class));
-
-                    List<String> newMessages = (List<String>) response[1];
-                    if (!response[1].equals(lastSeenMessages)) {
-                        Platform.runLater(() -> {
-
-                            messageAreaLobby.clear();
-                            for (String msg :  newMessages) {
-                                messageAreaLobby.appendText(msg + "\n");
-                            }
-                        });
-                        lastSeenMessages = new ArrayList<>(newMessages); // Update last seen messages
+                    // Create a list of type list any to hold the response
+                    List<?> rawList = (List<?>) response[1];
+                    // Check if the list contains only strings
+                    if (rawList.stream().allMatch(item -> item instanceof String)) {
+                        // Convert the list to a list of strings
+                        List<String> newMessages = rawList.stream().map(Object::toString).toList();
+                        if (!response[1].equals(lastSeenMessages)) {
+                            Platform.runLater(() -> {
+                                // Clear the message area and add the new messages
+                                messageAreaLobby.clear();
+                                for (String msg : newMessages) {
+                                    messageAreaLobby.appendText(msg + "\n");
+                                }
+                            });
+                            lastSeenMessages = new ArrayList<>(newMessages); // Update last seen messages
+                        }
                     }
                 }
             } catch (InterruptedException e) {
@@ -56,6 +59,7 @@ public class AppModel {
         });
         messageThread.start();
     }
+
     public void startListeningForDayNightCycle(AppController appController, String Username) {
         new Thread(() -> {
             try {
@@ -96,7 +100,9 @@ public class AppModel {
                     if (response != null) {
                         // Update the user list
                         String currentUserList = (String) response[2];
-                        Platform.runLater(() -> userListArea.setText(currentUserList));
+                        String finalCurrentUserList = currentUserList.replace(", ", "\n");
+
+                        Platform.runLater(() -> userListArea.setText(finalCurrentUserList));
                     }
                 }
             } catch (InterruptedException e) {
