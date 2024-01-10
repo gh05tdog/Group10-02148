@@ -2,51 +2,61 @@ package dk.dtu;
 
 import dk.dtu.controller.PopUpController;
 import org.jspace.*;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Server implements Runnable {
     private final SpaceRepository repository;
-    private final SequentialSpace chatSpace;
+    private final SequentialSpace gameSpace;
     private final String serverIp;
     private final Thread serverThread;
+    private final Thread messageThread;
+    private final Set<String> playersInLobby;
+    private boolean gameStarted;
+    private boolean isDay = true; // Initial state
+    private List<String> messages = new ArrayList<>();
+    private int timeSeconds = 10;
+    private boolean isTimerRunning = false;
+    private Map<String, PlayerHandler> playerHandlers;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
         repository = new SpaceRepository();
-        chatSpace = new SequentialSpace();
+        gameSpace = new SequentialSpace();
         serverThread = new Thread(this);
+        playersInLobby = new HashSet<>();
+        messageThread = new Thread(this::runMessageListener);
+        playerHandlers = new HashMap<>();
+
+        gameStarted = false;
     }
 
     public void startServer() {
         serverThread.start();
+        messageThread.start();
     }
 
     @Override
     public void run() {
         try {
-            repository.add("chat", chatSpace);
+            repository.add("game", gameSpace);
             String gateUri = "tcp://" + serverIp + ":9001/?keep";
             repository.addGate(gateUri);
 
-            System.out.println("Chat server running at " + gateUri);
-
-            Map<String, Set<String>> roomClients = new HashMap<>();
-            broadcastGameInfo("Server is running at " + gateUri);
+            System.out.println("Game server running at " + gateUri);
 
             while (!Thread.currentThread().isInterrupted()) {
-                Object[] request = chatSpace.get(new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
+                Object[] request = gameSpace.get(new FormalField(String.class), new FormalField(String.class));
                 String action = (String) request[0];
-                String room = (String) request[1];
-                String content = (String) request[2];
+                String username = (String) request[1];
 
-                roomClients.putIfAbsent(room, new HashSet<>());
-
-                handleRequest(action, room, content, roomClients);
+                switch (action) {
+                    case "joinLobby" -> handleJoinLobby(username);
+                    case "leaveLobby" -> handleLeaveLobby(username);
+                    case "startGame" -> startGame();
+                }
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -56,57 +66,90 @@ public class Server implements Runnable {
         }
     }
 
-    private void updateUserList(String room, Map<String, Set<String>> roomClients) throws InterruptedException {
-        Set<String> clients = roomClients.get(room);
-        String userList = String.join("\n", clients);
-        for (String clientID : clients) {
-            chatSpace.put("users", room, clientID, userList);
+    private void handleMessage(String username, String messageContent, String lobbyID) throws InterruptedException {
+        // Add message to the list
+        String fullMessage = "(" + lobbyID + ")" + username + ": " + messageContent ;
+        messages.add(fullMessage);
+
+        // Update the space with the new list of messages
+        gameSpace.put("messages", messages);
+    }
+
+    private void handleJoinLobby(String username) {
+        if (!gameStarted && !playersInLobby.contains(username)) {
+            playersInLobby.add(username);
+            System.out.println("User " + username + " joined the lobby");
+            broadcastLobbyUpdate();
+
+            // Create a new PlayerHandler for this player and start its thread
+            PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size(), gameSpace);
+            Thread playerThread = new Thread(playerHandler);
+            playerHandlers.put(username, playerHandler); // Store the PlayerHandler
+            playerThread.start();
+        } else {
+                PopUpController.showPopUp("Username already in use");
         }
     }
 
+    private void handleLeaveLobby(String username) {
+        if (playersInLobby.remove(username)) {
+            System.out.println("User " + username + " left the lobby");
+            broadcastLobbyUpdate();
 
-    // Modify the handleRequest method
-    private void handleRequest(String action, String room, String username, Map<String, Set<String>> roomClients) throws InterruptedException {
-        switch (action) {
-            case "join" -> {
-                //Check the username is not already in the room
-                if (roomClients.get(room).contains(username)) {
-                    System.out.println("User " + username + " is already in room " + room);
-                    PopUpController.showPopUp("Username already in use");
-                    return;
-                }
-                roomClients.get(room).add(username);
-                System.out.println("User " + username + " joined room " + room);
-                updateUserList(room, roomClients); // Update user list
-                broadcastMessage(room, username + " has joined the chat.\n", roomClients);
+            // Stop the player's handler
+            if (playerHandlers.containsKey(username)) {
+                PlayerHandler playerHandler = playerHandlers.get(username);
+                playerHandler.stop(); // Stop the PlayerHandler
+                playerHandlers.remove(username);
             }
-            case "leave" -> {
-                roomClients.get(room).remove(username);
-                System.out.println("User " + username + " left room " + room);
-                updateUserList(room, roomClients); // Update user list
-                broadcastMessage(room, username + " has left the chat.\n", roomClients); // use username instead of content
-            }
-            case "message" -> broadcastMessage(room, username, roomClients); // This should likely be changed as well
         }
     }
 
-
-    // Add a new method to broadcast messages
-    private void broadcastMessage(String room, String message, Map<String, Set<String>> roomClients) throws InterruptedException {
-        for (String clientID : roomClients.get(room)) {
-            chatSpace.put("message", room, clientID, message);
-            System.out.println("Broadcasting message to " + clientID + " in room " + room);
-            System.out.println("Message: " + message);
+    private void startGame() {
+        if (!playersInLobby.isEmpty()) {
+            gameStarted = true;
+            manageDayNightCycle();
+            System.out.println("Game is starting with players: " + playersInLobby);
+            broadcastLobbyUpdate();
+            // Initialize game state and broadcast start message
+        } else {
+            System.out.println("Cannot start game with no players in lobby");
         }
     }
 
-    private void broadcastGameInfo(String message){
+    private void broadcastLobbyUpdate() {
         try {
-            chatSpace.put("message", "public","Admin", message + "\n");
-        } catch (InterruptedException e) {
-            System.out.println("Error: " + e);
-        }
+            String userList = String.join(", ", playersInLobby);
 
+            // Broadcast the user list to each user in the lobby
+            for (String user : playersInLobby) {
+                gameSpace.put("userUpdate", user, userList);
+            }
+            System.out.println("Broadcasted lobby update to all users");
+        } catch (InterruptedException e) {
+            System.out.println("Error broadcasting lobby update: " + e);
+        }
+    }
+
+
+
+    private void runMessageListener() {
+        System.out.println("Message listener running");
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                Object[] messageRequest = gameSpace.get(new ActualField("message"),new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
+                String username = (String) messageRequest[1];
+                String message = (String) messageRequest[2];
+                String lobbyID = (String) messageRequest[3];
+                handleMessage(username, message, lobbyID);
+                System.out.println("Message received: " + message);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("Message listener thread interrupted");
+        } catch (Exception e) {
+            System.out.println("Message listener error: " + e);
+        }
     }
 
     public static void main(String[] args) {
@@ -117,4 +160,48 @@ public class Server implements Runnable {
             System.out.println("Error msg:" + e);
         }
     }
+
+    private void manageDayNightCycle() {
+        if (!isTimerRunning) {
+            isTimerRunning = true;
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+
+                    if (timeSeconds > 0) {
+                        timeSeconds--;
+                        broadcastTimeUpdate(timeSeconds);
+                    } else {
+                        isDay = !isDay; // Toggle state
+                        timeSeconds = 10; // Reset timer
+                        broadcastDayNightCycle();
+                    }
+                }
+            }, 0, 1000); // Update every second
+        }
+    }
+
+    private void broadcastDayNightCycle() {
+        String state = isDay ? "day" : "night";
+        broadcastToAllClients("dayNightCycle", state);
+        System.out.println("Broadcasted state" + state);
+    }
+
+    private void broadcastTimeUpdate(int timeSeconds) {
+        // Format time as needed
+        String time = String.format("%02d:%02d", timeSeconds / 60, timeSeconds % 60);
+        broadcastToAllClients("timeUpdate", time);
+    }
+
+    private void broadcastToAllClients(String messageType, String messageContent) {
+        try {
+            for (String username : playersInLobby) {
+                gameSpace.put(messageType, username, messageContent);
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Error broadcasting message: " + e.getMessage());
+            // Handle the exception appropriately
+        }
+    }
+
 }
