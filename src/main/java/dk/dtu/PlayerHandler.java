@@ -30,4 +30,11 @@ public class PlayerHandler implements Runnable {
     public void stop() {
         isActive = false;
     }
+
+    public String getUsername() {
+        return username;
+    }
+    public int getPlayerID() {
+        return playerID;
+    }
 }
