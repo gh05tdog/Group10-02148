@@ -14,7 +14,6 @@ import java.io.IOException;
 
 public class AppController {
     public ImageView background;
-
     public TextField messageField;
     public TextArea messageArea;
     public TextArea usernameList;

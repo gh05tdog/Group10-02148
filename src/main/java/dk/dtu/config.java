@@ -11,6 +11,8 @@ public class config {
 
     private static Stage currentStage;
 
+    private static Boolean lobbyLeader = false;
+
 
     static {
         try {
@@ -19,6 +21,14 @@ public class config {
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Boolean getLobbyLeader() {
+        return lobbyLeader;
+    }
+
+    public static void setLobbyLeader(Boolean lobbyLeaderBool) {
+        lobbyLeader = lobbyLeaderBool;
     }
 
     public static void setIp(String ip) {
