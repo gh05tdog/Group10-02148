@@ -21,7 +21,7 @@
       <VBox layoutX="236.0" layoutY="163.0" />
       <TextField layoutX="201.0" layoutY="163.0" prefHeight="25.0" prefWidth="200.0" promptText="Enter username" />
       <TextField fx:id="IpField" layoutX="201.0" layoutY="200.0" prefHeight="25.0" prefWidth="200.0" promptText="Enter game IP address" />
-      <AnchorPane fx:id="join" onMouseClicked="#JoinGameBasedOnIP" layoutX="201.0" layoutY="274.0" prefHeight="1.0" prefWidth="200.0">
+      <AnchorPane fx:id="joinGamePane" layoutX="201.0" layoutY="274.0" prefHeight="1.0" onMouseClicked="#loadLobbyUI" prefWidth="200.0">
          <children>
             <Rectangle id="joinGameRectangle" arcHeight="5.0" arcWidth="5.0" fill="#030354" height="65.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
             <Text fill="#900000" layoutX="56.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Join Game" wrappingWidth="88.890380859375">

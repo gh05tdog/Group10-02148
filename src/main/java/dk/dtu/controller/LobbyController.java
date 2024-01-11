@@ -1,5 +1,6 @@
 package dk.dtu.controller;
 
+import dk.dtu.App;
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
 import javafx.application.Platform;
@@ -24,6 +25,7 @@ public class LobbyController {
     public TextArea messageAreaLobby;
     public TextField usernameField;
     public Button connectButton;
+    public Button returnButton;
 
     @FXML
     private TextField messageField;
@@ -93,5 +95,12 @@ public class LobbyController {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
+    }
+
+    @FXML
+    private void returnToMenu() throws Exception {
+        Stage stage = (Stage) returnButton.getScene().getWindow();
+        stage.setScene(App.getScene());
+
     }
 }

@@ -8,16 +8,16 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="dk.dtu.controller.LobbyController">
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="dk.dtu.controller.LobbyController">
    <HBox>
       <children>
          <VBox>
             <children>
                <TextField fx:id="usernameField" promptText="Enter your username" />
                <TextField fx:id="chatroomField" promptText="Enter chat room" text="lobby" />
-               <Button fx:id ="connectButton" onAction="#handleConnectAction" text="Connect" />
+               <Button fx:id="connectButton" onAction="#handleConnectAction" text="Connect" />
                <TextField fx:id="messageField" promptText="Enter message here" />
-               <Button  onAction="#handleSendAction" text="Send" />
+               <Button onAction="#handleSendAction" text="Send" />
                <TextArea fx:id="messageAreaLobby" editable="false" />
             </children>
          </VBox>
@@ -27,7 +27,8 @@
                <TextArea fx:id="usernameList" editable="false" prefWidth="300.0" />
                <AnchorPane prefHeight="100.0" prefWidth="300.0">
                   <children>
-                     <Button fx:id="StartGameButton" layoutX="108.0" layoutY="37.0" mnemonicParsing="false" onAction="#StartGameAction" text="StartGame" />
+                     <Button fx:id="StartGameButton" layoutX="69.0" layoutY="38.0" mnemonicParsing="false" onAction="#StartGameAction" text="StartGame" />
+                     <Button fx:id="returnButton" layoutX="170.0" layoutY="38.0" mnemonicParsing="false" onAction="#returnToMenu" text="Return" />
                   </children>
                </AnchorPane>
             </children>

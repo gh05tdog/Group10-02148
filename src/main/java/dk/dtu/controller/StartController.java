@@ -22,7 +22,7 @@ public class StartController {
 
     public AnchorPane joinGamePane;
     public AnchorPane createGamePane;
-    public AnchorPane join;
+    public AnchorPane joinLobby;
 
     @FXML
     public AnchorPane returnPane;
