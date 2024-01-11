@@ -76,7 +76,7 @@ public class LobbyController {
         connectButton.setVisible(false);
 
 
-        System.out.println("Username: " + config.getUsername());
+        //System.out.println("Username: " + config.getUsername());
 
         //Join the lobby
         model.joinLobby(config.getUsername());

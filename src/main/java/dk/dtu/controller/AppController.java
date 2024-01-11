@@ -79,8 +79,31 @@ public class AppController {
     }
 
     public void appendRoles(String role) {
-        Platform.runLater(() -> roleBox.appendText("You are a " + role + "\n"));
-
+        //System.out.println("Attempting to append role: " + role); // Log for debugging
+        try {
+            Platform.runLater(() -> {
+                switch (role) {
+                    case "[Mafia]":
+                        roleBox.appendText("You are a " + role + "\nAs the Mafia, you have to kill the villagers in the night.\n");
+                        break;
+                    case "[Citizen]":
+                        roleBox.appendText("You are a " + role + "\nAs the Villager, you have to find the Mafia and vote them out.\n");
+                        break;
+                    case "[Bodyguard]":
+                        roleBox.appendText("You are a " + role + "\nAs the BodyGuard, you have to protect the villagers from the Mafia.\n");
+                        break;
+                    case "[Snitch]":
+                        roleBox.appendText("You are a " + role + "\nAs the Snitch, you can see other players' roles.\n");
+                        break;
+                    default:
+                        roleBox.appendText("Role " + role + " is not recognized.\n");
+                        break;
+                }
+            });
+        } catch (Exception e) {
+            System.out.println("Exception in appendRoles: " + e.getMessage());
+            e.printStackTrace(); // Print the stack trace to help with debugging
+        }
     }
 
 }
