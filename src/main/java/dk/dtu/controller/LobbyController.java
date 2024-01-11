@@ -15,7 +15,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.jspace.FormalField;
+import org.jspace.RandomSpace;
+import org.jspace.Space;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -34,9 +38,12 @@ public class LobbyController {
 
     private final AppModel model;
 
+    private Space testSpace;
+
 
     public LobbyController() throws IOException {
         model = new AppModel();
+        this.testSpace = new RandomSpace();
     }
 
     @FXML
@@ -97,6 +104,9 @@ public class LobbyController {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
+        put();
+        setOnMap(newRoot);
+
     }
 
     @FXML
@@ -107,4 +117,37 @@ public class LobbyController {
         currentStage.setScene(new Scene(newRoot));
 
     }
+
+    public void setOnMap(Parent scene) throws InterruptedException, IOException {
+        int i = 0;
+        while (testSpace.size() > 0) {
+            i++;
+            Object[] t = testSpace.get(new FormalField(String.class));
+            String anchorPaneId = "#Anchor" + i; // Construct the ID
+            AnchorPane anchorPane = (AnchorPane) scene.getScene().lookup(anchorPaneId); // Get the AnchorPane
+
+            if(anchorPane != null) {
+                System.out.println("AnchorPane found");
+                anchorPane.setVisible(true);
+                anchorPane.setDisable(false);
+            } else {
+                System.out.println("AnchorPane not found");
+            }
+        }
+    }
+
+    public void put() throws InterruptedException {
+        testSpace.put("Username 1");
+        testSpace.put("Username 2");
+        testSpace.put("Username 3");
+        testSpace.put("Username 4");
+    }
+
+    public void getAndPrint() throws InterruptedException {
+        while (testSpace.size() > 0) {
+            Object[] t = testSpace.get(new FormalField(String.class));
+            System.out.println(t[0]);
+        }
+    }
+
 }

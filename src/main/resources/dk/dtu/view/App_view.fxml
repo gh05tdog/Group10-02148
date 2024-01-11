@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane prefHeight="521.0" prefWidth="746.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
+<Pane prefHeight="521.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
 <children>
     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="302.0" />
     <ImageView fx:id="background" fitHeight="521.0" fitWidth="746.0">
@@ -42,7 +42,7 @@
     <VBox layoutX="547.0" layoutY="403.0" prefHeight="118.0" prefWidth="199.0">
         <children>
             <TextField />
-            <TextArea prefHeight="200.0" prefWidth="200.0" />
+            <TextArea fx:id="roleBox" prefHeight="200.0" prefWidth="200.0"/>
         </children>
     </VBox>
     <AnchorPane fx:id="settings" layoutX="588.0" layoutY="14.0" onMouseClicked="#returnToMenu" prefHeight="51.0" prefWidth="115.0">
@@ -58,9 +58,69 @@
             <Image url="@Images/sun.png" />
          </image>
       </ImageView>
-    <Label fx:id="timerLabel" layoutX="60.0" layoutY="52.0" >
+    <Label fx:id="timerLabel" layoutX="60.0" layoutY="52.0">
          <font>
             <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
          </font></Label>
+      <AnchorPane id="Anchor1" disable="true" layoutX="196.0" layoutY="14.0" onMouseClicked="#returnToMenu" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor4" disable="true" layoutX="483.0" layoutY="37.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor2" disable="true" layoutX="287.0" layoutY="18.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor3" disable="true" layoutX="393.0" layoutY="36.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor5" disable="true" layoutX="219.0" layoutY="107.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor6" disable="true" layoutX="325.0" layoutY="107.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor7" disable="true" layoutX="440.0" layoutY="129.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor8" disable="true" layoutX="219.0" layoutY="197.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" layoutY="1.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor9" disable="true" layoutX="317.0" layoutY="197.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor10" disable="true" layoutX="487.0" layoutY="197.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor11" disable="true" layoutX="278.0" layoutY="273.0" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="Anchor12" disable="true" layoutX="393.0" layoutY="251.0" onMouseClicked="#returnToMenu" prefHeight="30.0" prefWidth="47.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="44.0" stroke="BLACK" strokeType="INSIDE" width="47.0" />
+         </children>
+      </AnchorPane>
 </children>
 </Pane>

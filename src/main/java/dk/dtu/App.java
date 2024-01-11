@@ -14,8 +14,13 @@ import java.util.Objects;
 
 public class App extends Application {
 
-    public static Scene getScene() throws IOException {
+    public static Scene getStartScene() throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource("/dk/dtu/view/StartScreen.fxml")));
+        return new Scene(root);
+    }
+
+    public static Scene getMainScene() throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource("/dk/dtu/view/App_view.fxml")));
         return new Scene(root);
     }
 

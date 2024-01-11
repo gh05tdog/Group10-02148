@@ -44,6 +44,8 @@ public class AppController {
 
     private final AppModel model;
 
+    public Scene scene;
+
 
     public Image moon = new Image("/dk/dtu/view/images/Moon.png");
 
@@ -52,6 +54,7 @@ public class AppController {
     public Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
+    @FXML
     public TextArea roleBox;
 
     public AppController() throws IOException {
@@ -68,6 +71,7 @@ public class AppController {
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());
         System.out.println(config.getUsername());
+
     }
 
     public void handleSendAction() {
@@ -103,22 +107,10 @@ public class AppController {
     @FXML
     private void returnToMenu() throws Exception {
         Stage stage = (Stage) settings.getScene().getWindow();
-        stage.setScene(App.getScene());
+        stage.setScene(App.getStartScene());
 
     }
 
-    public void put() throws InterruptedException {
-        testSpace.put("Username 1");
-        testSpace.put("Username 2");
-        testSpace.put("Username 3");
-        testSpace.put("Username 4");
-        testSpace.put("Username 5");
-        testSpace.put("Username 6");
-        testSpace.put("Username 7");
-        testSpace.put("Username 8");
-        testSpace.put("Username 9");
-        testSpace.put("Username 10");
-    }
 
     public void getAndPrint() throws InterruptedException {
         while (testSpace.size() > 0) {
