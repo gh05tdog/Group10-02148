@@ -2,13 +2,16 @@ package dk.dtu.model;
 
 import dk.dtu.config;
 import dk.dtu.controller.AppController;
+import dk.dtu.controller.LobbyController;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import org.jspace.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AppModel {
     private final RemoteSpace server;
@@ -59,17 +62,21 @@ public class AppModel {
         });
         messageThread.start();
     }
-    public void listenforRoleUpdate(){
-        new Thread(() -> {
+
+    public void listenforRoleUpdate(AppController appController,String username) {
+        Thread roleThread = new Thread(() -> {
             try {
                 while (true) {
                     // Retrieve the user list update intended for this client
-                    Object[] response = server.get(new ActualField("roleUpdate"), new FormalField(String.class), new FormalField(String.class));
+                    Object[] response = server.get(new FormalField(String.class), new ActualField(username), new FormalField(String.class));
                     if (response != null) {
                         // Update the user list
-                        String username = (String) response[1];
-                        String role = (String) response[2];
-                        System.out.println(username + " has role: " + role);
+                        String action = (String) response[0];
+                        if (action.equals("roleUpdate")) {
+                            String role = (String) response[2];
+                            System.out.println(username + " has role: " + role);
+                            Platform.runLater(() -> appController.appendRoles(role));
+                        }
                     }
                 }
             } catch (InterruptedException e) {
@@ -77,8 +84,10 @@ public class AppModel {
             } catch (Exception e) {
                 System.out.println("Error in user update listening thread: " + e);
             }
-        }).start();
+        });
+        roleThread.start();
     }
+
 
     public void startListeningForDayNightCycle(AppController appController, String Username) {
         new Thread(() -> {

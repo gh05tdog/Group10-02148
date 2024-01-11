@@ -30,6 +30,7 @@ public class AppController {
     public Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
+    public TextArea roleBox;
 
     public AppController() throws IOException {
         model = new AppModel();
@@ -40,6 +41,7 @@ public class AppController {
 //        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateDayNightCycle("day")));
 //        timeline.setCycleCount(Timeline.INDEFINITE);
 //        timeline.play();
+        model.listenforRoleUpdate(this, config.getUsername());
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());
@@ -74,6 +76,11 @@ public class AppController {
 
     public void updateTimeLabel(String time) {
         Platform.runLater(() -> timerLabel.setText(time));
+    }
+
+    public void appendRoles(String role) {
+        Platform.runLater(() -> roleBox.appendText("You are a " + role + "\n"));
+
     }
 
 }
