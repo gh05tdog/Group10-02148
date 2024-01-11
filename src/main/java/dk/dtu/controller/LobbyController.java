@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -98,9 +99,11 @@ public class LobbyController {
     }
 
     @FXML
-    private void returnToMenu() throws Exception {
-        Stage stage = (Stage) returnButton.getScene().getWindow();
-        stage.setScene(App.getScene());
+    private void returnToMenu(ActionEvent event) throws Exception {
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/StartScreen.fxml")));
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.setOnCloseRequest(e -> Platform.exit());
+        currentStage.setScene(new Scene(newRoot));
 
     }
 }

@@ -46,11 +46,13 @@ public class StartController {
     }
 
     @FXML
-    private void returnToMenu() throws Exception {
-        Stage stage = (Stage) returnPane.getScene().getWindow();
-        stage.setScene(App.getScene());
+    private void returnToMenu(MouseEvent event) throws Exception {
+            Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/StartScreen.fxml")));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setOnCloseRequest(e -> Platform.exit());
+            currentStage.setScene(new Scene(newRoot));
 
-    }
+        }
 
     @FXML
     private void CreateLobbyAction(MouseEvent event) {

@@ -1,16 +1,26 @@
 package dk.dtu.controller;
 
+import dk.dtu.App;
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import org.jspace.*;
 import java.io.IOException;
+import java.util.Objects;
 
 public class AppController {
     public ImageView background;
@@ -20,6 +30,8 @@ public class AppController {
     public TextArea usernameList;
     public ImageView counter;
     public Label timerLabel;
+
+    public AnchorPane settings;
 
     private final AppModel model;
 
@@ -31,8 +43,12 @@ public class AppController {
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
 
-    public AppController() throws IOException {
+    public AppController() throws IOException, InterruptedException {
         model = new AppModel();
+        RandomSpace testSpace = new RandomSpace(name,);
+
+        testSpace.put("Johhny");
+
     }
 
     @FXML
@@ -76,4 +92,10 @@ public class AppController {
         Platform.runLater(() -> timerLabel.setText(time));
     }
 
+    @FXML
+    private void returnToMenu() throws Exception {
+        Stage stage = (Stage) settings.getScene().getWindow();
+        stage.setScene(App.getScene());
+
+    }
 }
