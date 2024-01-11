@@ -25,7 +25,7 @@
             <children>
                <Label text="Usernames:" />
                <TextArea fx:id="usernameList" editable="false" prefWidth="300.0" />
-               <AnchorPane prefHeight="100.0" prefWidth="300.0">
+               <AnchorPane fx:id="lobbyAnchorPane" prefHeight="100.0" prefWidth="300.0">
                   <children>
                      <Button fx:id="StartGameButton" layoutX="108.0" layoutY="37.0" mnemonicParsing="false" onAction="#StartGameAction" text="StartGame" />
                   </children>
