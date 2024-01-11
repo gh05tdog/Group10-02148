@@ -1,6 +1,7 @@
 package dk.dtu.controller;
 
 import dk.dtu.App;
+import dk.dtu.PlayerHandler;
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
 import javafx.application.Platform;
@@ -49,6 +50,7 @@ public class LobbyController {
             handleConnectAction();
             System.out.println("Username: " + config.getUsername());
         }
+
     }
 
 
@@ -68,7 +70,6 @@ public class LobbyController {
 
     //Handle the connect button
     public void handleConnectAction() throws InterruptedException {
-
         if (usernameField.isVisible()) {
             config.setUsername(usernameField.getText());
         }
@@ -78,7 +79,7 @@ public class LobbyController {
         connectButton.setVisible(false);
 
 
-        System.out.println("Username: " + config.getUsername());
+        //System.out.println("Username: " + config.getUsername());
 
         //Join the lobby
         model.joinLobby(config.getUsername());
