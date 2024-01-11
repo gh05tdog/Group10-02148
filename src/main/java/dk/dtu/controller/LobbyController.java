@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,11 +25,13 @@ public class LobbyController {
     public TextArea messageAreaLobby;
     public TextField usernameField;
     public Button connectButton;
+    public AnchorPane lobbyAnchorPane;
 
     @FXML
     private TextField messageField;
 
     private final AppModel model;
+
 
 
     public LobbyController() throws IOException {
@@ -47,7 +50,6 @@ public class LobbyController {
             System.out.println("Username: " + config.getUsername());
         }
     }
-
 
     // When you click the send button, send the message
     @FXML
@@ -83,9 +85,20 @@ public class LobbyController {
         model.startListeningForMessages(messageAreaLobby);
         // Start listening for user updates
         model.startListeningForUserUpdates(usernameList, config.getUsername());
+
+        Platform.runLater(() -> {
+            Stage currentStage = (Stage) lobbyAnchorPane.getScene().getWindow();
+            if (currentStage == null) {
+                System.out.println("Stage is null");
+            }else {
+                System.out.println("Stage is not null");
+            }
+        });
+
+
+
     }
 
-    //Handle the start game button
     @FXML
     private void StartGameAction(ActionEvent event) throws IOException, InterruptedException {
         model.startGame();

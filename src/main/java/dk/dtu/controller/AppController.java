@@ -37,9 +37,7 @@ public class AppController {
 
     @FXML
     private void initialize() {
-//        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateDayNightCycle("day")));
-//        timeline.setCycleCount(Timeline.INDEFINITE);
-//        timeline.play();
+
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());

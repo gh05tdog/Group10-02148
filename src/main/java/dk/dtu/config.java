@@ -1,11 +1,15 @@
 package dk.dtu;
 
+import javafx.stage.Stage;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class config {
     public static String SERVER_IP;
     private static String Username = null;
+
+    private static Stage currentStage;
 
 
     static {
@@ -33,5 +37,9 @@ public class config {
         return Username;
     }
 
+
+    public static void setStage(Stage OldStage) {
+        currentStage = OldStage;
+    }
 
 }

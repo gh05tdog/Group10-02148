@@ -110,6 +110,7 @@ public class Server implements Runnable {
 
     private void startGame() throws InterruptedException {
         if (!playersInLobby.isEmpty()) {
+            broadcastToAllClients("startGame", "");
             gameSpace.put("gameStarted");
             gameStarted = true;
             manageDayNightCycle();
