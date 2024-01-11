@@ -1,5 +1,6 @@
 package dk.dtu.controller;
 
+import dk.dtu.App;
 import dk.dtu.Server;
 import dk.dtu.config;
 import javafx.application.Platform;
