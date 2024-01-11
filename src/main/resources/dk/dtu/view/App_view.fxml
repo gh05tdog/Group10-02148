@@ -30,7 +30,7 @@
     <VBox layoutX="14.0" layoutY="142.0" prefHeight="153.0" prefWidth="144.0">
         <children>
             <TextField editable="false" text="Your Role:" />
-            <TextArea fx:id="roleBox" prefHeight="200.0" prefWidth="200.0" />
+            <TextArea fx:id="roleBox" wrapText="true" prefHeight="200.0" prefWidth="200.0" />
         </children>
     </VBox>
     <VBox layoutX="547.0" layoutY="403.0" prefHeight="118.0" prefWidth="199.0">
