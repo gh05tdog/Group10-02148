@@ -62,14 +62,14 @@ public class AppController {
     }
 
     @FXML
-    private void initialize() {
+    private void initialize() throws IOException {
 //        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateDayNightCycle("day")));
 //        timeline.setCycleCount(Timeline.INDEFINITE);
 //        timeline.play();
         model.listenforRoleUpdate(this, config.getUsername());
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
-        model.startListeningForUserUpdates(usernameList, config.getUsername());
+        model.startListeningForUserUpdates(new LobbyController(), usernameList, config.getUsername());
         System.out.println(config.getUsername());
 
     }
@@ -111,13 +111,6 @@ public class AppController {
 
     }
 
-
-    public void getAndPrint() throws InterruptedException {
-        while (testSpace.size() > 0) {
-            Object[] t = testSpace.get(new FormalField(String.class));
-            System.out.println(t[0]);
-        }
-    }
     public void appendRoles(String role) {
         //System.out.println("Attempting to append role: " + role); // Log for debugging
         try {
@@ -145,5 +138,15 @@ public class AppController {
             e.printStackTrace(); // Print the stack trace to help with debugging
         }
     }
+
+    public void clickOnAnchorPanes(MouseEvent mouseEvent) throws Exception {
+        //get the name associated with the anchorpane
+        String name = ((AnchorPane) mouseEvent.getSource()).getId();
+        System.out.println(name);
+        returnToMenu();
+
+    }
+
+
 
 }

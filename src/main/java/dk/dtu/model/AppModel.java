@@ -118,7 +118,7 @@ public class AppModel {
         server.put("startGame", "some_identifier_or_info");
     }
 
-    public void startListeningForUserUpdates(TextArea userListArea, String clientID) {
+    public void startListeningForUserUpdates(LobbyController lobbyController, TextArea userListArea, String clientID) {
         // Retrieve the user list update intended for this client
         // Update the user list
         Thread userThread = new Thread(() -> {
@@ -132,6 +132,7 @@ public class AppModel {
                         String finalCurrentUserList = currentUserList.replace(", ", "\n");
 
                         Platform.runLater(() -> userListArea.setText(finalCurrentUserList));
+                        lobbyController.testSpace.put(currentUserList);
                     }
                 }
             } catch (InterruptedException e) {

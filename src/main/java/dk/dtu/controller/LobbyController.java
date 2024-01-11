@@ -22,6 +22,7 @@ import org.jspace.RandomSpace;
 import org.jspace.Space;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class LobbyController {
@@ -38,7 +39,7 @@ public class LobbyController {
 
     private final AppModel model;
 
-    private Space testSpace;
+    public Space testSpace;
 
 
     public LobbyController() throws IOException {
@@ -93,7 +94,7 @@ public class LobbyController {
         // Start listening for messages
         model.startListeningForMessages(messageAreaLobby);
         // Start listening for user updates
-        model.startListeningForUserUpdates(usernameList, config.getUsername());
+        model.startListeningForUserUpdates(this,usernameList, config.getUsername());
     }
 
     //Handle the start game button
@@ -104,7 +105,6 @@ public class LobbyController {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
-        put();
         setOnMap(newRoot);
 
     }
@@ -123,6 +123,7 @@ public class LobbyController {
         while (testSpace.size() > 0) {
             i++;
             Object[] t = testSpace.get(new FormalField(String.class));
+            System.out.println("who am i: " + Arrays.toString(t));
             String anchorPaneId = "#Anchor" + i; // Construct the ID
             AnchorPane anchorPane = (AnchorPane) scene.getScene().lookup(anchorPaneId); // Get the AnchorPane
 
@@ -134,13 +135,6 @@ public class LobbyController {
                 System.out.println("AnchorPane not found");
             }
         }
-    }
-
-    public void put() throws InterruptedException {
-        testSpace.put("Username 1");
-        testSpace.put("Username 2");
-        testSpace.put("Username 3");
-        testSpace.put("Username 4");
     }
 
     public void getAndPrint() throws InterruptedException {
