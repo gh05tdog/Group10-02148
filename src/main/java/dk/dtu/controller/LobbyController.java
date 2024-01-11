@@ -1,5 +1,6 @@
 package dk.dtu.controller;
 
+import dk.dtu.PlayerHandler;
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
 import javafx.application.Platform;
@@ -46,6 +47,7 @@ public class LobbyController {
             handleConnectAction();
             System.out.println("Username: " + config.getUsername());
         }
+        model.listenforRoleUpdate();
     }
 
 
@@ -65,7 +67,6 @@ public class LobbyController {
 
     //Handle the connect button
     public void handleConnectAction() throws InterruptedException {
-
         if (usernameField.isVisible()) {
             config.setUsername(usernameField.getText());
         }

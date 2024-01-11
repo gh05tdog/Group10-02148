@@ -59,6 +59,26 @@ public class AppModel {
         });
         messageThread.start();
     }
+    public void listenforRoleUpdate(){
+        new Thread(() -> {
+            try {
+                while (true) {
+                    // Retrieve the user list update intended for this client
+                    Object[] response = server.get(new ActualField("roleUpdate"), new FormalField(String.class), new FormalField(String.class));
+                    if (response != null) {
+                        // Update the user list
+                        String username = (String) response[1];
+                        String role = (String) response[2];
+                        System.out.println(username + " has role: " + role);
+                    }
+                }
+            } catch (InterruptedException e) {
+                System.out.println("User update listening thread interrupted");
+            } catch (Exception e) {
+                System.out.println("Error in user update listening thread: " + e);
+            }
+        }).start();
+    }
 
     public void startListeningForDayNightCycle(AppController appController, String Username) {
         new Thread(() -> {

@@ -82,11 +82,13 @@ public class Server implements Runnable {
             messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
 
+
             // Create a new PlayerHandler for this player and start its thread
             PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size(), gameSpace);
             Thread playerThread = new Thread(playerHandler);
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
             playerThread.start();
+            broadcastRoleUpdate(username);
 
         }else{
             throw new Exception("Game already started or user already in lobby");
@@ -113,9 +115,36 @@ public class Server implements Runnable {
             gameSpace.put("gameStarted");
             gameStarted = true;
             manageDayNightCycle();
+            assignRolesToPlayers();
             System.out.println("Game is starting with players: " + playersInLobby);
         } else {
             System.out.println("Cannot start game with no players in lobby");
+        }
+    }
+
+    private void assignRolesToPlayers() throws InterruptedException {
+        RandomSpace roles = new RandomSpace();
+        int nrOfMafia = playersInLobby.size()/4;
+        for(int i = 0; i < nrOfMafia; i++){
+            roles.put("Mafia");
+        }
+        roles.put("Bodyguard");
+        roles.put("Snitch");
+        for(int i = 0; i < playersInLobby.size() - nrOfMafia - 2; i++){
+            roles.put("Citizen");
+        }
+
+        for(String username : playersInLobby){
+            playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
+        }
+
+    }
+    public void broadcastRoleUpdate(String username) {
+        try {
+            gameSpace.put("roleUpdate", username, playerHandlers.get(username).getRole());
+
+        } catch (InterruptedException e) {
+            System.out.println("Error broadcasting role update: " + e);
         }
     }
 
