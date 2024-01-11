@@ -1,6 +1,5 @@
 package dk.dtu;
 
-import dk.dtu.controller.PopUpController;
 import org.jspace.*;
 
 import java.net.InetAddress;
@@ -16,10 +15,10 @@ public class Server implements Runnable {
     private final Set<String> playersInLobby;
     private boolean gameStarted;
     private boolean isDay = true; // Initial state
-    private List<String> messages = new ArrayList<>();
+    private final List<String> messages = new ArrayList<>();
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
-    private Map<String, PlayerHandler> playerHandlers;
+    private final Map<String, PlayerHandler> playerHandlers;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -66,19 +65,21 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleMessage(String username, String messageContent, String lobbyID) throws InterruptedException {
+    private void handleMessage(String username, String messageContent) throws InterruptedException {
         // Add message to the list
-        String fullMessage = "(" + lobbyID + ")" + username + ": " + messageContent ;
+        String fullMessage = username + ": " + messageContent ;
         messages.add(fullMessage);
 
         // Update the space with the new list of messages
         gameSpace.put("messages", messages);
     }
 
-    private void handleJoinLobby(String username) {
+    private void handleJoinLobby(String username) throws Exception {
         if (!gameStarted && !playersInLobby.contains(username)) {
+            gameSpace.put("connected", username );
             playersInLobby.add(username);
             System.out.println("User " + username + " joined the lobby");
+            messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
 
             // Create a new PlayerHandler for this player and start its thread
@@ -86,8 +87,10 @@ public class Server implements Runnable {
             Thread playerThread = new Thread(playerHandler);
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
             playerThread.start();
-        } else {
-                PopUpController.showPopUp("Username already in use");
+
+        }else{
+            throw new Exception("Game already started or user already in lobby");
+
         }
     }
 
@@ -105,13 +108,12 @@ public class Server implements Runnable {
         }
     }
 
-    private void startGame() {
+    private void startGame() throws InterruptedException {
         if (!playersInLobby.isEmpty()) {
+            gameSpace.put("gameStarted");
             gameStarted = true;
             manageDayNightCycle();
             System.out.println("Game is starting with players: " + playersInLobby);
-            broadcastLobbyUpdate();
-            // Initialize game state and broadcast start message
         } else {
             System.out.println("Cannot start game with no players in lobby");
         }
@@ -125,7 +127,6 @@ public class Server implements Runnable {
             for (String user : playersInLobby) {
                 gameSpace.put("userUpdate", user, userList);
             }
-            System.out.println("Broadcasted lobby update to all users");
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting lobby update: " + e);
         }
@@ -140,9 +141,7 @@ public class Server implements Runnable {
                 Object[] messageRequest = gameSpace.get(new ActualField("message"),new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String username = (String) messageRequest[1];
                 String message = (String) messageRequest[2];
-                String lobbyID = (String) messageRequest[3];
-                handleMessage(username, message, lobbyID);
-                System.out.println("Message received: " + message);
+                handleMessage(username, message);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -184,7 +183,6 @@ public class Server implements Runnable {
     private void broadcastDayNightCycle() {
         String state = isDay ? "day" : "night";
         broadcastToAllClients("dayNightCycle", state);
-        System.out.println("Broadcasted state" + state);
     }
 
     private void broadcastTimeUpdate(int timeSeconds) {

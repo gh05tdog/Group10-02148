@@ -6,7 +6,7 @@ public class House {
     Space houses = new SequentialSpace();
 
     public House (int noPlayer) throws InterruptedException {
-        for (int i = 0; 0 < noPlayer; i++) {
+        for (int i = 0; i < noPlayer; i++) {
             houses.put(i,"lock"); // Adding initial locks
         }
     }
@@ -14,11 +14,7 @@ public class House {
     // Attempt to enter house with int no
     public synchronized boolean enterHouse(int no) throws InterruptedException {
         Object[] lock = houses.getp(new ActualField(no),new ActualField("lock"));
-        if (lock != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return lock != null;
     }
 
     // Leave house with int no

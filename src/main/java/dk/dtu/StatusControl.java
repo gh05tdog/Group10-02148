@@ -72,7 +72,7 @@ public class StatusControl {
         houses = new House(noOfPlayers);
 
         for (int i = 0; i < noOfPlayers; i++) {
-            conductor[i] = new Conductor(i,rolelist[i]);
+            conductor[i] = new Conductor(i, rolelist[i]);
             conductor[i].start();
         }
 
