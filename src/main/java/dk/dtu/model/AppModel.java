@@ -63,20 +63,18 @@ public class AppModel {
         messageThread.start();
     }
 
-    public void listenforRoleUpdate(AppController appController,String username) {
+    public void listenforRoleUpdate(AppController appController, String username) {
         Thread roleThread = new Thread(() -> {
             try {
                 while (true) {
                     // Retrieve the user list update intended for this client
-                    Object[] response = server.get(new FormalField(String.class), new ActualField(username), new FormalField(String.class));
+                    Object[] response = server.get(new ActualField("roleUpdate"), new ActualField(username), new FormalField(String.class));
                     if (response != null) {
                         // Update the user list
-                        String action = (String) response[0];
-                        if (action.equals("roleUpdate")) {
-                            String role = (String) response[2];
-                            System.out.println(username + " has role: " + role);
-                            Platform.runLater(() -> appController.appendRoles(role));
-                        }
+                        String role = (String) response[2];
+                        System.out.println(username + " has role: " + role);
+                        Platform.runLater(() -> appController.appendRoles(role));
+
                     }
                 }
             } catch (InterruptedException e) {
