@@ -95,16 +95,17 @@ public class AppModel {
         new Thread(() -> {
             try {
                 while (true) {
+
                     // Listen for any type of message
-                    Object[] response = server.get(new ActualField("startGame"), new ActualField(Username), new FormalField(String.class));
+                    Object[] response = server.get(new ActualField("startGame"), new FormalField(String.class), new FormalField(String.class));
+                    System.out.println("Received start game message");
                     // switch to game scene
                     if (response != null) {
                         // switch to game scene
                         Platform.runLater(() -> {
 
-                            Parent newRoot = null;
                             try {
-                                newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
+                                 Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
                                 currentStage.setScene(new Scene(newRoot));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
