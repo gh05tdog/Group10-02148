@@ -21,6 +21,13 @@ import javafx.stage.Stage;
 import org.jspace.*;
 import java.io.IOException;
 import java.util.Objects;
+import org.jspace.RandomSpace;
+import org.jspace.SequentialSpace;
+import org.jspace.Tuple;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 
 public class AppController {
     public ImageView background;
@@ -33,7 +40,10 @@ public class AppController {
 
     public AnchorPane settings;
 
+    public Space testSpace;
+
     private final AppModel model;
+
 
     public Image moon = new Image("/dk/dtu/view/images/Moon.png");
 
@@ -43,26 +53,23 @@ public class AppController {
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
 
-    public AppController() throws IOException, InterruptedException {
+    public AppController() throws IOException {
         model = new AppModel();
-        RandomSpace testSpace = new RandomSpace(name,);
-
-        testSpace.put("Johhny");
-
+        this.testSpace = new RandomSpace();
     }
 
     @FXML
-    private void initialize() {
-//        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateDayNightCycle("day")));
-//        timeline.setCycleCount(Timeline.INDEFINITE);
-//        timeline.play();
+    private void initialize() throws InterruptedException {
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());
         System.out.println(config.getUsername());
+        put();
+
     }
 
-    public void handleSendAction() {
+    public void handleSendAction() throws InterruptedException {
+        getAndPrint();
         String message = messageField.getText();
         if (!message.isEmpty()) {
             try {
@@ -97,5 +104,25 @@ public class AppController {
         Stage stage = (Stage) settings.getScene().getWindow();
         stage.setScene(App.getScene());
 
+    }
+
+    public void put() throws InterruptedException {
+        testSpace.put("Username 1");
+        testSpace.put("Username 2");
+        testSpace.put("Username 3");
+        testSpace.put("Username 4");
+        testSpace.put("Username 5");
+        testSpace.put("Username 6");
+        testSpace.put("Username 7");
+        testSpace.put("Username 8");
+        testSpace.put("Username 9");
+        testSpace.put("Username 10");
+    }
+
+    public void getAndPrint() throws InterruptedException {
+        while (testSpace.size() > 0) {
+            Object[] t = testSpace.get(new FormalField(String.class));
+            System.out.println(t[0]);
+        }
     }
 }

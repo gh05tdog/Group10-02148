@@ -1,7 +1,12 @@
 package dk.dtu;
 
 
-import org.jspace.SequentialSpace;
+import org.jspace.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class PlayerHandler implements Runnable {
     private String username;
     private SequentialSpace gameSpace;
@@ -14,6 +19,7 @@ public class PlayerHandler implements Runnable {
         this.isActive = true;
         this.playerID = playerID;
     }
+
 
     @Override
     public void run() {
@@ -37,4 +43,8 @@ public class PlayerHandler implements Runnable {
     public int getPlayerID() {
         return playerID;
     }
+
+
 }
+
+
