@@ -1,5 +1,6 @@
 package dk.dtu;
 
+import javafx.application.Platform;
 import org.jspace.*;
 
 import java.net.InetAddress;
@@ -88,7 +89,6 @@ public class Server implements Runnable {
             Thread playerThread = new Thread(playerHandler);
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
             playerThread.start();
-            broadcastRoleUpdate(username);
 
         }else{
             throw new Exception("Game already started or user already in lobby");
@@ -111,11 +111,15 @@ public class Server implements Runnable {
     }
 
     private void startGame() throws InterruptedException {
-        if (!playersInLobby.isEmpty()) {
+        if (!playersInLobby.isEmpty() && !gameStarted) {
             gameSpace.put("gameStarted");
+            assignRolesToPlayers();
             gameStarted = true;
             manageDayNightCycle();
-            assignRolesToPlayers();
+            for(String username : playersInLobby){
+                broadcastRoleUpdate(username);
+            }
+
             System.out.println("Game is starting with players: " + playersInLobby);
         } else {
             System.out.println("Cannot start game with no players in lobby");
@@ -123,25 +127,30 @@ public class Server implements Runnable {
     }
 
     private void assignRolesToPlayers() throws InterruptedException {
-        RandomSpace roles = new RandomSpace();
-        int nrOfMafia = playersInLobby.size()/4;
-        for(int i = 0; i < nrOfMafia; i++){
+        if(!gameStarted){
+            RandomSpace roles = new RandomSpace();
+            int nrOfMafia = playersInLobby.size()/4;
+            //for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
-        }
-        roles.put("Bodyguard");
-        roles.put("Snitch");
-        for(int i = 0; i < playersInLobby.size() - nrOfMafia - 2; i++){
+            //}
+            roles.put("Bodyguard");
+            roles.put("Snitch");
+            // for(int i = 0; i < playersInLobby.size() - nrOfMafia - 2; i++){
             roles.put("Citizen");
-        }
+            // }
 
-        for(String username : playersInLobby){
-            playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
-        }
+            for(String username : playersInLobby){
+                playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
+            }
 
+        }else{
+            System.out.println("Game already started");
+        }
     }
     public void broadcastRoleUpdate(String username) {
         try {
             gameSpace.put("roleUpdate", username, playerHandlers.get(username).getRole());
+
 
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting role update: " + e);

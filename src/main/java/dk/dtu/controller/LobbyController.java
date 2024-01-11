@@ -47,7 +47,7 @@ public class LobbyController {
             handleConnectAction();
             System.out.println("Username: " + config.getUsername());
         }
-        model.listenforRoleUpdate();
+
     }
 
 
