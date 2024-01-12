@@ -37,6 +37,7 @@ public class AppController {
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
     public TextArea roleBox;
     public Circle User0;
+    public TextArea infoTextField;
 
     @FXML
     private Circle User11, User10, User9, User8, User7, User6, User5, User4, User3, User2, User1;
@@ -54,7 +55,9 @@ public class AppController {
         model.listenforRoleUpdate(this, config.getUsername());
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
+        model.startListeningForTimeUpdate(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());
+        model.startListenForKilled(config.getUsername());
         Platform.runLater(() -> putUsersInCircles(config.getUserList()));
         System.out.println(config.getUsername());
     }
@@ -72,15 +75,17 @@ public class AppController {
         }
     }
 
-    public void updateDayNightCycle(String state) {
+    public void updateDayNightCycle(String state, String killed) {
         System.out.println("Received state");
         Platform.runLater(() -> {
             if ("day".equals(state)) {
-
                 messageArea.setVisible(true);
                 counter.setImage(sun);
                 background.setImage(day);
+                showKilled(killed);
+                removeKilled(killed);
             } else if ("night".equals(state)) {
+                infoTextField.setText("");
                 config.setHasVoted(false);
                 if(!Objects.equals(config.getRole(), "[Mafia]")){
                     messageArea.setVisible(false);
@@ -90,6 +95,8 @@ public class AppController {
             }
         });
     }
+
+
 
     public void updateTimeLabel(String time) {
         Platform.runLater(() -> timerLabel.setText(time));
@@ -133,8 +140,20 @@ public class AppController {
             // Debugging output
             System.out.println("Assigning " + users[i] + " to circle " + circles[i].getId() + " and label " + labels[i].getId());
         }
+    }
 
+    private void removeKilled(String killed) {
+        Circle[] circles = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
+        Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
 
+        //put the users in the circles
+        for (int i = 0; i < labels.length; i++) {
+            if (labels[i].getText().equals(killed)) {
+                circles[i].setVisible(false);
+                circles[i].setDisable(true);
+                labels[i].setText("");
+            }
+        }
     }
     public void AttemptAction(MouseEvent mouseEvent) throws InterruptedException {
         // Get the id of the clicked circle
@@ -150,5 +169,9 @@ public class AppController {
         }
         assert label != null;
         model.AttemptAction(config.getUsername(),config.getRole(),label.getText());
+    }
+
+    public void showKilled(String killed) {
+        Platform.runLater(() -> infoTextField.setText(killed + " was killed"));
     }
 }
