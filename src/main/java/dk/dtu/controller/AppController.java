@@ -81,9 +81,9 @@ public class AppController {
                 counter.setImage(sun);
                 background.setImage(day);
             } else if ("night".equals(state)) {
+                config.setHasVoted(false);
                 if(!Objects.equals(config.getRole(), "[Mafia]")){
                     messageArea.setVisible(false);
-
                 }
                 counter.setImage(moon);
                 background.setImage(night);

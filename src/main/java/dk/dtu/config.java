@@ -16,6 +16,8 @@ public class config {
     private static String role;
     private static String userList;
 
+    private static Boolean hasVoted = false;
+
 
     static {
         try {
@@ -69,5 +71,13 @@ public class config {
     }
     public static String getUserList() {
         return userList;
+    }
+
+    public static Boolean getHasVoted() {
+        return hasVoted;
+    }
+
+    public static void setHasVoted(Boolean hasVotedUpdated) {
+        hasVoted = hasVotedUpdated;
     }
 }

@@ -66,8 +66,6 @@ public class ServerTest {
         assertTrue(server.isGameStarted());
     }
 
-
-
     @Test
     void testMessageSending() throws Exception {
         server.handleJoinLobby("player1");
