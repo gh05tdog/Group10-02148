@@ -61,7 +61,6 @@ class Conductor extends Thread {
      */
 }
 
-
 public class StatusControl {
     Conductor[] conductor;      // Status controllers
     House houses;               // Houses

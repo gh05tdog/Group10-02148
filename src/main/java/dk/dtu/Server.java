@@ -20,6 +20,7 @@ public class Server implements Runnable {
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
     private final Map<String, PlayerHandler> playerHandlers;
+    public String[] roleList;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -85,7 +86,7 @@ public class Server implements Runnable {
 
 
             // Create a new PlayerHandler for this player and start its thread
-            PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size(), gameSpace);
+            PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size() - 1, gameSpace);
             Thread playerThread = new Thread(playerHandler);
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
             playerThread.start();
@@ -130,6 +131,7 @@ public class Server implements Runnable {
     private void assignRolesToPlayers() throws InterruptedException {
         if(!gameStarted){
             RandomSpace roles = new RandomSpace();
+            roleList = new String[playersInLobby.size()];
             int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
@@ -142,16 +144,19 @@ public class Server implements Runnable {
 
             for(String username : playersInLobby){
                 playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
+                roleList[playerHandlers.get(username).getPlayerID()] = playerHandlers.get(username).getRole();
+                System.out.println("Player " + username + "with ID: " + playerHandlers.get(username).getPlayerID() + " has role: " + playerHandlers.get(username).getRole());
             }
+           System.out.println("Role list:" + Arrays.toString(roleList));
 
         }else{
             System.out.println("Game already started");
         }
     }
+
     public void broadcastRoleUpdate(String username) {
         try {
             gameSpace.put("roleUpdate", username, playerHandlers.get(username).getRole());
-
 
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting role update: " + e);
@@ -170,7 +175,6 @@ public class Server implements Runnable {
             System.out.println("Error broadcasting lobby update: " + e);
         }
     }
-
 
 
     private void runMessageListener() {
