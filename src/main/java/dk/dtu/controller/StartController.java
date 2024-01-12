@@ -1,30 +1,26 @@
 package dk.dtu.controller;
 
 import dk.dtu.Server;
-import dk.dtu.config;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
+import dk.dtu.config;
+
+
 
 public class StartController {
 
     public AnchorPane joinGamePane;
     public AnchorPane createGamePane;
-    public TextField IpField;
-    public Rectangle joinGameRectangle;
-    public TextField UserNameField;
-
 
     @FXML
     public void JoinLobbyAction(MouseEvent event) {
@@ -45,6 +41,7 @@ public class StartController {
         try {
             Server server = new Server();
             server.startServer();
+            config.setLobbyLeader(true);
             loadLobbyUI(event);
         } catch (Exception e) {
             System.out.println("Error creating lobby: " + e);

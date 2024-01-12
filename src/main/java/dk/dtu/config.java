@@ -1,11 +1,17 @@
 package dk.dtu;
 
+import javafx.stage.Stage;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class config {
     public static String SERVER_IP;
     private static String Username = null;
+
+    private static Stage currentStage;
+
+    private static Boolean lobbyLeader = false;
 
 
     static {
@@ -15,6 +21,14 @@ public class config {
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Boolean getLobbyLeader() {
+        return lobbyLeader;
+    }
+
+    public static void setLobbyLeader(Boolean lobbyLeaderBool) {
+        lobbyLeader = lobbyLeaderBool;
     }
 
     public static void setIp(String ip) {
@@ -33,5 +47,9 @@ public class config {
         return Username;
     }
 
+
+    public static void setStage(Stage OldStage) {
+        currentStage = OldStage;
+    }
 
 }
