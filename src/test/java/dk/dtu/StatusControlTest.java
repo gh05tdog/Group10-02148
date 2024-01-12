@@ -129,6 +129,17 @@ class StatusControlTest {
         assertNotEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
     }
 
-
+    /**
+     If the protection expires (or someone leaves the house), a role can be revealed again
+     */
+    @Test
+    void testSnitchAfterProtectionExpires() throws InterruptedException {
+        statusControl.protectPlayer(4);
+        assertFalse(statusControl.houses.lookInsideHouse(4));
+        assertNotEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
+        Thread.sleep(10000);
+        assertTrue(statusControl.houses.lookInsideHouse(4));
+        assertEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
+    }
 
 }
