@@ -1,5 +1,6 @@
 package dk.dtu;
 
+import javafx.application.Platform;
 import org.jspace.*;
 
 import java.net.InetAddress;
@@ -82,6 +83,7 @@ public class Server implements Runnable {
             messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
 
+
             // Create a new PlayerHandler for this player and start its thread
             PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size(), gameSpace);
             Thread playerThread = new Thread(playerHandler);
@@ -110,12 +112,49 @@ public class Server implements Runnable {
 
     private void startGame() throws InterruptedException {
         if (!playersInLobby.isEmpty()) {
+            broadcastToAllClients("startGame", "");
             gameSpace.put("gameStarted");
+            assignRolesToPlayers();
             gameStarted = true;
             manageDayNightCycle();
+            for(String username : playersInLobby){
+                broadcastRoleUpdate(username);
+            }
+
             System.out.println("Game is starting with players: " + playersInLobby);
         } else {
             System.out.println("Cannot start game with no players in lobby");
+        }
+    }
+
+    private void assignRolesToPlayers() throws InterruptedException {
+        if(!gameStarted){
+            RandomSpace roles = new RandomSpace();
+            int nrOfMafia = playersInLobby.size()/4;
+            //for(int i = 0; i < nrOfMafia; i++){
+            roles.put("Mafia");
+            //}
+            roles.put("Bodyguard");
+            roles.put("Snitch");
+            // for(int i = 0; i < playersInLobby.size() - nrOfMafia - 2; i++){
+            roles.put("Citizen");
+            // }
+
+            for(String username : playersInLobby){
+                playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
+            }
+
+        }else{
+            System.out.println("Game already started");
+        }
+    }
+    public void broadcastRoleUpdate(String username) {
+        try {
+            gameSpace.put("roleUpdate", username, playerHandlers.get(username).getRole());
+
+
+        } catch (InterruptedException e) {
+            System.out.println("Error broadcasting role update: " + e);
         }
     }
 

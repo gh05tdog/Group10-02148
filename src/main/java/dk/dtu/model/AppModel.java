@@ -2,13 +2,23 @@ package dk.dtu.model;
 
 import dk.dtu.config;
 import dk.dtu.controller.AppController;
+import dk.dtu.controller.LobbyController;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
-import org.jspace.*;
+import javafx.stage.Stage;
+import org.jspace.ActualField;
+import org.jspace.FormalField;
+import org.jspace.RemoteSpace;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class AppModel {
     private final RemoteSpace server;
@@ -60,6 +70,30 @@ public class AppModel {
         messageThread.start();
     }
 
+    public void listenforRoleUpdate(AppController appController, String username) {
+        Thread roleThread = new Thread(() -> {
+            try {
+                while (true) {
+                    // Retrieve the user list update intended for this client
+                    Object[] response = server.get(new ActualField("roleUpdate"), new ActualField(username), new FormalField(String.class));
+                    if (response != null) {
+                        // Update the user list
+                        String role = (String) response[2];
+                        System.out.println(username + " has role: " + role);
+                        Platform.runLater(() -> appController.appendRoles(role));
+
+                    }
+                }
+            } catch (InterruptedException e) {
+                System.out.println("User update listening thread interrupted");
+            } catch (Exception e) {
+                System.out.println("Error in user update listening thread: " + e);
+            }
+        });
+        roleThread.start();
+    }
+
+
     public void startListeningForDayNightCycle(AppController appController, String Username) {
         new Thread(() -> {
             try {
@@ -74,6 +108,37 @@ public class AppModel {
                         Platform.runLater(() -> appController.updateDayNightCycle(messageContent));
                     } else if ("timeUpdate".equals(messageType)) {
                         Platform.runLater(() -> appController.updateTimeLabel(messageContent));
+                    }
+                }
+            } catch (InterruptedException e) {
+                System.out.println("Updates listening thread interrupted");
+            } catch (Exception e) {
+                System.out.println("Error in updates listening thread: " + e);
+            }
+        }).start();
+    }
+
+    public void startListeningForGameStart(String Username,  Stage currentStage) {
+        new Thread(() -> {
+            try {
+                while (true) {
+
+                    // Listen for any type of message
+                    Object[] response = server.get(new ActualField("startGame"), new FormalField(String.class), new FormalField(String.class));
+                    System.out.println("Received start game message");
+                    // switch to game scene
+                    if (response != null) {
+                        // switch to game scene
+                        Platform.runLater(() -> {
+
+                            try {
+                                 Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
+                                currentStage.setScene(new Scene(newRoot));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                        break; // Stop listening for game start
                     }
                 }
             } catch (InterruptedException e) {

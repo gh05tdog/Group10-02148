@@ -30,6 +30,7 @@ public class AppController {
     public Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
+    public TextArea roleBox;
 
     public AppController() throws IOException {
         model = new AppModel();
@@ -37,9 +38,8 @@ public class AppController {
 
     @FXML
     private void initialize() {
-//        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateDayNightCycle("day")));
-//        timeline.setCycleCount(Timeline.INDEFINITE);
-//        timeline.play();
+
+        model.listenforRoleUpdate(this, config.getUsername());
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());
@@ -74,6 +74,34 @@ public class AppController {
 
     public void updateTimeLabel(String time) {
         Platform.runLater(() -> timerLabel.setText(time));
+    }
+
+    public void appendRoles(String role) {
+        //System.out.println("Attempting to append role: " + role); // Log for debugging
+        try {
+            Platform.runLater(() -> {
+                switch (role) {
+                    case "[Mafia]":
+                        roleBox.appendText("You are a " + role + "\nAs the Mafia, you have to kill the villagers in the night.\n");
+                        break;
+                    case "[Citizen]":
+                        roleBox.appendText("You are a " + role + "\nAs the Villager, you have to find the Mafia and vote them out.\n");
+                        break;
+                    case "[Bodyguard]":
+                        roleBox.appendText("You are a " + role + "\nAs the BodyGuard, you have to protect the villagers from the Mafia.\n");
+                        break;
+                    case "[Snitch]":
+                        roleBox.appendText("You are a " + role + "\nAs the Snitch, you can see other players' roles.\n");
+                        break;
+                    default:
+                        roleBox.appendText("Role " + role + " is not recognized.\n");
+                        break;
+                }
+            });
+        } catch (Exception e) {
+            System.out.println("Exception in appendRoles: " + e.getMessage());
+            e.printStackTrace(); // Print the stack trace to help with debugging
+        }
     }
 
 }
