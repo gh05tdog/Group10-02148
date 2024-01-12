@@ -5,7 +5,6 @@ import org.jspace.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.function.Supplier;
 
 public class Server implements Runnable {
     private final SpaceRepository repository;
@@ -265,6 +264,7 @@ public class Server implements Runnable {
                 System.out.println("Mafia eliminated: " + mostVotedUser);
                 voteCount.clear();
                 statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
+                broadcastToAllClients("mafiaEliminated", mostVotedUser);
                 System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
                 return;
             }

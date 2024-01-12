@@ -19,7 +19,7 @@ import java.util.Objects;
 
 public class AppModel {
     private final RemoteSpace server;
-
+    private String killed;
 
 
     public AppModel() throws IOException {
@@ -96,14 +96,9 @@ public class AppModel {
             try {
                 while (true) {
                     // Listen for any type of message
-                    Object[] response = server.get(new FormalField(String.class), new ActualField(Username), new FormalField(String.class));
-                    String messageType = (String) response[0];
+                    Object[] response = server.get(new ActualField("dayNightCycle"), new ActualField(Username), new FormalField(String.class));
                     String messageContent = (String) response[2];
-                    if ("dayNightCycle".equals(messageType)) {
-                        Platform.runLater(() -> appController.updateDayNightCycle(messageContent));
-                    } else if ("timeUpdate".equals(messageType)) {
-                        Platform.runLater(() -> appController.updateTimeLabel(messageContent));
-                    }
+                    Platform.runLater(() -> appController.updateDayNightCycle(messageContent, killed));
                 }
             } catch (InterruptedException e) {
                 System.out.println("Updates listening thread interrupted");
@@ -113,11 +108,38 @@ public class AppModel {
         }).start();
     }
 
+    public void startListeningForTimeUpdate(AppController appController, String Username) {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Object[] resp = server.get(new ActualField("timeUpdate"), new ActualField(Username), new FormalField(String.class));
+                    String messageContent = (String) resp[2];
+                    Platform.runLater(() -> appController.updateTimeLabel(messageContent));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+
+    public void startListenForKilled(String Username) {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Object[] resp = server.get(new ActualField("mafiaEliminated"), new ActualField(Username), new FormalField(String.class));
+                    killed = (String) resp[2];
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+
+
     public void startListeningForGameStart(Stage currentStage) {
         new Thread(() -> {
             try {
                 while (true) {
-
                     // Listen for any type of message
                     Object[] response = server.get(new ActualField("startGame"), new FormalField(String.class), new FormalField(String.class));
                     System.out.println("Received start game message");
@@ -174,8 +196,8 @@ public class AppModel {
         userThread.start();
     }
 
-    public void AttemptAction(String username, String role,String Victim) throws InterruptedException {
-        if(config.getHasVoted()){
+    public void AttemptAction(String username, String role, String Victim) throws InterruptedException {
+        if (config.getHasVoted()) {
             System.out.println("You have already voted");
             return;
         }
