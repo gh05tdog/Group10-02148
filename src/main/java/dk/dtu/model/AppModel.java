@@ -129,7 +129,6 @@ public class AppModel {
                                 Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
                                 currentStage.setScene(new Scene(newRoot));
 
-
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -162,8 +161,8 @@ public class AppModel {
                         // Update the user list
                         String currentUserList = (String) response[2];
                         String finalCurrentUserList = currentUserList.replace(", ", "\n");
-
                         Platform.runLater(() -> userListArea.setText(finalCurrentUserList));
+                        config.setUserList(currentUserList);
                     }
                 }
             } catch (InterruptedException e) {

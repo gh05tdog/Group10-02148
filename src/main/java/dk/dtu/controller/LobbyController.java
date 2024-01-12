@@ -41,7 +41,7 @@ public class LobbyController {
     }
 
     @FXML
-    private void initialize() throws InterruptedException {
+    private void initialize() throws InterruptedException, IOException {
         if (config.getUsername() != null) {
             //Remove the connect button
             connectButton.setVisible(false);
@@ -66,7 +66,6 @@ public class LobbyController {
 
     }
 
-
     // When you click the send button, send the message
     @FXML
     private void handleSendAction() {
@@ -82,7 +81,7 @@ public class LobbyController {
     }
 
     //Handle the connect button
-    public void handleConnectAction() throws InterruptedException {
+    public void handleConnectAction() throws InterruptedException, IOException {
         if (usernameField.isVisible()) {
             config.setUsername(usernameField.getText());
         }

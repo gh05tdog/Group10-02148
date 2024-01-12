@@ -4,14 +4,18 @@ import dk.dtu.config;
 import dk.dtu.model.AppModel;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Arrays;
 
 public class AppController {
     public ImageView background;
@@ -32,6 +36,13 @@ public class AppController {
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
     public TextArea roleBox;
+    public Circle User0;
+
+    @FXML
+    private Circle User11, User10, User9, User8, User7, User6, User5, User4, User3, User2, User1;
+
+    @FXML
+    private Label labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser3, labelForUser2, labelForUser1, labelForUser0;
 
     public AppController() throws IOException {
         model = new AppModel();
@@ -44,6 +55,7 @@ public class AppController {
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());
+        Platform.runLater(() -> putUsersInCircles(config.getUserList()));
         System.out.println(config.getUsername());
     }
 
@@ -103,4 +115,43 @@ public class AppController {
             System.out.println("Exception in appendRoles: " + e.getMessage());
         }
     }
+
+    public void putUsersInCircles(String userList){
+        //split the userList into an array
+        String[] users = userList.split(", ");
+        System.out.println("User list from appController" + Arrays.toString(users));
+
+        Circle[] circles = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
+        Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
+
+        //put the users in the circles
+        for (int i = 0; i < users.length; i++) {
+            circles[i].setVisible(true);
+            circles[i].setDisable(false);
+            labels[i].setText(users[i]);
+
+            // Debugging output
+            System.out.println("Assigning " + users[i] + " to circle " + circles[i].getId() + " and label " + labels[i].getId());
+        }
+
+
+    }
+    public void AttemptAction(MouseEvent mouseEvent) {
+        // Get the id of the clicked circle
+        String circleId = ((Circle) mouseEvent.getSource()).getId();
+        String labelId = "labelFor" + circleId;
+
+
+        // Find the label in the scene graph
+        Label label = (Label) ((Node) mouseEvent.getSource()).getScene().lookup("#" + labelId);
+
+        if (label != null) {
+            // Print the text of the label
+
+            System.out.println(label.getText());
+        } else {
+            System.out.println("Label not found for " + circleId);
+        }
+    }
+
 }

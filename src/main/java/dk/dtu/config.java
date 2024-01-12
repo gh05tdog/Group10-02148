@@ -14,6 +14,7 @@ public class config {
     private static Boolean lobbyLeader = false;
 
     private static String role;
+    private static String userList;
 
 
     static {
@@ -63,4 +64,10 @@ public class config {
         currentStage = OldStage;
     }
 
+    public static void setUserList(String currentUserList) {
+        userList = currentUserList;
+    }
+    public static String getUserList() {
+        return userList;
+    }
 }
