@@ -104,4 +104,12 @@ public class StatusControl {
             executorService.shutdown();
         }
     }
+
+    public String getPlayerRole(int player) throws InterruptedException {
+        if (houses.lookInsideHouse(player)) {
+            return conductor[player].getRole();
+        } else {
+            return "[REDACTED]";
+        }
+    }
 }
