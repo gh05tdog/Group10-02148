@@ -1,6 +1,5 @@
 package dk.dtu.controller;
 
-import dk.dtu.PlayerHandler;
 import dk.dtu.config;
 import dk.dtu.model.AppModel;
 import javafx.application.Platform;
@@ -11,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -28,14 +26,12 @@ public class LobbyController {
     public TextField usernameField;
     public Button connectButton;
     public AnchorPane lobbyAnchorPane;
-    public Label LobbyCreaterLabel;
 
     @FXML
     private TextField messageField;
 
     private final AppModel model;
 
-    private Stage stage;
 
 
     public LobbyController() throws IOException {
@@ -61,7 +57,7 @@ public class LobbyController {
                     System.out.println("Stage is null");
                 }else {
                     System.out.println("Stage is not null");
-                    model.startListeningForGameStart(config.getUsername(), currentStage);
+                    model.startListeningForGameStart(currentStage);
                 }
                 StartGameButton.setDisable(!config.getLobbyLeader());
             });
