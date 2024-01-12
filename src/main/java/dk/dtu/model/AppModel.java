@@ -2,7 +2,6 @@ package dk.dtu.model;
 
 import dk.dtu.config;
 import dk.dtu.controller.AppController;
-import dk.dtu.controller.LobbyController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,9 +14,7 @@ import org.jspace.RemoteSpace;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class AppModel {
@@ -81,7 +78,7 @@ public class AppModel {
                         String role = (String) response[2];
                         System.out.println(username + " has role: " + role);
                         Platform.runLater(() -> appController.appendRoles(role));
-
+                        config.setRole(role);
                     }
                 }
             } catch (InterruptedException e) {
@@ -130,10 +127,11 @@ public class AppModel {
                     if (response != null) {
                         // switch to game scene
                         Platform.runLater(() -> {
-
                             try {
-                                 Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
+                                Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
                                 currentStage.setScene(new Scene(newRoot));
+
+
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }

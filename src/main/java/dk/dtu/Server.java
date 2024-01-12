@@ -1,6 +1,5 @@
 package dk.dtu;
 
-import javafx.application.Platform;
 import org.jspace.*;
 
 import java.net.InetAddress;
