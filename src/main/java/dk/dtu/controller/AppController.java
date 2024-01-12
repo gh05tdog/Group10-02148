@@ -39,6 +39,7 @@ public class AppController {
     @FXML
     private void initialize() {
 
+        model.listenforRoleUpdate(this, config.getUsername());
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());
