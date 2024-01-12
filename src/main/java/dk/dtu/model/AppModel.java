@@ -97,10 +97,8 @@ public class AppModel {
                 while (true) {
                     // Listen for any type of message
                     Object[] response = server.get(new FormalField(String.class), new ActualField(Username), new FormalField(String.class));
-
                     String messageType = (String) response[0];
                     String messageContent = (String) response[2];
-
                     if ("dayNightCycle".equals(messageType)) {
                         Platform.runLater(() -> appController.updateDayNightCycle(messageContent));
                     } else if ("timeUpdate".equals(messageType)) {
@@ -115,7 +113,7 @@ public class AppModel {
         }).start();
     }
 
-    public void startListeningForGameStart(String Username,  Stage currentStage) {
+    public void startListeningForGameStart(Stage currentStage) {
         new Thread(() -> {
             try {
                 while (true) {

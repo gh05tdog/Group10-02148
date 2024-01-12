@@ -131,7 +131,7 @@ public class Server implements Runnable {
         if(!gameStarted){
             RandomSpace roles = new RandomSpace();
             roleList = new String[playersInLobby.size()];
-            int nrOfMafia = playersInLobby.size()/4;
+            //int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
             //}
@@ -214,16 +214,27 @@ public class Server implements Runnable {
                         broadcastTimeUpdate(timeSeconds);
                     } else {
                         isDay = !isDay; // Toggle state
+
                         timeSeconds = 10; // Reset timer
-                        broadcastDayNightCycle();
+                        try {
+                            broadcastDayNightCycle();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             }, 0, 1000); // Update every second
         }
     }
 
-    private void broadcastDayNightCycle() {
+    private void broadcastDayNightCycle() throws InterruptedException {
         String state = isDay ? "day" : "night";
+        if (isDay) {
+            messages.clear();
+            for (int i=0; i < playersInLobby.size(); i++) {
+                gameSpace.put("messages", messages);
+            }
+        }
         broadcastToAllClients("dayNightCycle", state);
     }
 
