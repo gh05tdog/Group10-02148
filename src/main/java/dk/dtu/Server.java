@@ -127,6 +127,7 @@ public class Server implements Runnable {
             gameStarted = true;
             manageDayNightCycle();
             for(String username : playersInLobby){
+                System.out.println("Sending role update to: " + username);
                 broadcastRoleUpdate(username);
             }
            statusControl = new StatusControl(playersInLobby.size(),roleList);
@@ -144,8 +145,6 @@ public class Server implements Runnable {
             //int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
-            roles.put("Mafia");
-            roles.put("Citizen");
             //}
             //roles.put("Bodyguard");
             //roles.put("Snitch");
@@ -168,6 +167,7 @@ public class Server implements Runnable {
     public void broadcastRoleUpdate(String username) {
         try {
             gameSpace.put("roleUpdate", username, playerHandlers.get(username).getRole());
+            System.out.println("Role update sent to: " + username + "with role: " + playerHandlers.get(username).getRole());
 
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting role update: " + e);
@@ -238,7 +238,7 @@ public class Server implements Runnable {
     }
 
     private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
-        int nrOfMafia = 2;
+        int nrOfMafia = 1;
         System.out.println(playersInLobby);
         voteMap.put(yourUsername, victim);
         if (nrOfMafia == voteMap.size()) {

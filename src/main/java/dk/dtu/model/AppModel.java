@@ -20,6 +20,8 @@ import java.util.Objects;
 public class AppModel {
     private final RemoteSpace server;
 
+
+
     public AppModel() throws IOException {
         this.server = new RemoteSpace(config.getIp() + "/chat?keep");
     }
@@ -73,13 +75,11 @@ public class AppModel {
                 while (true) {
                     // Retrieve the user list update intended for this client
                     Object[] response = server.get(new ActualField("roleUpdate"), new ActualField(username), new FormalField(String.class));
-                    if (response != null) {
-                        // Update the user list
-                        String role = (String) response[2];
-                        System.out.println(username + " has role: " + role);
-                        Platform.runLater(() -> appController.appendRoles(role));
-                        config.setRole(role);
-                    }
+                    // Update the user list
+                    String role = (String) response[2];
+                    System.out.println(username + " has role: " + role);
+                    Platform.runLater(() -> appController.appendRoles(role));
+                    config.setRole(role);
                 }
             } catch (InterruptedException e) {
                 System.out.println("User update listening thread interrupted");
@@ -175,12 +175,16 @@ public class AppModel {
     }
 
     public void AttemptAction(String username, String role,String Victim) throws InterruptedException {
-        //System.out.println("from appmodel" + username + role + Victim);
+        if(config.getHasVoted()){
+            System.out.println("You have already voted");
+            return;
+        }
         switch (role) {
             case "[Mafia]" -> server.put("action", "MafiaVote", username, Victim);
             case "[Snitch]" -> server.put("action", "Snitch", username, Victim);
             case "[Bodyguard]" -> server.put("action", "Protect", username, Victim);
             default -> System.out.println("You are a Citizen");
         }
+        config.setHasVoted(true);
     }
 }
