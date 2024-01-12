@@ -13,6 +13,8 @@ public class config {
 
     private static Boolean lobbyLeader = false;
 
+    private static String role;
+
 
     static {
         try {
@@ -46,6 +48,15 @@ public class config {
     public static String getUsername() {
         return Username;
     }
+
+    public static String getRole() {
+        return role;
+    }
+
+    public static void setRole(String newRole) {
+        role = newRole;
+    }
+
 
 
     public static void setStage(Stage OldStage) {
