@@ -2,14 +2,14 @@ package dk.dtu;
 
 import org.jspace.ActualField;
 
-//import java.awt.Color;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // Creates a thread which handles the players statuses and actions
 class Conductor extends Thread {
     int no;                         // Player number
-    //String name;                    // Name of the player
     String role;                    // Player role
-    //Color col;                      // Player color
     House house;                    // House control
     boolean killed = false;         // Used to determine if player is still alive
 
@@ -23,7 +23,7 @@ class Conductor extends Thread {
         //this.col = col;
     }
 
-    synchronized void murderAttempt() {
+    void murderAttempt() {
         if (!secured) { //If we manage to properly utilise locks, not sure that this check would become necessary
             killed = true;
             // Do we even want to interrupt threads?
@@ -31,11 +31,11 @@ class Conductor extends Thread {
         }
     }
 
-    synchronized void protectPlayer() {
+    void protectPlayer() {
         secured = true;
     }
 
-    synchronized void stopProtectingPlayer() {
+    void stopProtectingPlayer() {
         secured = false;
     }
 
@@ -68,6 +68,7 @@ public class StatusControl {
 
     public StatusControl(int noOfPlayers, String[] rolelist) throws InterruptedException {
         this.noOfPlayers = noOfPlayers;
+        conductor = new Conductor[noOfPlayers];
         houses = new House(noOfPlayers);
 
         for (int i = 0; i < noOfPlayers; i++) {
@@ -80,8 +81,6 @@ public class StatusControl {
     public void attemptMurder(int victim) throws InterruptedException {
         if (houses.enterHouse(victim)) { // Something only happens if able to enter the house
             conductor[victim].murderAttempt();
-            // Is there a need for the thread to sleep? I imagine that we leave the house immediately after killing?
-            // Thread.sleep(30000);
             houses.leaveHouse(victim);
         }
     }
@@ -89,10 +88,20 @@ public class StatusControl {
     public void protectPlayer(int player) throws InterruptedException {
         if (houses.enterHouse(player)) { // Something only happens if able to enter the house
             conductor[player].protectPlayer();
-            // Sleep for 30 seconds, can be changed depending on what we think
-            Thread.sleep(30000);
-            conductor[player].stopProtectingPlayer();
-            houses.leaveHouse(player);
+
+            // Use a ScheduledExecutorService to schedule the stopProtectingPlayer action after 10 seconds
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            executorService.schedule(() -> {
+                conductor[player].stopProtectingPlayer();
+                try {
+                    houses.leaveHouse(player);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }, 10, TimeUnit.SECONDS);
+
+            // Shutdown the executor service to stop it when it's no longer needed
+            executorService.shutdown();
         }
     }
 }
