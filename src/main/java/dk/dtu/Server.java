@@ -20,16 +20,21 @@ public class Server implements Runnable {
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
     private final Map<String, PlayerHandler> playerHandlers;
+    private final Thread actionThread;
+
+    private HashMap<String, String> voteMap;
     public String[] roleList;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
         repository = new SpaceRepository();
+        actionThread = new Thread(this::runActionsListener);
         gameSpace = new SequentialSpace();
         serverThread = new Thread(this);
         playersInLobby = new HashSet<>();
         messageThread = new Thread(this::runMessageListener);
         playerHandlers = new HashMap<>();
+        voteMap = new HashMap<>();
 
         gameStarted = false;
     }
@@ -37,6 +42,8 @@ public class Server implements Runnable {
     public void startServer() {
         serverThread.start();
         messageThread.start();
+        actionThread.start();
+
     }
 
     @Override
@@ -135,9 +142,11 @@ public class Server implements Runnable {
             //int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
+            roles.put("Mafia");
+            roles.put("Citizen");
             //}
-            roles.put("Bodyguard");
-            roles.put("Snitch");
+            //roles.put("Bodyguard");
+            //roles.put("Snitch");
             // for(int i = 0; i < playersInLobby.size() - nrOfMafia - 2; i++){
             roles.put("Citizen");
             // }
@@ -194,6 +203,82 @@ public class Server implements Runnable {
         }
     }
 
+    private void runActionsListener() {
+        System.out.println("Action listener running");
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                Object[] actionRequest = gameSpace.get(new ActualField("action"), new FormalField(String.class),new FormalField(String.class), new FormalField(String.class));
+                String action = (String) actionRequest[1];
+                String yourUsername = (String) actionRequest[2];
+                String Victim = (String) actionRequest[3];
+                if(!isDay){
+                    switch (action) {
+                        case "MafiaVote" -> mafiaVote(yourUsername, Victim);
+                        case "Snitch" -> snitchAction(yourUsername, Victim);
+                        case "Bodyguard" -> bodyguardAction(yourUsername, Victim);
+                    }
+                }
+
+
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("Message listener thread interrupted");
+        } catch (Exception e) {
+            System.out.println("Message listener error: " + e);
+        }
+    }
+
+    private void bodyguardAction(String yourUsername, String victim) {
+    }
+
+    private void snitchAction(String yourUsername, String victim) {
+    }
+
+    private void mafiaVote(String yourUsername, String victim) {
+        int nrOfMafia = 2;
+        System.out.println(playersInLobby);
+        voteMap.put(yourUsername, victim);
+        if (nrOfMafia == voteMap.size()) {
+            // Map to keep track of vote counts
+            HashMap<String, Integer> voteCount = new HashMap<>();
+
+            // Count the votes for each user
+            for (String vote : voteMap.values()) {
+                voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1);
+            }
+
+            // Determine if all votes are different or find the user with the most votes
+            String mostVotedUser = null;
+            int maxVotes = 0;
+
+            for (Map.Entry<String, Integer> entry : voteCount.entrySet()) {
+                if (entry.getValue() > maxVotes) {
+                    maxVotes = entry.getValue();
+                    mostVotedUser = entry.getKey();
+                }
+            }
+
+            if(nrOfMafia == 1){
+                System.out.println("Mafia eliminated: " + mostVotedUser);
+                voteCount.clear();
+                return;
+            }
+
+            voteCount.clear();
+            if (maxVotes == 1) {
+                // If all values are different, everyone has 1 vote
+                System.out.println("All users have 1 vote.");
+            } else {
+                // Otherwise, print the victim with the most votes
+                System.out.println("Victim with the most votes: " + mostVotedUser);
+            }
+        }
+    }
+
+
+
+
     public static void main(String[] args) {
         try {
             new Server().startServer();
@@ -232,6 +317,7 @@ public class Server implements Runnable {
         String state = isDay ? "day" : "night";
         if (isDay) {
             messages.clear();
+            voteMap.clear();
             for (int i=0; i < playersInLobby.size(); i++) {
                 gameSpace.put("messages", messages);
             }

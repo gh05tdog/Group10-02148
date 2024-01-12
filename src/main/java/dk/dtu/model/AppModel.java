@@ -173,4 +173,14 @@ public class AppModel {
         });
         userThread.start();
     }
+
+    public void AttemptAction(String username, String role,String Victim) throws InterruptedException {
+        //System.out.println("from appmodel" + username + role + Victim);
+        switch (role) {
+            case "[Mafia]" -> server.put("action", "MafiaVote", username, Victim);
+            case "[Snitch]" -> server.put("action", "Snitch", username, Victim);
+            case "[Bodyguard]" -> server.put("action", "Protect", username, Victim);
+            default -> System.out.println("You are a Citizen");
+        }
+    }
 }

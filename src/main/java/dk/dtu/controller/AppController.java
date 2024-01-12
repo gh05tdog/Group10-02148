@@ -136,22 +136,19 @@ public class AppController {
 
 
     }
-    public void AttemptAction(MouseEvent mouseEvent) {
+    public void AttemptAction(MouseEvent mouseEvent) throws InterruptedException {
         // Get the id of the clicked circle
         String circleId = ((Circle) mouseEvent.getSource()).getId();
         String labelId = "labelFor" + circleId;
-
-
         // Find the label in the scene graph
         Label label = (Label) ((Node) mouseEvent.getSource()).getScene().lookup("#" + labelId);
-
         if (label != null) {
             // Print the text of the label
-
             System.out.println(label.getText());
         } else {
             System.out.println("Label not found for " + circleId);
         }
+        assert label != null;
+        model.AttemptAction(config.getUsername(),config.getRole(),label.getText());
     }
-
 }
