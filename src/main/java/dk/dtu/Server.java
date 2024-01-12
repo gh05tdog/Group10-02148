@@ -5,6 +5,7 @@ import org.jspace.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class Server implements Runnable {
     private final SpaceRepository repository;
@@ -66,7 +67,7 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleMessage(String username, String messageContent) throws InterruptedException {
+    void handleMessage(String username, String messageContent) throws InterruptedException {
         // Add message to the list
         String fullMessage = username + ": " + messageContent ;
         messages.add(fullMessage);
@@ -75,7 +76,7 @@ public class Server implements Runnable {
         gameSpace.put("messages", messages);
     }
 
-    private void handleJoinLobby(String username) throws Exception {
+    void handleJoinLobby(String username) throws Exception {
         if (!gameStarted && !playersInLobby.contains(username)) {
             gameSpace.put("connected", username );
             playersInLobby.add(username);
@@ -96,7 +97,7 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleLeaveLobby(String username) {
+    void handleLeaveLobby(String username) {
         if (playersInLobby.remove(username)) {
             System.out.println("User " + username + " left the lobby");
             broadcastLobbyUpdate();
@@ -110,7 +111,7 @@ public class Server implements Runnable {
         }
     }
 
-    private void startGame() throws InterruptedException {
+    void startGame() throws InterruptedException {
         if (!playersInLobby.isEmpty()) {
             broadcastToAllClients("startGame", "");
             gameSpace.put("gameStarted");
@@ -202,7 +203,7 @@ public class Server implements Runnable {
         }
     }
 
-    private void manageDayNightCycle() {
+    void manageDayNightCycle() {
         if (!isTimerRunning) {
             isTimerRunning = true;
             new Timer().schedule(new TimerTask() {
@@ -227,7 +228,7 @@ public class Server implements Runnable {
         }
     }
 
-    private void broadcastDayNightCycle() throws InterruptedException {
+    void broadcastDayNightCycle() throws InterruptedException {
         String state = isDay ? "day" : "night";
         if (isDay) {
             messages.clear();
@@ -255,4 +256,28 @@ public class Server implements Runnable {
         }
     }
 
+    public void stopServer() {
+        serverThread.interrupt();
+        messageThread.interrupt();
+    }
+
+    public boolean isRunning() {
+        return serverThread.isAlive();
+    }
+
+    public String getPlayersInLobby() {
+        return playersInLobby.toString();
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public  List<String>  getMessages() {
+        return messages;
+    }
+
+    public Boolean getDayNightCycle() {
+        return isDay;
+    }
 }
