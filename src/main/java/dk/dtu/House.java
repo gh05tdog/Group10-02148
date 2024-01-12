@@ -21,4 +21,10 @@ public class House {
     public synchronized void leaveHouse(int no) throws InterruptedException {
         houses.put(no,"lock");
     }
+
+    // Checks if anyone is inside house, does not take the lock
+    public synchronized boolean lookInsideHouse (int no) throws InterruptedException {
+        Object[] lock = houses.queryp(new ActualField(no),new ActualField("lock"));
+        return lock != null;
+    }
 }
