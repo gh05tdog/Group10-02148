@@ -1,10 +1,8 @@
 package dk.dtu;
 
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -137,9 +135,23 @@ class StatusControlTest {
         statusControl.protectPlayer(4);
         assertFalse(statusControl.houses.lookInsideHouse(4));
         assertNotEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
-        Thread.sleep(10000);
+        Thread.sleep(11000);
         assertTrue(statusControl.houses.lookInsideHouse(4));
         assertEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
     }
+
+    /**
+     Whilst snitching on someone, they can still be killed
+     i.e. snitching does not protect a player
+     */
+    @Test
+    void testKillAfterSnitch() throws InterruptedException {
+        assertFalse(statusControl.conductor[2].isKilled());
+        statusControl.getPlayerRole(2);
+        statusControl.attemptMurder(2);
+        assertTrue(statusControl.conductor[2].isKilled());
+
+    }
+
 
 }
