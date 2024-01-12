@@ -112,6 +112,7 @@ public class Server implements Runnable {
 
     private void startGame() throws InterruptedException {
         if (!playersInLobby.isEmpty() && !gameStarted) {
+            broadcastToAllClients("startGame", "");
             gameSpace.put("gameStarted");
             assignRolesToPlayers();
             gameStarted = true;

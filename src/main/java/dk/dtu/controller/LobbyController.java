@@ -11,8 +11,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,15 +27,21 @@ public class LobbyController {
     public TextArea messageAreaLobby;
     public TextField usernameField;
     public Button connectButton;
+    public AnchorPane lobbyAnchorPane;
+    public Label LobbyCreaterLabel;
 
     @FXML
     private TextField messageField;
 
     private final AppModel model;
 
+    private Stage stage;
+
 
     public LobbyController() throws IOException {
         model = new AppModel();
+        // Get stage based on App
+
     }
 
     @FXML
@@ -46,6 +54,18 @@ public class LobbyController {
             //Join the lobby
             handleConnectAction();
             System.out.println("Username: " + config.getUsername());
+
+            Platform.runLater(() -> {
+                Stage currentStage = (Stage) lobbyAnchorPane.getScene().getWindow();
+                if (currentStage == null) {
+                    System.out.println("Stage is null");
+                }else {
+                    System.out.println("Stage is not null");
+                    model.startListeningForGameStart(config.getUsername(), currentStage);
+                }
+                StartGameButton.setDisable(!config.getLobbyLeader());
+            });
+
         }
 
     }
@@ -84,9 +104,9 @@ public class LobbyController {
         model.startListeningForMessages(messageAreaLobby);
         // Start listening for user updates
         model.startListeningForUserUpdates(usernameList, config.getUsername());
+
     }
 
-    //Handle the start game button
     @FXML
     private void StartGameAction(ActionEvent event) throws IOException, InterruptedException {
         model.startGame();
