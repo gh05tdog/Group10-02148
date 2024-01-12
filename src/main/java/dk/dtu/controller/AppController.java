@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class AppController {
     public ImageView background;
@@ -63,9 +64,15 @@ public class AppController {
         System.out.println("Received state");
         Platform.runLater(() -> {
             if ("day".equals(state)) {
+
+                messageArea.setVisible(true);
                 counter.setImage(sun);
                 background.setImage(day);
             } else if ("night".equals(state)) {
+                if(!Objects.equals(config.getRole(), "[Mafia]")){
+                    messageArea.setVisible(false);
+
+                }
                 counter.setImage(moon);
                 background.setImage(night);
             }
