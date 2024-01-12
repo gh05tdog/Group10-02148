@@ -13,6 +13,7 @@ public class Server implements Runnable {
     private final String serverIp;
     private final Thread serverThread;
     private final Thread messageThread;
+    private StatusControl statusControl;
     private final Set<String> playersInLobby;
     private boolean gameStarted;
     private boolean isDay = true; // Initial state
@@ -128,6 +129,7 @@ public class Server implements Runnable {
             for(String username : playersInLobby){
                 broadcastRoleUpdate(username);
             }
+           statusControl = new StatusControl(playersInLobby.size(),roleList);
 
             System.out.println("Game is starting with players: " + playersInLobby);
         } else {
@@ -235,7 +237,7 @@ public class Server implements Runnable {
     private void snitchAction(String yourUsername, String victim) {
     }
 
-    private void mafiaVote(String yourUsername, String victim) {
+    private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
         int nrOfMafia = 2;
         System.out.println(playersInLobby);
         voteMap.put(yourUsername, victim);
@@ -262,6 +264,8 @@ public class Server implements Runnable {
             if(nrOfMafia == 1){
                 System.out.println("Mafia eliminated: " + mostVotedUser);
                 voteCount.clear();
+                statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
+                System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
                 return;
             }
 
@@ -272,6 +276,8 @@ public class Server implements Runnable {
             } else {
                 // Otherwise, print the victim with the most votes
                 System.out.println("Victim with the most votes: " + mostVotedUser);
+                statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
+                System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
             }
         }
     }
