@@ -31,6 +31,10 @@ class Conductor extends Thread {
         }
     }
 
+    void kill() {
+        killed = true;
+    }
+
     void protectPlayer() {
         secured = true;
     }
@@ -85,6 +89,12 @@ public class StatusControl {
         }
     }
 
+    public void executeSuspect(int suspect) throws InterruptedException {
+        conductor[suspect].kill();
+    }
+
+
+
     public void protectPlayer(int player) throws InterruptedException {
         if (houses.enterHouse(player)) { // Something only happens if able to enter the house
             conductor[player].protectPlayer();
@@ -112,4 +122,6 @@ public class StatusControl {
             return "[REDACTED]";
         }
     }
+
+
 }

@@ -220,7 +220,7 @@ public class Server implements Runnable {
                         case "Bodyguard" -> bodyguardAction(yourUsername, Victim);
                     }
                 } else if (Objects.equals(stageCycle, "VotingTime")){
-                    vote(yourUsername, Victim);
+                        executeVote(yourUsername, Victim);
                 } else {
                     System.out.println("Not the right time to do that");
 
@@ -234,7 +234,26 @@ public class Server implements Runnable {
         }
     }
 
-    private void vote(String yourUsername, String suspect) {
+    private void executeVote(String yourUsername, String suspect) throws InterruptedException {
+        System.out.println("Vote received from: " + yourUsername + " on: " + suspect);
+        voteMap.put(yourUsername, suspect);
+
+        HashMap<String, Integer> executeVoteCount = new HashMap<>();
+
+        for (String vote : voteMap.values()) {
+            executeVoteCount.put(vote, executeVoteCount.getOrDefault(vote, 0) + 1);
+        }
+        String mostVotedUser = null;
+        int maxVotes = 0;
+
+        for (Map.Entry<String, Integer> entry : executeVoteCount.entrySet()) {
+            if (entry.getValue() > maxVotes) {
+                maxVotes = entry.getValue();
+                mostVotedUser = entry.getKey();
+            }
+        }
+        statusControl.executeSuspect(playerHandlers.get(mostVotedUser).getPlayerID());
+        System.out.println("the town has executed: " + statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
 
     }
 
@@ -400,7 +419,7 @@ public class Server implements Runnable {
         return messages;
     }
 
-    public String getDayNightCycle() {
+    public String stageCycle() {
         return stageCycle;
     }
 }

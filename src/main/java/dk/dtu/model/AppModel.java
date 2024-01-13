@@ -201,6 +201,9 @@ public class AppModel {
             System.out.println("You have already voted");
             return;
         }
+
+        server.put("action", "executeVote", username, Victim);
+
         switch (role) {
             case "[Mafia]" -> server.put("action", "MafiaVote", username, Victim);
             case "[Snitch]" -> server.put("action", "Snitch", username, Victim);
