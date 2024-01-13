@@ -15,7 +15,8 @@ public class Server implements Runnable {
     private StatusControl statusControl;
     private final Set<String> playersInLobby;
     private boolean gameStarted;
-    private boolean isDay = true; // Initial state
+    private String stageCycle = "Day"; // Initial state
+
     private final List<String> messages = new ArrayList<>();
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
@@ -212,15 +213,18 @@ public class Server implements Runnable {
                 String action = (String) actionRequest[1];
                 String yourUsername = (String) actionRequest[2];
                 String Victim = (String) actionRequest[3];
-                if(!isDay){
+                if(Objects.equals(stageCycle, "Night")){
                     switch (action) {
                         case "MafiaVote" -> mafiaVote(yourUsername, Victim);
                         case "Snitch" -> snitchAction(yourUsername, Victim);
                         case "Bodyguard" -> bodyguardAction(yourUsername, Victim);
                     }
+                } else if (Objects.equals(stageCycle, "VotingTime")){
+                    vote(yourUsername, Victim);
+                } else {
+                    System.out.println("Not the right time to do that");
+
                 }
-
-
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -228,6 +232,10 @@ public class Server implements Runnable {
         } catch (Exception e) {
             System.out.println("Message listener error: " + e);
         }
+    }
+
+    private void vote(String yourUsername, String suspect) {
+
     }
 
     private void bodyguardAction(String yourUsername, String victim) {
@@ -305,13 +313,37 @@ public class Server implements Runnable {
                         timeSeconds--;
                         broadcastTimeUpdate(timeSeconds);
                     } else {
-                        isDay = !isDay; // Toggle state
-
-                        timeSeconds = 10; // Reset timer
-                        try {
-                            broadcastDayNightCycle();
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                        switch (stageCycle) {
+                            case "Day" -> {
+                                stageCycle = "VotingTime";
+                                System.out.println(stageCycle);
+                                timeSeconds = 10; // Reset timer
+                                try {
+                                    broadcastDayNightCycle();
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                            case "Night" -> {
+                                stageCycle = "Day";
+                                timeSeconds = 10; // Reset timer
+                                System.out.println(stageCycle);
+                                try {
+                                    broadcastDayNightCycle();
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                            case "VotingTime" -> {
+                                stageCycle = "Night";
+                                timeSeconds = 5; // Reset timer
+                                System.out.println(stageCycle);
+                                try {
+                                    broadcastDayNightCycle();
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
                         }
                     }
                 }
@@ -320,15 +352,14 @@ public class Server implements Runnable {
     }
 
     void broadcastDayNightCycle() throws InterruptedException {
-        String state = isDay ? "day" : "night";
-        if (isDay) {
+        if (Objects.equals(stageCycle, "Day")) {
             messages.clear();
             voteMap.clear();
             for (int i=0; i < playersInLobby.size(); i++) {
                 gameSpace.put("messages", messages);
             }
         }
-        broadcastToAllClients("dayNightCycle", state);
+        broadcastToAllClients("dayNightCycle", stageCycle);
     }
 
     private void broadcastTimeUpdate(int timeSeconds) {
@@ -369,7 +400,7 @@ public class Server implements Runnable {
         return messages;
     }
 
-    public Boolean getDayNightCycle() {
-        return isDay;
+    public String getDayNightCycle() {
+        return stageCycle;
     }
 }

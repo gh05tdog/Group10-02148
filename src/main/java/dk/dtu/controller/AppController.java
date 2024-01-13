@@ -78,13 +78,13 @@ public class AppController {
     public void updateDayNightCycle(String state, String killed) {
         System.out.println("Received state");
         Platform.runLater(() -> {
-            if ("day".equals(state)) {
+            if ("Day".equals(state)) {
                 messageArea.setVisible(true);
                 counter.setImage(sun);
                 background.setImage(day);
                 showKilled(killed);
                 removeKilled(killed);
-            } else if ("night".equals(state)) {
+            } else if ("Night".equals(state)) {
                 infoTextField.setText("");
                 config.setHasVoted(false);
                 if(!Objects.equals(config.getRole(), "[Mafia]")){
