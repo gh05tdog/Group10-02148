@@ -81,7 +81,7 @@ public class Server implements Runnable {
 
     void handleMessage(String username, String messageContent) throws InterruptedException {
         // Add message to the list
-        String fullMessage = username + ": " + messageContent ;
+        String fullMessage = username + ": " + messageContent;
         messages.add(fullMessage);
 
         // Update the space with the new list of messages
@@ -90,7 +90,7 @@ public class Server implements Runnable {
 
     void handleJoinLobby(String username) throws Exception {
         if (!gameStarted && !playersInLobby.contains(username)) {
-            gameSpace.put("connected", username );
+            gameSpace.put("connected", username);
             playersInLobby.add(username);
             System.out.println("User " + username + " joined the lobby");
             messages.add(username + " joined the lobby");
@@ -103,7 +103,7 @@ public class Server implements Runnable {
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
             playerThread.start();
 
-        }else{
+        } else {
             throw new Exception("Game already started or user already in lobby");
 
         }
@@ -130,11 +130,11 @@ public class Server implements Runnable {
             assignRolesToPlayers();
             gameStarted = true;
             manageDayNightCycle();
-            for(String username : playersInLobby){
+            for (String username : playersInLobby) {
                 System.out.println("Sending role update to: " + username);
                 broadcastRoleUpdate(username);
             }
-           statusControl = new StatusControl(playersInLobby.size(),roleList);
+            statusControl = new StatusControl(playersInLobby.size(), roleList);
 
             System.out.println("Game is starting with players: " + playersInLobby);
         } else {
@@ -143,7 +143,7 @@ public class Server implements Runnable {
     }
 
     private void assignRolesToPlayers() throws InterruptedException {
-        if(!gameStarted){
+        if (!gameStarted) {
             RandomSpace roles = new RandomSpace();
             roleList = new String[playersInLobby.size()];
             //int nrOfMafia = playersInLobby.size()/4;
@@ -159,14 +159,14 @@ public class Server implements Runnable {
             //roles.put("Citizen");
             // }
 
-            for(String username : playersInLobby){
+            for (String username : playersInLobby) {
                 playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
                 roleList[playerHandlers.get(username).getPlayerID()] = playerHandlers.get(username).getRole();
                 System.out.println("Player " + username + "with ID: " + playerHandlers.get(username).getPlayerID() + " has role: " + playerHandlers.get(username).getRole());
             }
-           System.out.println("Role list:" + Arrays.toString(roleList));
+            System.out.println("Role list:" + Arrays.toString(roleList));
 
-        }else{
+        } else {
             System.out.println("Game already started");
         }
     }
@@ -199,7 +199,7 @@ public class Server implements Runnable {
         System.out.println("Message listener running");
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                Object[] messageRequest = gameSpace.get(new ActualField("message"),new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
+                Object[] messageRequest = gameSpace.get(new ActualField("message"), new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String username = (String) messageRequest[1];
                 String message = (String) messageRequest[2];
                 handleMessage(username, message);
@@ -216,18 +216,18 @@ public class Server implements Runnable {
         System.out.println("Action listener running");
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                Object[] actionRequest = gameSpace.get(new ActualField("action"), new FormalField(String.class),new FormalField(String.class), new FormalField(String.class));
+                Object[] actionRequest = gameSpace.get(new ActualField("action"), new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String action = (String) actionRequest[1];
                 String yourUsername = (String) actionRequest[2];
                 String Victim = (String) actionRequest[3];
-                if(Objects.equals(stageCycle, "Night")){
+                if (Objects.equals(stageCycle, "Night")) {
                     switch (action) {
                         case "MafiaVote" -> mafiaVote(yourUsername, Victim);
                         case "Snitch" -> snitchAction(yourUsername, Victim);
                         case "Bodyguard" -> bodyguardAction(yourUsername, Victim);
                     }
-                } else if (Objects.equals(stageCycle, "VotingTime")){
-                        executeVote(yourUsername, Victim);
+                } else if (Objects.equals(stageCycle, "VotingTime")) {
+                    executeVote(yourUsername, Victim);
                 } else {
                     System.out.println("Not the right time to do that");
 
@@ -260,7 +260,7 @@ public class Server implements Runnable {
             }
         }
 
-        if(maxVotes == 1){
+        if (maxVotes == 1) {
             System.out.println("The town eliminated: " + mostVotedUser);
             executeVoteCount.clear();
             statusControl.executeSuspect(playerHandlers.get(mostVotedUser).getPlayerID());
@@ -271,6 +271,7 @@ public class Server implements Runnable {
 
 
     }
+
     private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
         System.out.println("Protecting player: " + victim);
         statusControl.protectPlayer(playerHandlers.get(victim).getPlayerID());
@@ -280,9 +281,9 @@ public class Server implements Runnable {
     private void snitchAction(String yourUsername, String victim) throws InterruptedException {
         System.out.println("Snitching on player: " + victim);
         System.out.println("SNITCH: " + statusControl.getPlayerRole(playerHandlers.get(victim).getPlayerID()));
-        if(!(statusControl.conductor[playerHandlers.get(victim).getPlayerID()].isSecured())){
-            broadCastToSnitch(yourUsername,victim ,playerHandlers.get(victim).getRole());
-        }else{
+        if (!(statusControl.conductor[playerHandlers.get(victim).getPlayerID()].isSecured())) {
+            broadCastToSnitch(yourUsername, victim, playerHandlers.get(victim).getRole());
+        } else {
             System.out.println("Snitching failed");
         }
 
@@ -313,13 +314,13 @@ public class Server implements Runnable {
                 }
             }
 
-            if(nrOfMafia == 1){
+            if (nrOfMafia == 1) {
                 System.out.println("Mafia eliminated: " + mostVotedUser);
                 voteCount.clear();
                 statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
-                if((statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled())){
+                if ((statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled())) {
                     broadcastToAllClients("mafiaEliminated", mostVotedUser);
-                }else{
+                } else {
                     System.out.println("Mafia kill failed");
                 }
 
@@ -336,19 +337,19 @@ public class Server implements Runnable {
                 System.out.println("Victim with the most votes: " + mostVotedUser);
                 statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
                 System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
-                if(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled()){
+                if (statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled()) {
                     broadcastToAllClients("mafiaEliminated", mostVotedUser);
-                }else{
+                } else {
                     System.out.println("Mafia kill failed");
                 }
             }
         }
     }
 
-    public void broadCastToSnitch(String username, String victimRole,String victimUsername) throws InterruptedException {
-        if(playerHandlers.get(username).getRole().equals("[Snitch]")){
+    public void broadCastToSnitch(String username, String victimRole, String victimUsername) throws InterruptedException {
+        if (playerHandlers.get(username).getRole().equals("[Snitch]")) {
             System.out.println("Sending snitch message to: " + username);
-            gameSpace.put("snitchMessage", username,playerHandlers.get(username).getRole(), victimUsername, victimRole);
+            gameSpace.put("snitchMessage", username, playerHandlers.get(username).getRole(), victimUsername, victimRole);
         }
 
     }
@@ -416,13 +417,13 @@ public class Server implements Runnable {
         if (Objects.equals(stageCycle, "Day")) {
             messages.clear();
             mafiaVoteMap.clear();
-            for (int i=0; i < playersInLobby.size(); i++) {
+            for (int i = 0; i < playersInLobby.size(); i++) {
                 gameSpace.put("messages", messages);
             }
         } else if (Objects.equals(stageCycle, "Night")) {
             messages.clear();
             executeVoteMap.clear();
-            for (int i=0; i < playersInLobby.size(); i++) {
+            for (int i = 0; i < playersInLobby.size(); i++) {
                 gameSpace.put("messages", messages);
             }
         }
@@ -463,7 +464,7 @@ public class Server implements Runnable {
         return gameStarted;
     }
 
-    public  List<String>  getMessages() {
+    public List<String> getMessages() {
         return messages;
     }
 
@@ -471,4 +472,4 @@ public class Server implements Runnable {
         return stageCycle;
     }
 
-    }
+}
