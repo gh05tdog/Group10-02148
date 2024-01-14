@@ -84,8 +84,14 @@ public class AppController {
                 background.setImage(day);
                 showKilled(killed);
                 removeKilled(killed);
+            } else if ("VotingTime".equals(state)) {
+                infoTextField.setText("Voting time");
+                counter.setImage(moon);
+                background.setImage(day);
             } else if ("Night".equals(state)) {
                 infoTextField.setText("");
+                showKilled(killed);
+                removeKilled(killed);
                 config.setHasVoted(false);
                 if(!Objects.equals(config.getRole(), "[Mafia]")){
                     messageArea.setVisible(false);

@@ -23,7 +23,9 @@ public class Server implements Runnable {
     private final Map<String, PlayerHandler> playerHandlers;
     private final Thread actionThread;
 
-    private HashMap<String, String> voteMap;
+    private HashMap<String, String> mafiaVoteMap;
+
+    private HashMap<String, String> executeVoteMap;
     public String[] roleList;
 
     public Server() throws UnknownHostException {
@@ -35,7 +37,8 @@ public class Server implements Runnable {
         playersInLobby = new HashSet<>();
         messageThread = new Thread(this::runMessageListener);
         playerHandlers = new HashMap<>();
-        voteMap = new HashMap<>();
+        executeVoteMap = new HashMap<>();
+        mafiaVoteMap = new HashMap<>();
 
         gameStarted = false;
     }
@@ -236,11 +239,11 @@ public class Server implements Runnable {
 
     private void executeVote(String yourUsername, String suspect) throws InterruptedException {
         System.out.println("Vote received from: " + yourUsername + " on: " + suspect);
-        voteMap.put(yourUsername, suspect);
+        executeVoteMap.put(yourUsername, suspect);
 
         HashMap<String, Integer> executeVoteCount = new HashMap<>();
 
-        for (String vote : voteMap.values()) {
+        for (String vote : executeVoteMap.values()) {
             executeVoteCount.put(vote, executeVoteCount.getOrDefault(vote, 0) + 1);
         }
         String mostVotedUser = null;
@@ -252,8 +255,16 @@ public class Server implements Runnable {
                 mostVotedUser = entry.getKey();
             }
         }
-        statusControl.executeSuspect(playerHandlers.get(mostVotedUser).getPlayerID());
-        System.out.println("the town has executed: " + statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
+
+        if(maxVotes == 1){
+            System.out.println("The town eliminated: " + mostVotedUser);
+            executeVoteCount.clear();
+            statusControl.executeSuspect(playerHandlers.get(mostVotedUser).getPlayerID());
+            broadcastToAllClients("mafiaEliminated", mostVotedUser);
+            System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
+            return;
+        }
+
 
     }
 
@@ -266,13 +277,13 @@ public class Server implements Runnable {
     private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
         int nrOfMafia = 1;
         System.out.println(playersInLobby);
-        voteMap.put(yourUsername, victim);
-        if (nrOfMafia == voteMap.size()) {
+        mafiaVoteMap.put(yourUsername, victim);
+        if (nrOfMafia == mafiaVoteMap.size()) {
             // Map to keep track of vote counts
             HashMap<String, Integer> voteCount = new HashMap<>();
 
             // Count the votes for each user
-            for (String vote : voteMap.values()) {
+            for (String vote : mafiaVoteMap.values()) {
                 voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1);
             }
 
@@ -373,7 +384,13 @@ public class Server implements Runnable {
     void broadcastDayNightCycle() throws InterruptedException {
         if (Objects.equals(stageCycle, "Day")) {
             messages.clear();
-            voteMap.clear();
+            mafiaVoteMap.clear();
+            for (int i=0; i < playersInLobby.size(); i++) {
+                gameSpace.put("messages", messages);
+            }
+        } else if (Objects.equals(stageCycle, "Night")) {
+            messages.clear();
+            executeVoteMap.clear();
             for (int i=0; i < playersInLobby.size(); i++) {
                 gameSpace.put("messages", messages);
             }
