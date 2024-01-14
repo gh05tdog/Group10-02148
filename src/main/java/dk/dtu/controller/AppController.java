@@ -15,6 +15,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Arrays;
 
@@ -39,6 +41,7 @@ public class AppController {
     public TextArea roleBox;
     public Circle User0;
     public TextArea infoTextField;
+    private Map<String, Integer> userToIndexMap = new HashMap<>();
     @FXML
     public Label labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0;
 
@@ -62,6 +65,7 @@ public class AppController {
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForTimeUpdate(this, config.getUsername());
         model.startListeningForUserUpdates(usernameList, config.getUsername());
+        model.startListenForSnitchUpdate(this,config.getUsername());
         model.startListenForKilled(config.getUsername());
         Platform.runLater(() -> putUsersInCircles(config.getUserList()));
     }
@@ -140,7 +144,7 @@ public class AppController {
             circles[i].setVisible(true);
             circles[i].setDisable(false);
             labels[i].setText(users[i]);
-
+            userToIndexMap .put(users[i],i);
             // Debugging output
             System.out.println("Assigning " + users[i] + " to circle " + circles[i].getId() + " and label " + labels[i].getId());
         }
@@ -179,4 +183,22 @@ public class AppController {
         Platform.runLater(() -> infoTextField.setText(killed + " was killed"));
     }
 
+    public void updateSnitchMessage(String snitcher, String usernameOfSnitched, String roleOfVictim) {
+        System.out.println("I was here" + snitcher + usernameOfSnitched + roleOfVictim);
+        Label[] snitchLabels = {labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0};
+        Rectangle[] snitchRectangles = {rectangleForSnitch11, rectangleForSnitch10, rectangleForSnitch9, rectangleForSnitch8, rectangleForSnitch7, rectangleForSnitch6, rectangleForSnitch5, rectangleForSnitch4, rectangleForSnitch3, rectangleForSnitch2, rectangleForSnitch1, rectangleForSnitch0};
+        if (snitcher.equals("[Snitch]")) {
+            Integer index = userToIndexMap.get(usernameOfSnitched);
+
+            if (index != null && index >= 0 && index < snitchLabels.length) {
+                // Update the label and rectangle for the snitched user
+                snitchLabels[index].setText(roleOfVictim);
+                snitchLabels[index].setVisible(true);
+                snitchRectangles[index].setVisible(true);
+                System.out.println("Snitch message received: " + usernameOfSnitched + " is a " + roleOfVictim);
+            }
+        }
+    }
 }
+
+

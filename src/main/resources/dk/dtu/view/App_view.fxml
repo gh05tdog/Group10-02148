@@ -80,64 +80,62 @@
         <Label fx:id="labelForUser4" layoutX="222" layoutY="104" mouseTransparent="true" />
         <Circle fx:id="User0" disable="true" fill="DODGERBLUE" layoutX="219.0" layoutY="34.0" onMouseClicked="#AttemptAction" radius="29.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
         <Label fx:id="labelForUser0" layoutX="199" layoutY="14" mouseTransparent="true" />
-        <Rectangle fill="#8B4513" height="20.0" layoutX="194.0" layoutY="66.0" width="60.0" />
+
         <Circle fx:id="User3" disable="true" fill="DODGERBLUE" layoutX="516.0" layoutY="65.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
         <Label fx:id="labelForUser3" layoutX="496" layoutY="45" mouseTransparent="true" />
         <Circle fx:id="User2" disable="true" fill="DODGERBLUE" layoutX="424.0" layoutY="52.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
         <Label fx:id="labelForUser2" layoutX="404" layoutY="32" mouseTransparent="true" />
-        <Rectangle fill="#8B4513" height="20.0" layoutX="385.0" layoutY="86.0" width="60.0" />
         <Circle fx:id="User1" disable="true" fill="DODGERBLUE" layoutX="307.0" layoutY="45.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
         <Label fx:id="labelForUser1" layoutX="287" layoutY="25" mouseTransparent="true" />
-        <Rectangle fill="#8B4513" height="20.0" layoutX="282.0" layoutY="66.0" width="60.0" />
 
         <!-- Example for labelForSnitch0 -->
-        <Label fx:id="labelForSnitch0" layoutX="194.0" layoutY="66.0" mouseTransparent="true" text="Bodyguard" />
-        <Rectangle fx:id="rectangleForSnitch0" fill="#8B4513" height="20.0" layoutX="194.0" layoutY="66.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch0" fill="#4d2613" height="20.0" layoutX="194.0" layoutY="66.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch0" layoutX="194.0" layoutY="66.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch1 -->
-        <Label fx:id="labelForSnitch1" layoutX="282.0" layoutY="66.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch1" fill="#8B4513" height="20.0" layoutX="282.0" layoutY="66.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch1" fill="#4D2613" height="20.0" layoutX="282.0" layoutY="66.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch1" layoutX="282.0" layoutY="66.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch2 -->
-        <Label fx:id="labelForSnitch2" layoutX="385.0" layoutY="86.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch2" fill="#8B4513" height="20.0" layoutX="385.0" layoutY="86.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch2" fill="#4D2613" height="20.0" layoutX="385.0" layoutY="86.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch2" layoutX="385.0" layoutY="86.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch3 -->
-        <Label fx:id="labelForSnitch3" layoutX="502.0" layoutY="96.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch3" fill="#8B4513" height="20.0" layoutX="502.0" layoutY="96.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch3" fill="#4D2613" height="20.0" layoutX="502.0" layoutY="96.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch3" layoutX="502.0" layoutY="96.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch4 -->
-        <Label fx:id="labelForSnitch4" layoutX="223.0" layoutY="155.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch4" fill="#8B4513" height="20.0" layoutX="223.0" layoutY="148.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch4" fill="#4D2613" height="20.0" layoutX="223.0" layoutY="148.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch4" layoutX="223.0" layoutY="155.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch5 -->
-        <Label fx:id="labelForSnitch5" layoutX="332.0" layoutY="155.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch5" fill="#8B4513" height="20.0" layoutX="332.0" layoutY="155.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch5" fill="#4D2613" height="20.0" layoutX="332.0" layoutY="155.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch5" layoutX="332.0" layoutY="155.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch6 -->
-        <Label fx:id="labelForSnitch6" layoutX="424.0" layoutY="184.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch6" fill="#8B4513" height="20.0" layoutX="424.0" layoutY="184.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch6" fill="#4D2613" height="20.0" layoutX="424.0" layoutY="184.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch6" layoutX="424.0" layoutY="184.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch7 -->
-        <Label fx:id="labelForSnitch7" layoutX="217.0" layoutY="247.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch7" fill="#8B4513" height="20.0" layoutX="217.0" layoutY="247.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch7" fill="#4D2613" height="20.0" layoutX="217.0" layoutY="247.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch7" layoutX="217.0" layoutY="247.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch8 -->
-        <Label fx:id="labelForSnitch8" layoutX="332.0" layoutY="252.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch8" fill="#8B4513" height="20.0" layoutX="332.0" layoutY="252.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch8" fill="#4D2613" height="20.0" layoutX="332.0" layoutY="252.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch8" layoutX="332.0" layoutY="252.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch9 -->
-        <Label fx:id="labelForSnitch9" layoutX="491.0" layoutY="261.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch9" fill="#8B4513" height="20.0" layoutX="491.0" layoutY="261.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch9" fill="#4D2613" height="20.0" layoutX="491.0" layoutY="261.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch9" layoutX="491.0" layoutY="261.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch10 -->
-        <Label fx:id="labelForSnitch10" layoutX="277.0" layoutY="326.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch10" fill="#8B4513" height="20.0" layoutX="277.0" layoutY="326.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch10" fill="#4D2613" height="20.0" layoutX="277.0" layoutY="326.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch10" layoutX="277.0" layoutY="326.0" mouseTransparent="true" text="" textFill="white"/>
         <!-- Example for labelForSnitch11 -->
-        <Label fx:id="labelForSnitch11" layoutX="399.0" layoutY="308.0" mouseTransparent="true" text="I am here" />
-        <Rectangle fx:id="rectangleForSnitch11" fill="#8B4513" height="20.0" layoutX="399.0" layoutY="308.0" visible="false" width="60.0" />
 
+        <Rectangle fx:id="rectangleForSnitch11" fill="#4D2613" height="20.0" layoutX="399.0" layoutY="308.0" visible="false" width="60.0" />
+        <Label fx:id="labelForSnitch11" layoutX="399.0" layoutY="308.0" mouseTransparent="true" text="" textFill="white" />
 
     </children>
 </Pane>

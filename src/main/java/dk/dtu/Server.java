@@ -144,10 +144,10 @@ public class Server implements Runnable {
             roleList = new String[playersInLobby.size()];
             //int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
-            //roles.put("Mafia");
+            roles.put("Mafia");
             //roles.put("Snitch");
             roles.put("Bodyguard");
-            roles.put("Mafia");
+            //roles.put("Mafia");
             //}
             //roles.put("Bodyguard");
             roles.put("Snitch");
@@ -243,6 +243,12 @@ public class Server implements Runnable {
     private void snitchAction(String yourUsername, String victim) throws InterruptedException {
         System.out.println("Snitching on player: " + victim);
         System.out.println("SNITCH: " + statusControl.getPlayerRole(playerHandlers.get(victim).getPlayerID()));
+        if(!(statusControl.conductor[playerHandlers.get(victim).getPlayerID()].isSecured())){
+            broadCastToSnitch(yourUsername,victim ,playerHandlers.get(victim).getRole());
+        }else{
+            System.out.println("Snitching failed");
+        }
+
     }
 
 
@@ -274,7 +280,12 @@ public class Server implements Runnable {
                 System.out.println("Mafia eliminated: " + mostVotedUser);
                 voteCount.clear();
                 statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
-                broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                if((statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled())){
+                    broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                }else{
+                    System.out.println("Mafia kill failed");
+                }
+
                 System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
                 return;
             }
@@ -288,11 +299,22 @@ public class Server implements Runnable {
                 System.out.println("Victim with the most votes: " + mostVotedUser);
                 statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
                 System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
+                if(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled()){
+                    broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                }else{
+                    System.out.println("Mafia kill failed");
+                }
             }
         }
     }
 
+    public void broadCastToSnitch(String username, String victimRole,String victimUsername) throws InterruptedException {
+        if(playerHandlers.get(username).getRole().equals("[Snitch]")){
+            System.out.println("Sending snitch message to: " + username);
+            gameSpace.put("snitchMessage", username,playerHandlers.get(username).getRole(), victimUsername, victimRole);
+        }
 
+    }
 
 
     public static void main(String[] args) {

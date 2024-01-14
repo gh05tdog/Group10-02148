@@ -36,8 +36,6 @@ public class AppModel {
 
     public void startListeningForMessages(TextArea messageAreaLobby) {
         messageHandler.startListeningForMessages(messageAreaLobby);
-
-
     }
 
     public void listenforRoleUpdate(AppController appController, String username) {
@@ -134,6 +132,24 @@ public class AppModel {
             default -> System.out.println("You are a Citizen");
         }
         config.setHasVoted(true);
+    }
+
+    public void startListenForSnitchUpdate(AppController appController,String username){
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Object[] response = server.get(new ActualField("snitchMessage"), new ActualField(username),new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
+                    String snitcher = (String) response[1];
+                    String snitcherRole = (String) response[2];
+                    String victimUsername = (String) response[4];
+                    String RoleOfVictim = (String) response[3];
+                    Platform.runLater(() -> appController.updateSnitchMessage(snitcherRole, victimUsername, RoleOfVictim));
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
     }
 
 }
