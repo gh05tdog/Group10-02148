@@ -1,7 +1,5 @@
 package dk.dtu;
 
-import org.jspace.ActualField;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -10,28 +8,15 @@ import java.util.concurrent.TimeUnit;
 class Conductor extends Thread {
     int no;                         // Player number
     String role;                    // Player role
-    House house;                    // House control
     boolean killed = false;         // Used to determine if player is still alive
-
-    // Not sure if necessary as we are using locks, keeping in case we need the value for something else, like a seer
     boolean secured = false;        // Used to determine if player is currently being protected
 
     public Conductor(int no, String role) {
         this.no = no;
-        //this.name = name;
         this.role = role;
-        //this.col = col;
     }
 
-    void murderAttempt() {
-        if (!secured) { //If we manage to properly utilise locks, not sure that this check would become necessary
-            killed = true;
-            // Do we even want to interrupt threads?
-            // interrupt();
-        }
-    }
-
-    void kill() {
+    void murder() {
         killed = true;
     }
 
@@ -46,7 +31,6 @@ class Conductor extends Thread {
     String getRole() {
         return role;
     }
-
 
     boolean isSecured() {
         return secured;
@@ -84,13 +68,13 @@ public class StatusControl {
 
     public void attemptMurder(int victim) throws InterruptedException {
         if (houses.enterHouse(victim)) { // Something only happens if able to enter the house
-            conductor[victim].murderAttempt();
+            conductor[victim].murder();
             houses.leaveHouse(victim);
         }
     }
 
     public void executeSuspect(int suspect) throws InterruptedException {
-        conductor[suspect].kill();
+        conductor[suspect].murder();
     }
 
 
@@ -123,5 +107,18 @@ public class StatusControl {
         }
     }
 
+    /*
+    public List<String[]> getAlivePlayers () {
+        List<String[]> alivePlayers = new ArrayList<>();
 
+        for (int i = 0; i < noOfPlayers; i++) {
+            if (!conductor[i].isKilled()) {
+                alivePlayers.add(new String[] {i, conductor[i].getRole()} );
+            }
+
+        }
+        return alivePlayers;
+    }
+
+     */
 }

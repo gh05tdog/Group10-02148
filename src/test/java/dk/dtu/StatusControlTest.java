@@ -2,7 +2,6 @@ package dk.dtu;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -152,6 +151,5 @@ class StatusControlTest {
         assertTrue(statusControl.conductor[2].isKilled());
 
     }
-
 
 }
