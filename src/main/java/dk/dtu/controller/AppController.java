@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -38,9 +39,13 @@ public class AppController {
     public TextArea roleBox;
     public Circle User0;
     public TextArea infoTextField;
+    @FXML
+    public Label labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0;
 
     @FXML
     private Circle User11, User10, User9, User8, User7, User6, User5, User4, User3, User2, User1;
+    @FXML
+    Rectangle rectangleForSnitch0, rectangleForSnitch1, rectangleForSnitch2, rectangleForSnitch3, rectangleForSnitch4, rectangleForSnitch5, rectangleForSnitch6, rectangleForSnitch7, rectangleForSnitch8, rectangleForSnitch9, rectangleForSnitch10, rectangleForSnitch11;
 
     @FXML
     private Label labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser3, labelForUser2, labelForUser1, labelForUser0;
@@ -174,4 +179,5 @@ public class AppController {
     public void showKilled(String killed) {
         Platform.runLater(() -> infoTextField.setText(killed + " was killed"));
     }
+
 }

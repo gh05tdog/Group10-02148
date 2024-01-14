@@ -204,7 +204,7 @@ public class AppModel {
         switch (role) {
             case "[Mafia]" -> server.put("action", "MafiaVote", username, Victim);
             case "[Snitch]" -> server.put("action", "Snitch", username, Victim);
-            case "[Bodyguard]" -> server.put("action", "Protect", username, Victim);
+            case "[Bodyguard]" -> server.put("action", "Bodyguard", username, Victim);
             default -> System.out.println("You are a Citizen");
         }
         config.setHasVoted(true);

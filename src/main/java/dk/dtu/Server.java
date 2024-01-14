@@ -4,6 +4,7 @@ import org.jspace.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Server implements Runnable {
@@ -143,12 +144,15 @@ public class Server implements Runnable {
             roleList = new String[playersInLobby.size()];
             //int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
+            //roles.put("Mafia");
+            //roles.put("Snitch");
+            roles.put("Bodyguard");
             roles.put("Mafia");
             //}
             //roles.put("Bodyguard");
-            //roles.put("Snitch");
+            roles.put("Snitch");
             // for(int i = 0; i < playersInLobby.size() - nrOfMafia - 2; i++){
-            roles.put("Citizen");
+            //roles.put("Citizen");
             // }
 
             for(String username : playersInLobby){
@@ -230,11 +234,17 @@ public class Server implements Runnable {
         }
     }
 
-    private void bodyguardAction(String yourUsername, String victim) {
+    private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
+        System.out.println("Protecting player: " + victim);
+        statusControl.protectPlayer(playerHandlers.get(victim).getPlayerID());
+        System.out.println("BODYGUARD: " + statusControl.conductor[playerHandlers.get(victim).getPlayerID()].isSecured());
     }
 
-    private void snitchAction(String yourUsername, String victim) {
+    private void snitchAction(String yourUsername, String victim) throws InterruptedException {
+        System.out.println("Snitching on player: " + victim);
+        System.out.println("SNITCH: " + statusControl.getPlayerRole(playerHandlers.get(victim).getPlayerID()));
     }
+
 
     private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
         int nrOfMafia = 1;
