@@ -26,6 +26,11 @@ public class PopUpIPController {
             System.out.println("Username is required to join the lobby.");
         }else {
             //Set ip
+
+            //TODO: Check if username is already taken
+            //TODO: If not, set username
+
+
             String ip = IpField.getText();
             config.setIp(ip);
             config.setUsername(UserNameField.getText());
