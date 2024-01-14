@@ -64,7 +64,6 @@ public class AppController {
         model.startListeningForUserUpdates(usernameList, config.getUsername());
         model.startListenForKilled(config.getUsername());
         Platform.runLater(() -> putUsersInCircles(config.getUserList()));
-        System.out.println(config.getUsername());
     }
 
     public void handleSendAction() {
