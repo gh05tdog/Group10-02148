@@ -242,8 +242,11 @@ public class Server implements Runnable {
     }
 
     private void executeVote(String yourUsername, String suspect) throws InterruptedException {
-        System.out.println("Vote received from: " + yourUsername + " on: " + suspect);
-        executeVoteMap.put(yourUsername, suspect);
+        if (Objects.equals(yourUsername, suspect)) {
+            System.out.println("Dont vote for yourself, dummy!");
+            return;
+        } else {executeVoteMap.put(yourUsername, suspect);
+            System.out.println("Vote received from: " + yourUsername + " on: " + suspect);}
 
         HashMap<String, Integer> executeVoteCount = new HashMap<>();
 
@@ -260,7 +263,9 @@ public class Server implements Runnable {
             }
         }
 
-        if (maxVotes == 1) {
+        int divided = (playersInLobby.size()/2)+1;
+
+        if (maxVotes >= divided) {
             System.out.println("The town eliminated: " + mostVotedUser);
             executeVoteCount.clear();
             statusControl.executeSuspect(playerHandlers.get(mostVotedUser).getPlayerID());
