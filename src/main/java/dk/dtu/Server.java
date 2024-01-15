@@ -206,7 +206,7 @@ public class Server implements Runnable {
                     switch (action) {
                         case "MafiaVote" -> mafiaVote(yourUsername, Victim);
                         case "Snitch" -> snitchAction(yourUsername, Victim);
-                        case "Bodyguard" -> bodyguardAction(Victim);
+                        case "Bodyguard" -> bodyguardAction(yourUsername, Victim);
                     }
                 } else if (Objects.equals(stageCycle, "VotingTime")) {
                     executeVote(yourUsername, Victim);
@@ -224,117 +224,123 @@ public class Server implements Runnable {
     }
 
     private void executeVote(String yourUsername, String suspect) throws InterruptedException {
-        if (Objects.equals(yourUsername, suspect)) {
-            System.out.println("Dont vote for yourself, dummy!");
-            return;
-        } else {
-            executeVoteMap.put(yourUsername, suspect);
-            System.out.println("Vote received from: " + yourUsername + " on: " + suspect);
-        }
-
-        HashMap<String, Integer> executeVoteCount = new HashMap<>();
-
-        for (String vote : executeVoteMap.values()) {
-            executeVoteCount.put(vote, executeVoteCount.getOrDefault(vote, 0) + 1);
-        }
-        String mostVotedUser = null;
-        int maxVotes = 0;
-
-        for (Map.Entry<String, Integer> entry : executeVoteCount.entrySet()) {
-            if (entry.getValue() > maxVotes) {
-                maxVotes = entry.getValue();
-                mostVotedUser = entry.getKey();
-            }
-        }
-
-        int divided = (identityProvider.getNumberOfPlayersInLobby() / 2) + 1;
-
-        if (maxVotes >= divided) {
-            System.out.println("The town eliminated: " + mostVotedUser);
-            executeVoteCount.clear();
-            statusControl.executeSuspect(statusControl.getIDFromUserName(mostVotedUser));
-            broadcastToAllClients("mafiaEliminated", mostVotedUser);
-            checkForVictory();
-            System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
-        }
-    }
-
-    private void bodyguardAction(String victim) throws InterruptedException {
-        System.out.println("Protecting player: " + victim);
-        statusControl.protectPlayer(statusControl.getIDFromUserName(victim));
-        System.out.println("BODYGUARD: " + statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured());
-    }
-
-    private void snitchAction(String yourUsername, String victim) throws InterruptedException {
-        System.out.println("Snitching on player: " + victim);
-        System.out.println("SNITCH: " + statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
-        if (!(statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured())) {
-            broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
-        } else {
-            System.out.println("Snitching failed");
-        }
-
-    }
-
-
-    private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
-        int nrOfMafia = 1;
-        System.out.println(identityProvider.getPlayersInLobby());
-        mafiaVoteMap.put(yourUsername, victim);
-        if (nrOfMafia == mafiaVoteMap.size()) {
-            // Map to keep track of vote counts
-            HashMap<String, Integer> voteCount = new HashMap<>();
-
-            // Count the votes for each user
-            for (String vote : mafiaVoteMap.values()) {
-                voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1);
+        if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
+            if (Objects.equals(yourUsername, suspect)) {
+                System.out.println("Dont vote for yourself, dummy!");
+                return;
+            } else {
+                executeVoteMap.put(yourUsername, suspect);
+                System.out.println("Vote received from: " + yourUsername + " on: " + suspect);
             }
 
-            // Determine if all votes are different or find the user with the most votes
+            HashMap<String, Integer> executeVoteCount = new HashMap<>();
+
+            for (String vote : executeVoteMap.values()) {
+                executeVoteCount.put(vote, executeVoteCount.getOrDefault(vote, 0) + 1);
+            }
             String mostVotedUser = null;
             int maxVotes = 0;
 
-            for (Map.Entry<String, Integer> entry : voteCount.entrySet()) {
+            for (Map.Entry<String, Integer> entry : executeVoteCount.entrySet()) {
                 if (entry.getValue() > maxVotes) {
                     maxVotes = entry.getValue();
                     mostVotedUser = entry.getKey();
                 }
             }
 
-            if (nrOfMafia == 1) {
-                System.out.println("Mafia eliminated: " + mostVotedUser);
-                voteCount.clear();
-                statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
-                if ((statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled())) {
-                    broadcastToAllClients("mafiaEliminated", mostVotedUser);
-                    checkForVictory();
-                } else {
-                    System.out.println("Mafia kill failed");
-                }
+            int divided = (identityProvider.getNumberOfPlayersInLobby() / 2) + 1;
 
+            if (maxVotes >= divided) {
+                System.out.println("The town eliminated: " + mostVotedUser);
+                executeVoteCount.clear();
+                statusControl.executeSuspect(statusControl.getIDFromUserName(mostVotedUser));
+                broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                checkForVictory();
                 System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
-                return;
-            }
-
-            voteCount.clear();
-            if (maxVotes == 1) {
-                // If all values are different, everyone has 1 vote
-                System.out.println("All users have 1 vote.");
-            } else {
-                // Otherwise, print the victim with the most votes
-                System.out.println("Victim with the most votes: " + mostVotedUser);
-                statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
-                System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
-                if (statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled()) {
-                    broadcastToAllClients("mafiaEliminated", mostVotedUser);
-                    checkForVictory();
-                } else {
-                    System.out.println("Mafia kill failed");
-                }
             }
         }
+    }
+
+    private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
+        if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
+            System.out.println("Protecting player: " + victim);
+            statusControl.protectPlayer(statusControl.getIDFromUserName(victim));
+            System.out.println("BODYGUARD: " + statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured());
+        }
+    }
+
+    private void snitchAction(String yourUsername, String victim) throws InterruptedException {
+        if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
+            System.out.println("Snitching on player: " + victim);
+            System.out.println("SNITCH: " + statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
+            if (!(statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured())) {
+                broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
+            } else {
+                System.out.println("Snitching failed");
+            }
+        }
+    }
 
 
+    private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
+        if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
+            int nrOfMafia = 1;
+            System.out.println(identityProvider.getPlayersInLobby());
+            mafiaVoteMap.put(yourUsername, victim);
+            if (nrOfMafia == mafiaVoteMap.size()) {
+                // Map to keep track of vote counts
+                HashMap<String, Integer> voteCount = new HashMap<>();
+
+                // Count the votes for each user
+                for (String vote : mafiaVoteMap.values()) {
+                    voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1);
+                }
+
+                // Determine if all votes are different or find the user with the most votes
+                String mostVotedUser = null;
+                int maxVotes = 0;
+
+                for (Map.Entry<String, Integer> entry : voteCount.entrySet()) {
+                    if (entry.getValue() > maxVotes) {
+                        maxVotes = entry.getValue();
+                        mostVotedUser = entry.getKey();
+                    }
+                }
+
+                if (nrOfMafia == 1) {
+                    System.out.println("Mafia eliminated: " + mostVotedUser);
+                    voteCount.clear();
+                    statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
+                    if ((statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled())) {
+                        broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                        checkForVictory();
+                    } else {
+                        System.out.println("Mafia kill failed");
+                    }
+
+                    System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
+                    return;
+                }
+
+                voteCount.clear();
+                if (maxVotes == 1) {
+                    // If all values are different, everyone has 1 vote
+                    System.out.println("All users have 1 vote.");
+                } else {
+                    // Otherwise, print the victim with the most votes
+                    System.out.println("Victim with the most votes: " + mostVotedUser);
+                    statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
+                    System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
+                    if (statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled()) {
+                        broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                        checkForVictory();
+                    } else {
+                        System.out.println("Mafia kill failed");
+                    }
+                }
+            }
+
+        }
     }
 
     public void broadCastToSnitch(String username, String victimRole, String victimUsername) throws InterruptedException {
