@@ -171,7 +171,7 @@ public class AppController {
     }
     public void AttemptAction(MouseEvent mouseEvent) throws InterruptedException {
         // Get the id of the clicked circle
-        String circleId = ((Circle) mouseEvent.getSource()).getId();
+        String circleId = ((AnchorPane) mouseEvent.getSource()).getId();
         String labelId = "labelFor" + circleId;
         // Find the label in the scene graph
         Label label = (Label) ((Node) mouseEvent.getSource()).getScene().lookup("#" + labelId);
