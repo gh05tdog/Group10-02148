@@ -153,4 +153,66 @@ class StatusControlTest {
 
     }
 
+    /**
+     A player's name can be accessed
+     */
+    @Test
+    void testGetUnprotectedPlayerName() {
+        assertFalse(statusControl.conductor[1].isSecured());
+        assertEquals(statusControl.getPlayerName(1),statusControl.conductor[1].getUserName());
+    }
+
+    /**
+     The name of a protected player can also be accessed
+     */
+    @Test
+    void testGetProtectedPlayerName() {
+        statusControl.conductor[1].protectPlayer();
+        assertTrue(statusControl.conductor[1].isSecured());
+        assertEquals(statusControl.getPlayerName(1),statusControl.conductor[1].getUserName());
+    }
+
+    /**
+     A player can be executed when unprotected
+     */
+    @Test
+    void testExecuteUnprotectedPlayer() throws InterruptedException {
+        assertFalse(statusControl.conductor[1].isSecured());
+        assertFalse(statusControl.conductor[1].isKilled());
+        statusControl.executeSuspect(1);
+        assertTrue(statusControl.conductor[1].isKilled());
+    }
+
+    /**
+     A player can also be executed when protected
+     */
+    @Test
+    void testExecuteProtectedPlayer() throws InterruptedException {
+        assertFalse(statusControl.conductor[0].isKilled());
+        statusControl.protectPlayer(0);
+        assertTrue(statusControl.conductor[0].isSecured());
+        statusControl.executeSuspect(0);
+        assertTrue(statusControl.conductor[0].isKilled());
+    }
+
+    /**
+     Returns ID based on the user name
+     */
+    @Test
+    void testIDFromUserName() {
+        assertEquals(statusControl.getIDFromUserName("Minnie"),0);
+        assertEquals(statusControl.getIDFromUserName("Mickey"),1);
+        assertEquals(statusControl.getIDFromUserName("Pluto"),2);
+        assertEquals(statusControl.getIDFromUserName("Goofy"),3);
+        assertEquals(statusControl.getIDFromUserName("Max"),4);
+    }
+
+    /**
+     Returns -1 if player name does not exist
+     */
+    @Test
+    void testIDFromNotActualName() {
+        assertEquals(statusControl.getIDFromUserName("Daisy"),-1);
+    }
+
 }
