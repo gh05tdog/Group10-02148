@@ -21,12 +21,12 @@ public class Server implements Runnable {
     private int timeSeconds = 30;
     private boolean isTimerRunning = false;
     private final Thread actionThread;
-    private final Thread checkUsernameThread;
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
     public String[] nameList;
     public IdentityProvider identityProvider = new IdentityProvider();
+
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -38,31 +38,14 @@ public class Server implements Runnable {
         executeVoteMap = new HashMap<>();
         mafiaVoteMap = new HashMap<>();
         gameStarted = false;
-        checkUsernameThread = new Thread(this::checkUsername);
     }
 
-    private void checkUsername() {
-        try {
-            while (!Thread.currentThread().isInterrupted()) {
-                Object[] request = gameSpace.get(new ActualField("checkUsername"), new FormalField(String.class));
-                String username = (String) request[1];
-                boolean isUsernameValid = !identityProvider.isPlayerInLobby(username);
-                gameSpace.put("checkUsername", username, isUsernameValid);
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.out.println("Server thread interrupted");
-        } catch (Exception e) {
-            System.out.println("Server error: " + e);
-        }
-    }
 
     public void startServer() throws InterruptedException {
-        gameSpace.put("CheckUsernameLock");
+        gameSpace.put("lock");
         serverThread.start();
         messageThread.start();
         actionThread.start();
-        checkUsernameThread.start();
     }
 
     @Override
@@ -82,6 +65,7 @@ public class Server implements Runnable {
                 switch (action) {
                     case "joinLobby" -> handleJoinLobby(username);
                     case "startGame" -> startGame();
+                    case "usernameCheck" -> checkUsername(username);
                 }
             }
         } catch (InterruptedException e) {
@@ -89,6 +73,18 @@ public class Server implements Runnable {
             System.out.println("Server thread interrupted");
         } catch (Exception e) {
             System.out.println("Server error: " + e);
+        }
+    }
+
+    private void checkUsername(String username) {
+        try {
+            if (identityProvider.isPlayerInLobby(username)) {
+                gameSpace.put("usernameCheck", false);
+            } else {
+                gameSpace.put("usernameCheck", true);
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Error checking username: " + e);
         }
     }
 
@@ -102,15 +98,15 @@ public class Server implements Runnable {
     }
 
     void handleJoinLobby(String username) throws Exception {
-            if (!gameStarted && !identityProvider.isPlayerInLobby(username)) {
-                gameSpace.put("connected", username);
-                identityProvider.addPlayer(username);
-                System.out.println("User " + username + " joined the lobby");
-                messages.add(username + " joined the lobby");
-                broadcastLobbyUpdate();
-            } else {
-                throw new Exception("Game already started or user already in lobby");
-            }
+        if (!gameStarted && !identityProvider.isPlayerInLobby(username)) {
+            gameSpace.put("connected", username);
+            identityProvider.addPlayer(username);
+            System.out.println("User " + username + " joined the lobby");
+            messages.add(username + " joined the lobby");
+            broadcastLobbyUpdate();
+        } else {
+            throw new Exception("Game already started or user already in lobby");
+        }
     }
 
     void startGame() throws InterruptedException {
@@ -133,16 +129,16 @@ public class Server implements Runnable {
             roleList = new String[identityProvider.getNumberOfPlayersInLobby()];
             nameList = new String[identityProvider.getNumberOfPlayersInLobby()];
 
-            int nrOfMafia = identityProvider.getNumberOfPlayersInLobby()/4;
-            for(int i = 0; i < nrOfMafia; i++){
-            roles.put("Mafia");
+            int nrOfMafia = identityProvider.getNumberOfPlayersInLobby() / 4;
+            for (int i = 0; i < nrOfMafia; i++) {
+                roles.put("Mafia");
             }
             roles.put("Snitch");
             roles.put("Bodyguard");
 
-             for(int i = 0; i < identityProvider.getNumberOfPlayersInLobby() - nrOfMafia - 2; i++){
-            roles.put("Citizen");
-             }
+            for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby() - nrOfMafia - 2; i++) {
+                roles.put("Citizen");
+            }
 
             for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
                 String role = Arrays.toString(roles.get(new FormalField(String.class)));

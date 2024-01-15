@@ -22,10 +22,24 @@ public class PopUpIPController {
     public TextField UserNameField;
 
     @FXML
-    public void JoinGameBasedOnIP(MouseEvent actionEvent) throws IOException {
+    public void JoinGameBasedOnIP(MouseEvent actionEvent) throws IOException, InterruptedException {
         if (UserNameField.getText().isEmpty()) {
             System.out.println("Username is required to join the lobby.");
         } else {
+            RemoteSpace server = new RemoteSpace("tcp://" + IpField.getText() + "/game?keep");
+            System.out.println("Connected to server");
+            server.get(new ActualField("lock"));
+            System.out.println("Got lock");
+            server.put("usernameCheck", UserNameField.getText());
+            System.out.println("Sent username check");
+            Object[] response =  server.get(new ActualField("usernameCheck"), new FormalField(Boolean.class));
+              if ((response[1]).equals(false)) {
+                  System.out.println("Username is taken");
+                  server.put("lock");
+                  server.close();
+                  UserNameField.setText("Username is taken");
+                  return;
+              }
             String ip = IpField.getText();
             config.setIp(ip);
             config.setUsername(UserNameField.getText());

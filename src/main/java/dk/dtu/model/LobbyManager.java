@@ -25,7 +25,7 @@ public class LobbyManager {
         server.put("joinLobby", username);
         System.out.println("User " + username + " joined the lobby");
         if(!config.getLobbyLeader()){
-        server.put("CheckUsernameLock");
+            server.put("lock");
         }
     }
 
