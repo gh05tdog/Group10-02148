@@ -223,7 +223,7 @@ public class Server implements Runnable {
         }
     }
 
-    private void executeVote(String yourUsername, String suspect) throws InterruptedException {
+    void executeVote(String yourUsername, String suspect) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
             if (Objects.equals(yourUsername, suspect)) {
                 System.out.println("Dont vote for yourself, dummy!");
@@ -504,4 +504,11 @@ public class Server implements Runnable {
         return messages;
     }
 
+    public Space getGameSpace() {
+        return gameSpace;
+    }
+
+    public StatusControl getStatusControl() {
+        return statusControl;
+    }
 }
