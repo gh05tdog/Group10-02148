@@ -408,7 +408,7 @@ public class Server implements Runnable {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                if (!isTimerRunning) {
+                if (isTimerRunning) {
                     if (timeSeconds > 0) {
                         timeSeconds--;
                         broadcastTimeUpdate(timeSeconds);
