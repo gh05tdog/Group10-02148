@@ -29,6 +29,7 @@ public class AppModel {
 
     public void joinLobby(String userName) throws InterruptedException {
         lobbyManager.joinLobby(userName);
+
     }
 
     public void startListeningForMessages(TextArea messageAreaLobby) {
