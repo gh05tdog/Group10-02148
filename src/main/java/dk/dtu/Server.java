@@ -17,17 +17,15 @@ public class Server implements Runnable {
     private final Set<String> playersInLobby;
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state
-
     private final List<String> messages = new ArrayList<>();
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
     private final Map<String, PlayerHandler> playerHandlers;
     private final Thread actionThread;
-
     private HashMap<String, String> mafiaVoteMap;
-
     private HashMap<String, String> executeVoteMap;
     public String[] roleList;
+    public String[] nameList;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -67,7 +65,6 @@ public class Server implements Runnable {
 
                 switch (action) {
                     case "joinLobby" -> handleJoinLobby(username);
-                    case "leaveLobby" -> handleLeaveLobby(username);
                     case "startGame" -> startGame();
                 }
             }
@@ -99,27 +96,11 @@ public class Server implements Runnable {
 
             // Create a new PlayerHandler for this player and start its thread
             PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size() - 1, gameSpace);
-            Thread playerThread = new Thread(playerHandler);
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
-            playerThread.start();
 
         } else {
             throw new Exception("Game already started or user already in lobby");
 
-        }
-    }
-
-    void handleLeaveLobby(String username) {
-        if (playersInLobby.remove(username)) {
-            System.out.println("User " + username + " left the lobby");
-            broadcastLobbyUpdate();
-
-            // Stop the player's handler
-            if (playerHandlers.containsKey(username)) {
-                PlayerHandler playerHandler = playerHandlers.get(username);
-                playerHandler.stop(); // Stop the PlayerHandler
-                playerHandlers.remove(username);
-            }
         }
     }
 
@@ -134,7 +115,7 @@ public class Server implements Runnable {
                 System.out.println("Sending role update to: " + username);
                 broadcastRoleUpdate(username);
             }
-            statusControl = new StatusControl(playersInLobby.size(), roleList);
+            statusControl = new StatusControl(playersInLobby.size(), nameList, roleList);
 
             System.out.println("Game is starting with players: " + playersInLobby);
         } else {
@@ -146,6 +127,7 @@ public class Server implements Runnable {
         if (!gameStarted) {
             RandomSpace roles = new RandomSpace();
             roleList = new String[playersInLobby.size()];
+            nameList = new String[playersInLobby.size()];
             //int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
@@ -162,6 +144,7 @@ public class Server implements Runnable {
             for (String username : playersInLobby) {
                 playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
                 roleList[playerHandlers.get(username).getPlayerID()] = playerHandlers.get(username).getRole();
+                nameList[playerHandlers.get(username).getPlayerID()] = username;
                 System.out.println("Player " + username + "with ID: " + playerHandlers.get(username).getPlayerID() + " has role: " + playerHandlers.get(username).getRole());
             }
             System.out.println("Role list:" + Arrays.toString(roleList));
@@ -408,7 +391,7 @@ public class Server implements Runnable {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                if (!isTimerRunning) {
+                if (isTimerRunning) {
                     if (timeSeconds > 0) {
                         timeSeconds--;
                         broadcastTimeUpdate(timeSeconds);
