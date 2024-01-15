@@ -24,7 +24,9 @@ public class LobbyManager {
     public void joinLobby(String username) throws InterruptedException {
         server.put("joinLobby", username);
         System.out.println("User " + username + " joined the lobby");
+        if(!config.getLobbyLeader()){
         server.put("CheckUsernameLock");
+        }
     }
 
     public void startGame() throws InterruptedException {
