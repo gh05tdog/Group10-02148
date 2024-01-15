@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
@@ -39,14 +40,13 @@ public class AppController {
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
     public TextArea roleBox;
-    public Circle User0;
     public TextArea infoTextField;
     private Map<String, Integer> userToIndexMap = new HashMap<>();
     @FXML
     public Label labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0;
 
     @FXML
-    private Circle User11, User10, User9, User8, User7, User6, User5, User4, User3, User2, User1;
+    private AnchorPane User11, User10, User9, User8, User7, User6, User5, User4, User3, User2, User1, User0;
     @FXML
     Rectangle rectangleForSnitch0, rectangleForSnitch1, rectangleForSnitch2, rectangleForSnitch3, rectangleForSnitch4, rectangleForSnitch5, rectangleForSnitch6, rectangleForSnitch7, rectangleForSnitch8, rectangleForSnitch9, rectangleForSnitch10, rectangleForSnitch11;
 
@@ -143,7 +143,7 @@ public class AppController {
         String[] users = userList.split(", ");
         System.out.println("User list from appController" + Arrays.toString(users));
 
-        Circle[] circles = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
+        AnchorPane[] circles = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
         Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
 
         //put the users in the circles
@@ -158,7 +158,7 @@ public class AppController {
     }
 
     private void removeKilled(String killed) {
-        Circle[] circles = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
+        AnchorPane[] circles = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
         Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
 
         //put the users in the circles
@@ -172,7 +172,7 @@ public class AppController {
     }
     public void AttemptAction(MouseEvent mouseEvent) throws InterruptedException {
         // Get the id of the clicked circle
-        String circleId = ((Circle) mouseEvent.getSource()).getId();
+        String circleId = ((AnchorPane) mouseEvent.getSource()).getId();
         String labelId = "labelFor" + circleId;
         // Find the label in the scene graph
         Label label = (Label) ((Node) mouseEvent.getSource()).getScene().lookup("#" + labelId);
