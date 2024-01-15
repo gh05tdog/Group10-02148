@@ -26,12 +26,9 @@ public class PopUpIPController {
         if (UserNameField.getText().isEmpty()) {
             System.out.println("Username is required to join the lobby.");
         } else {
-            //Set ip
-
             //TODO: Check if username is already taken
             //TODO: If not, set username
 
-            //Try to connect to the server
 
             String ip = IpField.getText();
             if (connectToServer(ip)) {
@@ -53,16 +50,8 @@ public class PopUpIPController {
     }
 
     private boolean checkUsernameIsValid(String text) {
-
-        try {
-            RemoteSpace space = new RemoteSpace(config.getIp() + "/chat?keep");
-            space.put("checkUsername", text);
-            Object[] response = space.get(new ActualField("checkUsername"), new ActualField(text), new FormalField(Boolean.class));
-            return (Boolean) response[2];
-        } catch (Exception e) {
-            return false;
-        }
-
+        //TODO: Fix username check
+        return true;
 
     }
 

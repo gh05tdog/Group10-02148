@@ -21,7 +21,6 @@ public class Server implements Runnable {
     private int timeSeconds = 30;
     private boolean isTimerRunning = false;
     private final Thread actionThread;
-    private final Thread checkUsernameThread;
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
@@ -41,30 +40,14 @@ public class Server implements Runnable {
         executeVoteMap = new HashMap<>();
         mafiaVoteMap = new HashMap<>();
         gameStarted = false;
-        checkUsernameThread = new Thread(this::checkUsername);
     }
 
-    private void checkUsername() {
-        try {
-            while (!Thread.currentThread().isInterrupted()) {
-                Object[] request = gameSpace.get(new ActualField("checkUsername"), new FormalField(String.class));
-                String username = (String) request[1];
-                boolean isUsernameValid = !identityProvider.isPlayerInLobby(username);
-                gameSpace.put("checkUsername", username, isUsernameValid);
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.out.println("Server thread interrupted");
-        } catch (Exception e) {
-            System.out.println("Server error: " + e);
-        }
-    }
 
     public void startServer() {
         serverThread.start();
         messageThread.start();
         actionThread.start();
-        checkUsernameThread.start();
+
     }
 
     @Override
@@ -259,15 +242,7 @@ public class Server implements Runnable {
                 }
             }
 
-
-            int alivePlayers = 0;
-
-            for(int i = 0; i<identityProvider.getNumberOfPlayersInLobby(); i++) {
-                if(!(statusControl.conductor[i].isKilled())) {
-                    alivePlayers++;
-                }
-            }
-            int divided = (alivePlayers / 2) + 1;
+            int divided = (identityProvider.getNumberOfPlayersInLobby() / 2) + 1;
 
             if (maxVotes >= divided) {
                 System.out.println("The town eliminated: " + mostVotedUser);
