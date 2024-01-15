@@ -94,6 +94,7 @@ public class AppController {
                 removeKilled(killed);
             } else if ("VotingTime".equals(state)) {
                 infoTextField.setText("Voting time");
+                config.setHasVoted(false);
                 counter.setImage(moon);
                 background.setImage(day);
             } else if ("Night".equals(state)) {

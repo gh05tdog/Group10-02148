@@ -403,12 +403,12 @@ public class Server implements Runnable {
     }
 
     void manageDayNightCycle() {
-        if (!isTimerRunning) {
-            isTimerRunning = true;
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
 
+        isTimerRunning = true;
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (!isTimerRunning) {
                     if (timeSeconds > 0) {
                         timeSeconds--;
                         broadcastTimeUpdate(timeSeconds);
@@ -447,8 +447,9 @@ public class Server implements Runnable {
                         }
                     }
                 }
-            }, 0, 1000); // Update every second
-        }
+
+            }
+        }, 0, 1000); // Update every second
     }
 
     void broadcastDayNightCycle() throws InterruptedException {
