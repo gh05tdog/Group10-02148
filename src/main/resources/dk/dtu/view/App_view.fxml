@@ -218,7 +218,7 @@
                 </clip>
                 <Image url="@Images/Avatars/Avatar8.png" /> <!-- Replace with your image path -->
             </ImageView>
-            <Label layoutY="46.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" />
+            <Label fx:id = "labelForUser7" layoutY="46.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" />
         </AnchorPane>
         <AnchorPane fx:id="User5" disable="true" layoutX="314.0" layoutY="96.0" onMouseClicked="#AttemptAction" prefHeight="68.0" prefWidth="74.0" visible="false">
             <ImageView fitHeight="69.0" fitWidth="72.0">

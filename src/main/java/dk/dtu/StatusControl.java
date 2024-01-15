@@ -1,5 +1,6 @@
 package dk.dtu;
 
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -75,10 +76,11 @@ public class StatusControl {
 
     public int getIDFromUserName(String userName) {
         for (int i = 0; i < noOfPlayers; i++) {
-            if (nameList[i] == userName) {
+            if (Objects.equals(nameList[i], userName)) {
                 return i;
             }
         }
+
         return -1;
     }
 

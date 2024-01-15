@@ -12,14 +12,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Arrays;
 
 public class AppController {
     public ImageView background;
@@ -41,7 +40,7 @@ public class AppController {
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
     public TextArea roleBox;
     public TextArea infoTextField;
-    private Map<String, Integer> userToIndexMap = new HashMap<>();
+    private final Map<String, Integer> userToIndexMap = new HashMap<>();
     @FXML
     public Label labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0;
 
@@ -52,6 +51,7 @@ public class AppController {
 
     @FXML
     private Label labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser3, labelForUser2, labelForUser1, labelForUser0;
+
 
     public AppController() throws IOException {
         model = new AppModel();
@@ -138,6 +138,7 @@ public class AppController {
         }
     }
 
+
     public void putUsersInCircles(String userList){
         //split the userList into an array
         String[] users = userList.split(", ");
@@ -162,7 +163,7 @@ public class AppController {
         Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
 
         //put the users in the circles
-        for (int i = 0; i < labels.length; i++) {
+        for (int i = 0; i < labels.length - 1; i++) {
             if (labels[i].getText().equals(killed)) {
                 anchorPanes[i].setVisible(false);
                 anchorPanes[i].setDisable(true);

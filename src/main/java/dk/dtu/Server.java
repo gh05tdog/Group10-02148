@@ -14,18 +14,19 @@ public class Server implements Runnable {
     private final Thread serverThread;
     private final Thread messageThread;
     private StatusControl statusControl;
-    private final Set<String> playersInLobby;
+
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state
     private final List<String> messages = new ArrayList<>();
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
-    private final Map<String, PlayerHandler> playerHandlers;
     private final Thread actionThread;
-    private HashMap<String, String> mafiaVoteMap;
-    private HashMap<String, String> executeVoteMap;
+    private final HashMap<String, String> mafiaVoteMap;
+    private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
     public String[] nameList;
+
+    public IdentityProvider identityProvider = new IdentityProvider();
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -33,9 +34,7 @@ public class Server implements Runnable {
         actionThread = new Thread(this::runActionsListener);
         gameSpace = new SequentialSpace();
         serverThread = new Thread(this);
-        playersInLobby = new HashSet<>();
         messageThread = new Thread(this::runMessageListener);
-        playerHandlers = new HashMap<>();
         executeVoteMap = new HashMap<>();
         mafiaVoteMap = new HashMap<>();
 
@@ -86,17 +85,12 @@ public class Server implements Runnable {
     }
 
     void handleJoinLobby(String username) throws Exception {
-        if (!gameStarted && !playersInLobby.contains(username)) {
+        if (!gameStarted && !identityProvider.isPlayerInLobby(username)) {
             gameSpace.put("connected", username);
-            playersInLobby.add(username);
+            identityProvider.addPlayer(username);
             System.out.println("User " + username + " joined the lobby");
             messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
-
-
-            // Create a new PlayerHandler for this player and start its thread
-            PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size() - 1, gameSpace);
-            playerHandlers.put(username, playerHandler); // Store the PlayerHandler
 
         } else {
             throw new Exception("Game already started or user already in lobby");
@@ -105,29 +99,24 @@ public class Server implements Runnable {
     }
 
     void startGame() throws InterruptedException {
-        if (!playersInLobby.isEmpty()) {
-            broadcastToAllClients("startGame", "");
-            gameSpace.put("gameStarted");
-            assignRolesToPlayers();
-            gameStarted = true;
-            manageDayNightCycle();
-            for (String username : playersInLobby) {
-                System.out.println("Sending role update to: " + username);
-                broadcastRoleUpdate(username);
-            }
-            statusControl = new StatusControl(playersInLobby.size(), nameList, roleList);
-
-            System.out.println("Game is starting with players: " + playersInLobby);
-        } else {
-            System.out.println("Cannot start game with no players in lobby");
+        broadcastToAllClients("startGame", "");
+        gameSpace.put("gameStarted");
+        assignRolesToPlayers();
+        gameStarted = true;
+        manageDayNightCycle();
+        statusControl = new StatusControl(identityProvider.getNumberOfPlayersInLobby(), nameList, roleList);
+        for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
+            broadcastRoleUpdate(identityProvider.getPlayersInLobby().toArray()[i].toString(), i);
         }
+        System.out.println("Game is starting with players: " + identityProvider.getPlayersInLobby());
+
     }
 
     private void assignRolesToPlayers() throws InterruptedException {
         if (!gameStarted) {
             RandomSpace roles = new RandomSpace();
-            roleList = new String[playersInLobby.size()];
-            nameList = new String[playersInLobby.size()];
+            roleList = new String[identityProvider.getNumberOfPlayersInLobby()];
+            nameList = new String[identityProvider.getNumberOfPlayersInLobby()];
             //int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
@@ -141,11 +130,21 @@ public class Server implements Runnable {
             roles.put("Citizen");
             // }
 
-            for (String username : playersInLobby) {
+            /*for (int i = 0; i < playersInLobby.size(); i++) {
                 playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
                 roleList[playerHandlers.get(username).getPlayerID()] = playerHandlers.get(username).getRole();
+                roleList[statusControl.] = playerHandlers.get(username).getRole();
                 nameList[playerHandlers.get(username).getPlayerID()] = username;
                 System.out.println("Player " + username + "with ID: " + playerHandlers.get(username).getPlayerID() + " has role: " + playerHandlers.get(username).getRole());
+            }
+
+             */
+
+            for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
+                String role = Arrays.toString(roles.get(new FormalField(String.class)));
+                roleList[i] = role;
+                nameList[i] = identityProvider.getPlayersInLobby().toArray()[i].toString();
+                System.out.println("Player " + nameList[i] + "with ID: " + i + " has role: " + roleList[i]);
             }
             System.out.println("Role list:" + Arrays.toString(roleList));
 
@@ -154,10 +153,10 @@ public class Server implements Runnable {
         }
     }
 
-    public void broadcastRoleUpdate(String username) {
+    public void broadcastRoleUpdate(String username, int playerID) {
         try {
-            gameSpace.put("roleUpdate", username, playerHandlers.get(username).getRole());
-            System.out.println("Role update sent to: " + username + "with role: " + playerHandlers.get(username).getRole());
+            gameSpace.put("roleUpdate", username, statusControl.getPlayerRole(playerID));
+            // System.out.println("Role update sent to: " + username + "with role: " + playerHandlers.get(username).getRole());
 
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting role update: " + e);
@@ -166,10 +165,10 @@ public class Server implements Runnable {
 
     private void broadcastLobbyUpdate() {
         try {
-            String userList = String.join(", ", playersInLobby);
+            String userList = String.join(", ", identityProvider.getPlayersInLobby());
 
             // Broadcast the user list to each user in the lobby
-            for (String user : playersInLobby) {
+            for (String user : identityProvider.getPlayersInLobby()) {
                 gameSpace.put("userUpdate", user, userList);
             }
         } catch (InterruptedException e) {
@@ -207,7 +206,7 @@ public class Server implements Runnable {
                     switch (action) {
                         case "MafiaVote" -> mafiaVote(yourUsername, Victim);
                         case "Snitch" -> snitchAction(yourUsername, Victim);
-                        case "Bodyguard" -> bodyguardAction(yourUsername, Victim);
+                        case "Bodyguard" -> bodyguardAction(Victim);
                     }
                 } else if (Objects.equals(stageCycle, "VotingTime")) {
                     executeVote(yourUsername, Victim);
@@ -248,29 +247,29 @@ public class Server implements Runnable {
             }
         }
 
-        int divided = (playersInLobby.size() / 2) + 1;
+        int divided = (identityProvider.getNumberOfPlayersInLobby() / 2) + 1;
 
         if (maxVotes >= divided) {
             System.out.println("The town eliminated: " + mostVotedUser);
             executeVoteCount.clear();
-            statusControl.executeSuspect(playerHandlers.get(mostVotedUser).getPlayerID());
+            statusControl.executeSuspect(statusControl.getIDFromUserName(mostVotedUser));
             broadcastToAllClients("mafiaEliminated", mostVotedUser);
             checkForVictory();
-            System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
+            System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
         }
     }
 
-    private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
+    private void bodyguardAction(String victim) throws InterruptedException {
         System.out.println("Protecting player: " + victim);
-        statusControl.protectPlayer(playerHandlers.get(victim).getPlayerID());
-        System.out.println("BODYGUARD: " + statusControl.conductor[playerHandlers.get(victim).getPlayerID()].isSecured());
+        statusControl.protectPlayer(statusControl.getIDFromUserName(victim));
+        System.out.println("BODYGUARD: " + statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured());
     }
 
     private void snitchAction(String yourUsername, String victim) throws InterruptedException {
         System.out.println("Snitching on player: " + victim);
-        System.out.println("SNITCH: " + statusControl.getPlayerRole(playerHandlers.get(victim).getPlayerID()));
-        if (!(statusControl.conductor[playerHandlers.get(victim).getPlayerID()].isSecured())) {
-            broadCastToSnitch(yourUsername, victim, playerHandlers.get(victim).getRole());
+        System.out.println("SNITCH: " + statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
+        if (!(statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured())) {
+            broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
         } else {
             System.out.println("Snitching failed");
         }
@@ -280,7 +279,7 @@ public class Server implements Runnable {
 
     private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
         int nrOfMafia = 1;
-        System.out.println(playersInLobby);
+        System.out.println(identityProvider.getPlayersInLobby());
         mafiaVoteMap.put(yourUsername, victim);
         if (nrOfMafia == mafiaVoteMap.size()) {
             // Map to keep track of vote counts
@@ -305,15 +304,15 @@ public class Server implements Runnable {
             if (nrOfMafia == 1) {
                 System.out.println("Mafia eliminated: " + mostVotedUser);
                 voteCount.clear();
-                statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
-                if ((statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled())) {
+                statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
+                if ((statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled())) {
                     broadcastToAllClients("mafiaEliminated", mostVotedUser);
                     checkForVictory();
                 } else {
                     System.out.println("Mafia kill failed");
                 }
 
-                System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
+                System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
                 return;
             }
 
@@ -324,9 +323,9 @@ public class Server implements Runnable {
             } else {
                 // Otherwise, print the victim with the most votes
                 System.out.println("Victim with the most votes: " + mostVotedUser);
-                statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
-                System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
-                if (statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled()) {
+                statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
+                System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
+                if (statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled()) {
                     broadcastToAllClients("mafiaEliminated", mostVotedUser);
                     checkForVictory();
                 } else {
@@ -339,14 +338,14 @@ public class Server implements Runnable {
     }
 
     public void broadCastToSnitch(String username, String victimRole, String victimUsername) throws InterruptedException {
-        if (playerHandlers.get(username).getRole().equals("[Snitch]")) {
+        if (statusControl.getPlayerRole(statusControl.getIDFromUserName(username)).contains("Snitch")) {
             System.out.println("Sending snitch message to: " + username);
-            gameSpace.put("snitchMessage", username, playerHandlers.get(username).getRole(), victimUsername, victimRole);
+            gameSpace.put("snitchMessage", username, statusControl.getPlayerRole(statusControl.getIDFromUserName(username)), victimUsername, victimRole);
         }
 
     }
 
-    private void endGame(String message) throws InterruptedException {
+    private void endGame(String message) {
         //Stop threads
         isTimerRunning = false;
         broadcastToAllClients("gameEnd", message);
@@ -356,7 +355,7 @@ public class Server implements Runnable {
         int mafiaCount = 0;
         int nonMafiaCount = 0;
 
-        for (int i = 0; i < playersInLobby.size(); i++) {
+        for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
             if (statusControl.conductor[i].isKilled()) continue; // Skip dead players
 
             if (statusControl.conductor[i].getRole().contains("Mafia")) {
@@ -439,13 +438,13 @@ public class Server implements Runnable {
         if (Objects.equals(stageCycle, "Day")) {
             messages.clear();
             mafiaVoteMap.clear();
-            for (int i = 0; i < playersInLobby.size(); i++) {
+            for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
                 gameSpace.put("messages", messages);
             }
         } else if (Objects.equals(stageCycle, "Night")) {
             messages.clear();
             executeVoteMap.clear();
-            for (int i = 0; i < playersInLobby.size(); i++) {
+            for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
                 gameSpace.put("messages", messages);
             }
         }
@@ -460,7 +459,7 @@ public class Server implements Runnable {
 
     private void broadcastToAllClients(String messageType, String messageContent) {
         try {
-            for (String username : playersInLobby) {
+            for (String username : identityProvider.getPlayersInLobby()) {
                 gameSpace.put(messageType, username, messageContent);
             }
         } catch (InterruptedException e) {
@@ -479,7 +478,7 @@ public class Server implements Runnable {
     }
 
     public String getPlayersInLobby() {
-        return playersInLobby.toString();
+        return identityProvider.getPlayersInLobby().toString();
     }
 
     public boolean isGameStarted() {
