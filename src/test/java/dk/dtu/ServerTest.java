@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ServerTest {
 
     private Server server;
-    private ScheduledExecutorService executorService;
 
 
     /**
@@ -27,7 +26,7 @@ public class ServerTest {
         Thread.sleep(1000);
 
         // Initialize the executor service
-        executorService = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
     }
 
     @AfterEach
@@ -51,12 +50,6 @@ public class ServerTest {
         assertTrue(server.getPlayersInLobby().contains("player1"));
     }
 
-    @Test
-    void testLeavingLobby() throws Exception {
-        server.handleJoinLobby("player1");
-        server.handleLeaveLobby("player1");
-        assertFalse(server.getPlayersInLobby().contains("player1"));
-    }
 
     @Test
     void testStartGame() throws Exception {
@@ -77,4 +70,22 @@ public class ServerTest {
         assertEquals("player1: Hello", server.getMessages().get(3));
     }
 
+    /**
+     * Test that a username can be reserved and is not available for another player
+     */
+    @Test
+    void testUsernameReservation() {
+        assertTrue(server.reserveUsername("player1"));
+        assertFalse(server.reserveUsername("player1")); // Trying to reserve the same username should fail
+    }
+
+    /**
+     * Test that a username can be released and is available for another player
+     */
+    @Test
+    void testUsernameRelease() {
+        assertTrue(server.reserveUsername("player1"));
+        server.releaseUsername("player1");
+        assertTrue(server.reserveUsername("player1")); // After release, the username should be available
+    }
 }

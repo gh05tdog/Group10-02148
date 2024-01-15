@@ -9,8 +9,6 @@ public class config {
     public static String SERVER_IP;
     private static String Username = null;
 
-    private static Stage currentStage;
-
     private static Boolean lobbyLeader = false;
 
     private static String role;
@@ -60,11 +58,6 @@ public class config {
         role = newRole;
     }
 
-
-
-    public static void setStage(Stage OldStage) {
-        currentStage = OldStage;
-    }
 
     public static void setUserList(String currentUserList) {
         userList = currentUserList;
