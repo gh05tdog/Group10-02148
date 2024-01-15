@@ -67,6 +67,7 @@ public class AppController {
         model.startListeningForUserUpdates(usernameList, config.getUsername());
         model.startListenForSnitchUpdate(this,config.getUsername());
         model.startListenForKilled(config.getUsername());
+        model.startListenForGameResult(this,config.getUsername());
         Platform.runLater(() -> putUsersInCircles(config.getUserList()));
     }
 
@@ -74,7 +75,6 @@ public class AppController {
         String message = messageField.getText();
         if (!message.isEmpty()) {
             try {
-                System.out.println("Sending message: " + message);
                 model.sendMessage(config.getUsername(), message, "lobby");
             } catch (Exception e) {
                 System.out.println("Error sending message: " + e);
@@ -204,6 +204,10 @@ public class AppController {
                 System.out.println("Snitch message received: " + usernameOfSnitched + " is a " + roleOfVictim);
             }
         }
+    }
+
+    public void updateGameResult(String result) {
+        Platform.runLater(() -> infoTextField.setText(result));
     }
 }
 

@@ -22,7 +22,6 @@ public class MessageHandler {
 
     public void sendMessage(String clientID, String message, String roomId) throws InterruptedException {
         server.put("message", clientID, message, roomId);
-        System.out.println("Sent message: " + message);
     }
 
     public void startListeningForMessages(TextArea messageArea) {

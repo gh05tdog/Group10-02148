@@ -4,7 +4,7 @@ import org.jspace.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.SQLOutput;
+
 import java.util.*;
 
 public class Server implements Runnable {
@@ -156,7 +156,7 @@ public class Server implements Runnable {
             //roles.put("Bodyguard");
             roles.put("Snitch");
             // for(int i = 0; i < playersInLobby.size() - nrOfMafia - 2; i++){
-            //roles.put("Citizen");
+            roles.put("Citizen");
             // }
 
             for (String username : playersInLobby) {
@@ -245,8 +245,10 @@ public class Server implements Runnable {
         if (Objects.equals(yourUsername, suspect)) {
             System.out.println("Dont vote for yourself, dummy!");
             return;
-        } else {executeVoteMap.put(yourUsername, suspect);
-            System.out.println("Vote received from: " + yourUsername + " on: " + suspect);}
+        } else {
+            executeVoteMap.put(yourUsername, suspect);
+            System.out.println("Vote received from: " + yourUsername + " on: " + suspect);
+        }
 
         HashMap<String, Integer> executeVoteCount = new HashMap<>();
 
@@ -263,18 +265,16 @@ public class Server implements Runnable {
             }
         }
 
-        int divided = (playersInLobby.size()/2)+1;
+        int divided = (playersInLobby.size() / 2) + 1;
 
         if (maxVotes >= divided) {
             System.out.println("The town eliminated: " + mostVotedUser);
             executeVoteCount.clear();
             statusControl.executeSuspect(playerHandlers.get(mostVotedUser).getPlayerID());
             broadcastToAllClients("mafiaEliminated", mostVotedUser);
+            checkForVictory();
             System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
-            return;
         }
-
-
     }
 
     private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
@@ -325,6 +325,7 @@ public class Server implements Runnable {
                 statusControl.attemptMurder(playerHandlers.get(mostVotedUser).getPlayerID());
                 if ((statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled())) {
                     broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                    checkForVictory();
                 } else {
                     System.out.println("Mafia kill failed");
                 }
@@ -344,11 +345,14 @@ public class Server implements Runnable {
                 System.out.println(statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled());
                 if (statusControl.conductor[playerHandlers.get(mostVotedUser).getPlayerID()].isKilled()) {
                     broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                    checkForVictory();
                 } else {
                     System.out.println("Mafia kill failed");
                 }
             }
         }
+
+
     }
 
     public void broadCastToSnitch(String username, String victimRole, String victimUsername) throws InterruptedException {
@@ -357,6 +361,35 @@ public class Server implements Runnable {
             gameSpace.put("snitchMessage", username, playerHandlers.get(username).getRole(), victimUsername, victimRole);
         }
 
+    }
+
+    private void endGame(String message) throws InterruptedException {
+        //Stop threads
+        isTimerRunning = false;
+        broadcastToAllClients("gameEnd", message);
+    }
+
+    private void checkForVictory() throws InterruptedException {
+        int mafiaCount = 0;
+        int nonMafiaCount = 0;
+
+        for (int i = 0; i < playersInLobby.size(); i++) {
+            if (statusControl.conductor[i].isKilled()) continue; // Skip dead players
+
+            if (statusControl.conductor[i].getRole().contains("Mafia")) {
+                mafiaCount++;
+            } else {
+                nonMafiaCount++;
+            }
+        }
+
+        if (mafiaCount >= nonMafiaCount) {
+            endGame("Mafia wins!");
+            System.out.println("Mafia wins!");
+        } else if (mafiaCount == 0) {
+            endGame("Citizens win!");
+            System.out.println("Citizens win!");
+        }
     }
 
 
@@ -403,7 +436,7 @@ public class Server implements Runnable {
                             }
                             case "VotingTime" -> {
                                 stageCycle = "Night";
-                                timeSeconds = 5; // Reset timer
+                                timeSeconds = 10; // Reset timer
                                 System.out.println(stageCycle);
                                 try {
                                     broadcastDayNightCycle();
@@ -471,10 +504,6 @@ public class Server implements Runnable {
 
     public List<String> getMessages() {
         return messages;
-    }
-
-    public String stageCycle() {
-        return stageCycle;
     }
 
 }

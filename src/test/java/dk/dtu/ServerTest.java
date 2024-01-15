@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterEach;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,18 +77,4 @@ public class ServerTest {
         assertEquals("player1: Hello", server.getMessages().get(3));
     }
 
-    @Test
-    void dayNightCycleTest() throws Exception {
-        server.handleJoinLobby("player1");
-        server.handleJoinLobby("player2");
-        server.handleJoinLobby("player3");
-        server.startGame();
-        server.manageDayNightCycle();
-        // assertTrue(server.getDayNightCycle());
-        // Schedule a task to simulate 10 seconds
-        executorService.schedule(() -> {
-            // assertFalse(server.getDayNightCycle());
-
-        }, 10, TimeUnit.SECONDS);
-    }
 }

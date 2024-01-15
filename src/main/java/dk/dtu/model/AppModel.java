@@ -25,13 +25,10 @@ public class AppModel {
 
     public void sendMessage(String clientID, String message, String roomId) throws InterruptedException {
         messageHandler.sendMessage(clientID, message, roomId);
-        //server.put("message", clientID, message, roomId);
-        //System.out.println("Sent message: " + message);
     }
 
     public void joinLobby(String userName) throws InterruptedException {
         lobbyManager.joinLobby(userName);
-        //server.put("joinLobby", userName);
     }
 
     public void startListeningForMessages(TextArea messageAreaLobby) {
@@ -57,7 +54,6 @@ public class AppModel {
             }
         });
         roleThread.start();
-
     }
 
 
@@ -155,4 +151,20 @@ public class AppModel {
         }).start();
     }
 
+
+    //Listen for the result of the game
+    public void startListenForGameResult(AppController appController, String username){
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Object[] response = server.get(new ActualField("gameEnd"), new ActualField(username),new FormalField(String.class));
+                    String result = (String) response[2];
+                    System.out.println(result);
+                    Platform.runLater(() -> appController.updateGameResult(result));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
 }
