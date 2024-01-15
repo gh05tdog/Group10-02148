@@ -143,29 +143,29 @@ public class AppController {
         String[] users = userList.split(", ");
         System.out.println("User list from appController" + Arrays.toString(users));
 
-        AnchorPane[] circles = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
+        AnchorPane[] anchorPanes = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
         Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
 
         //put the users in the circles
         for (int i = 0; i < users.length; i++) {
-            circles[i].setVisible(true);
-            circles[i].setDisable(false);
+            anchorPanes[i].setVisible(true);
+            anchorPanes[i].setDisable(false);
             labels[i].setText(users[i]);
             userToIndexMap .put(users[i],i);
             // Debugging output
-            System.out.println("Assigning " + users[i] + " to circle " + circles[i].getId() + " and label " + labels[i].getId());
+            System.out.println("Assigning " + users[i] + " to circle " + anchorPanes[i].getId() + " and label " + labels[i].getId());
         }
     }
 
     private void removeKilled(String killed) {
-        AnchorPane[] circles = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
+        AnchorPane[] anchorPanes = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
         Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
 
         //put the users in the circles
         for (int i = 0; i < labels.length; i++) {
             if (labels[i].getText().equals(killed)) {
-                circles[i].setVisible(false);
-                circles[i].setDisable(true);
+                anchorPanes[i].setVisible(false);
+                anchorPanes[i].setDisable(true);
                 labels[i].setText("");
             }
         }
