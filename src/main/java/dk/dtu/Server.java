@@ -282,10 +282,16 @@ public class Server implements Runnable {
         }
     }
 
-
     private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
-            int nrOfMafia = 1;
+            int nrOfMafia = 0;
+            for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
+                if (statusControl.conductor[i].isKilled()) continue; // Skip dead players
+
+                if (statusControl.conductor[i].getRole().contains("Mafia")) {
+                    nrOfMafia++;
+                }
+            }
             System.out.println(identityProvider.getPlayersInLobby());
             mafiaVoteMap.put(yourUsername, victim);
             if (nrOfMafia == mafiaVoteMap.size()) {
