@@ -18,13 +18,16 @@ public class Server implements Runnable {
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state
     private final List<String> messages = new ArrayList<>();
-    private int timeSeconds = 10;
+    private int timeSeconds = 30;
     private boolean isTimerRunning = false;
     private final Thread actionThread;
+    private final Thread checkUsernameThread;
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
     public String[] nameList;
+
+    private final Set<String> reservedUsernames = new HashSet<>();
 
     public IdentityProvider identityProvider = new IdentityProvider();
 
@@ -37,15 +40,31 @@ public class Server implements Runnable {
         messageThread = new Thread(this::runMessageListener);
         executeVoteMap = new HashMap<>();
         mafiaVoteMap = new HashMap<>();
-
         gameStarted = false;
+        checkUsernameThread = new Thread(this::checkUsername);
+    }
+
+    private void checkUsername() {
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                Object[] request = gameSpace.get(new ActualField("checkUsername"), new FormalField(String.class));
+                String username = (String) request[1];
+                boolean isUsernameValid = !identityProvider.isPlayerInLobby(username);
+                gameSpace.put("checkUsername", username, isUsernameValid);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("Server thread interrupted");
+        } catch (Exception e) {
+            System.out.println("Server error: " + e);
+        }
     }
 
     public void startServer() {
         serverThread.start();
         messageThread.start();
         actionThread.start();
-
+        checkUsernameThread.start();
     }
 
     @Override
@@ -85,16 +104,19 @@ public class Server implements Runnable {
     }
 
     void handleJoinLobby(String username) throws Exception {
-        if (!gameStarted && !identityProvider.isPlayerInLobby(username)) {
-            gameSpace.put("connected", username);
-            identityProvider.addPlayer(username);
-            System.out.println("User " + username + " joined the lobby");
-            messages.add(username + " joined the lobby");
-            broadcastLobbyUpdate();
-
+        if (reserveUsername(username)) {
+            if (!gameStarted && !identityProvider.isPlayerInLobby(username)) {
+                gameSpace.put("connected", username);
+                identityProvider.addPlayer(username);
+                System.out.println("User " + username + " joined the lobby");
+                messages.add(username + " joined the lobby");
+                broadcastLobbyUpdate();
+                releaseUsername(username);
+            } else {
+                throw new Exception("Game already started or user already in lobby");
+            }
         } else {
-            throw new Exception("Game already started or user already in lobby");
-
+            throw new Exception("Username already taken or reserved");
         }
     }
 
@@ -117,28 +139,17 @@ public class Server implements Runnable {
             RandomSpace roles = new RandomSpace();
             roleList = new String[identityProvider.getNumberOfPlayersInLobby()];
             nameList = new String[identityProvider.getNumberOfPlayersInLobby()];
-            //int nrOfMafia = playersInLobby.size()/4;
-            //for(int i = 0; i < nrOfMafia; i++){
+
+            int nrOfMafia = identityProvider.getNumberOfPlayersInLobby()/4;
+            for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
-            //roles.put("Snitch");
-            roles.put("Bodyguard");
-            //roles.put("Mafia");
-            //}
-            //roles.put("Bodyguard");
-            roles.put("Snitch");
-            // for(int i = 0; i < playersInLobby.size() - nrOfMafia - 2; i++){
-            roles.put("Citizen");
-            // }
-
-            /*for (int i = 0; i < playersInLobby.size(); i++) {
-                playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
-                roleList[playerHandlers.get(username).getPlayerID()] = playerHandlers.get(username).getRole();
-                roleList[statusControl.] = playerHandlers.get(username).getRole();
-                nameList[playerHandlers.get(username).getPlayerID()] = username;
-                System.out.println("Player " + username + "with ID: " + playerHandlers.get(username).getPlayerID() + " has role: " + playerHandlers.get(username).getRole());
             }
+            roles.put("Snitch");
+            roles.put("Bodyguard");
 
-             */
+             for(int i = 0; i < identityProvider.getNumberOfPlayersInLobby() - nrOfMafia - 2; i++){
+            roles.put("Citizen");
+             }
 
             for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
                 String role = Arrays.toString(roles.get(new FormalField(String.class)));
@@ -260,6 +271,23 @@ public class Server implements Runnable {
             }
         }
     }
+    boolean reserveUsername(String username) {
+        synchronized (reservedUsernames) {
+            if (identityProvider.isPlayerInLobby(username) || reservedUsernames.contains(username)) {
+                return false; // Username is already taken or reserved
+            }
+            reservedUsernames.add(username);
+            return true; // Username reserved
+        }
+    }
+
+
+
+    void releaseUsername(String username) {
+        synchronized (reservedUsernames) {
+            reservedUsernames.remove(username);
+        }
+    }
 
     private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
@@ -357,7 +385,7 @@ public class Server implements Runnable {
         broadcastToAllClients("gameEnd", message);
     }
 
-    private void checkForVictory() throws InterruptedException {
+    private void checkForVictory() {
         int mafiaCount = 0;
         int nonMafiaCount = 0;
 
@@ -405,7 +433,7 @@ public class Server implements Runnable {
                             case "Day" -> {
                                 stageCycle = "VotingTime";
                                 System.out.println(stageCycle);
-                                timeSeconds = 10; // Reset timer
+                                timeSeconds = 30; // Reset timer
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {
@@ -414,7 +442,7 @@ public class Server implements Runnable {
                             }
                             case "Night" -> {
                                 stageCycle = "Day";
-                                timeSeconds = 10; // Reset timer
+                                timeSeconds = 30; // Reset timer
                                 System.out.println(stageCycle);
                                 try {
                                     broadcastDayNightCycle();
@@ -424,7 +452,7 @@ public class Server implements Runnable {
                             }
                             case "VotingTime" -> {
                                 stageCycle = "Night";
-                                timeSeconds = 10; // Reset timer
+                                timeSeconds = 30; // Reset timer
                                 System.out.println(stageCycle);
                                 try {
                                     broadcastDayNightCycle();

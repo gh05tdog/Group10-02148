@@ -81,7 +81,7 @@ public class LobbyController {
     }
 
     //Handle the connect button
-    public void handleConnectAction() throws InterruptedException, IOException {
+    public void handleConnectAction() throws InterruptedException {
         if (usernameField.isVisible()) {
             config.setUsername(usernameField.getText());
         }
@@ -90,8 +90,6 @@ public class LobbyController {
         chatroomField.setVisible(false);
         connectButton.setVisible(false);
 
-
-        //System.out.println("Username: " + config.getUsername());
 
         //Join the lobby
         model.joinLobby(config.getUsername());
