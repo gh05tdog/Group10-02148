@@ -248,7 +248,15 @@ public class Server implements Runnable {
                 }
             }
 
-            int divided = (identityProvider.getNumberOfPlayersInLobby() / 2) + 1;
+
+            int alivePlayers = 0;
+
+            for(int i = 0; i<identityProvider.getNumberOfPlayersInLobby(); i++) {
+                if(!(statusControl.conductor[i].isKilled())) {
+                    alivePlayers++;
+                }
+            }
+            int divided = (alivePlayers / 2) + 1;
 
             if (maxVotes >= divided) {
                 System.out.println("The town eliminated: " + mostVotedUser);
