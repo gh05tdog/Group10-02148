@@ -6,6 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane prefHeight="521.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
+<Pane prefHeight="521.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
     <children>
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="302.0" />
         <ImageView fx:id="background" fitHeight="521.0" fitWidth="746.0">
@@ -62,80 +63,128 @@
                 <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
             </font>
         </Label>
-        <Circle fx:id="User11" disable="true" fill="DODGERBLUE" layoutX="424.0" layoutY="277.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser11" layoutX="404" layoutY="257" mouseTransparent="true" />
-        <Circle fx:id="User10" disable="true" fill="DODGERBLUE" layoutX="302.0" layoutY="295.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser10" layoutX="282" layoutY="275" mouseTransparent="true" />
-        <Circle fx:id="User9" disable="true" fill="DODGERBLUE" layoutX="516.0" layoutY="219.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser9" layoutX="496" layoutY="199" mouseTransparent="true" />
-        <Circle fx:id="User8" disable="true" fill="DODGERBLUE" layoutX="341.0" layoutY="222.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser8" layoutX="321" layoutY="202" mouseTransparent="true" />
-        <Circle fx:id="User7" disable="true" fill="DODGERBLUE" layoutX="242.0" layoutY="216.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser7" layoutX="222" layoutY="196" mouseTransparent="true" />
-        <Circle fx:id="User6" disable="true" fill="DODGERBLUE" layoutX="463.0" layoutY="153.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser6" layoutX="443" layoutY="133" mouseTransparent="true" />
-        <Circle fx:id="User5" disable="true" fill="DODGERBLUE" layoutX="346.0" layoutY="134.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser5" layoutX="326" layoutY="114" mouseTransparent="true" />
-        <Circle fx:id="User4" disable="true" fill="DODGERBLUE" layoutX="242.0" layoutY="124.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser4" layoutX="222" layoutY="104" mouseTransparent="true" />
-        <Circle fx:id="User0" disable="true" fill="DODGERBLUE" layoutX="219.0" layoutY="34.0" onMouseClicked="#AttemptAction" radius="29.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser0" layoutX="199" layoutY="14" mouseTransparent="true" />
-
-        <Circle fx:id="User3" disable="true" fill="DODGERBLUE" layoutX="516.0" layoutY="65.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser3" layoutX="496" layoutY="45" mouseTransparent="true" />
-        <Circle fx:id="User2" disable="true" fill="DODGERBLUE" layoutX="424.0" layoutY="52.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser2" layoutX="404" layoutY="32" mouseTransparent="true" />
-        <Circle fx:id="User1" disable="true" fill="DODGERBLUE" layoutX="307.0" layoutY="45.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-        <Label fx:id="labelForUser1" layoutX="287" layoutY="25" mouseTransparent="true" />
 
         <!-- Example for labelForSnitch0 -->
 
         <Rectangle fx:id="rectangleForSnitch0" fill="#4d2613" height="20.0" layoutX="194.0" layoutY="66.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch0" layoutX="194.0" layoutY="66.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch0" layoutX="194.0" layoutY="66.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch1 -->
 
         <Rectangle fx:id="rectangleForSnitch1" fill="#4D2613" height="20.0" layoutX="282.0" layoutY="66.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch1" layoutX="282.0" layoutY="66.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch1" layoutX="282.0" layoutY="66.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch2 -->
 
         <Rectangle fx:id="rectangleForSnitch2" fill="#4D2613" height="20.0" layoutX="385.0" layoutY="86.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch2" layoutX="385.0" layoutY="86.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch2" layoutX="385.0" layoutY="86.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch3 -->
 
         <Rectangle fx:id="rectangleForSnitch3" fill="#4D2613" height="20.0" layoutX="502.0" layoutY="96.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch3" layoutX="502.0" layoutY="96.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch3" layoutX="502.0" layoutY="96.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch4 -->
 
         <Rectangle fx:id="rectangleForSnitch4" fill="#4D2613" height="20.0" layoutX="223.0" layoutY="148.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch4" layoutX="223.0" layoutY="155.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch4" layoutX="223.0" layoutY="155.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch5 -->
 
         <Rectangle fx:id="rectangleForSnitch5" fill="#4D2613" height="20.0" layoutX="332.0" layoutY="155.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch5" layoutX="332.0" layoutY="155.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch5" layoutX="332.0" layoutY="155.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch6 -->
 
         <Rectangle fx:id="rectangleForSnitch6" fill="#4D2613" height="20.0" layoutX="424.0" layoutY="184.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch6" layoutX="424.0" layoutY="184.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch6" layoutX="424.0" layoutY="184.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch7 -->
 
         <Rectangle fx:id="rectangleForSnitch7" fill="#4D2613" height="20.0" layoutX="217.0" layoutY="247.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch7" layoutX="217.0" layoutY="247.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch7" layoutX="217.0" layoutY="247.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch8 -->
 
         <Rectangle fx:id="rectangleForSnitch8" fill="#4D2613" height="20.0" layoutX="332.0" layoutY="252.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch8" layoutX="332.0" layoutY="252.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch8" layoutX="332.0" layoutY="252.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch9 -->
 
         <Rectangle fx:id="rectangleForSnitch9" fill="#4D2613" height="20.0" layoutX="491.0" layoutY="261.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch9" layoutX="491.0" layoutY="261.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch9" layoutX="491.0" layoutY="261.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch10 -->
 
         <Rectangle fx:id="rectangleForSnitch10" fill="#4D2613" height="20.0" layoutX="277.0" layoutY="326.0" visible="false" width="60.0" />
-        <Label fx:id="labelForSnitch10" layoutX="277.0" layoutY="326.0" mouseTransparent="true" text="" textFill="white"/>
+        <Label fx:id="labelForSnitch10" layoutX="277.0" layoutY="326.0" mouseTransparent="true" text="" textFill="white" />
         <!-- Example for labelForSnitch11 -->
 
         <Rectangle fx:id="rectangleForSnitch11" fill="#4D2613" height="20.0" layoutX="399.0" layoutY="308.0" visible="false" width="60.0" />
         <Label fx:id="labelForSnitch11" layoutX="399.0" layoutY="308.0" mouseTransparent="true" text="" textFill="white" />
+      <AnchorPane layoutX="430.0" layoutY="115.0" prefHeight="69.0" prefWidth="71.0">
+         <children>
+              <Circle fx:id="User6" disable="true" fill="DODGERBLUE" layoutX="36.0" layoutY="36.0" onMouseClicked="#AttemptAction" radius="37.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser6" layoutY="50.0" mouseTransparent="true" prefHeight="17.0" prefWidth="74.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="190.0" layoutY="12.0" prefHeight="52.0" prefWidth="58.0">
+         <children>
+              <Circle fx:id="User0" disable="true" fill="DODGERBLUE" layoutX="28.0" layoutY="28.0" onMouseClicked="#AttemptAction" radius="29.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser0" layoutX="-2.0" layoutY="34.0" mouseTransparent="true" prefHeight="17.0" prefWidth="60.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="283.0" layoutY="11.0" prefHeight="45.0" prefWidth="58.0">
+         <children>
+              <Circle fx:id="User1" disable="true" fill="DODGERBLUE" layoutX="30.0" layoutY="30.0" onMouseClicked="#AttemptAction" radius="29.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser1" layoutY="36.0" mouseTransparent="true" prefHeight="17.0" prefWidth="59.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="385.0" layoutY="24.0" prefHeight="59.0" prefWidth="61.0">
+         <children>
+              <Circle fx:id="User2" disable="true" fill="DODGERBLUE" layoutX="30.0" layoutY="30.0" onMouseClicked="#AttemptAction" radius="31.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser2" layoutY="38.0" mouseTransparent="true" prefHeight="17.0" prefWidth="59.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="484.0" layoutY="34.0" prefHeight="73.0" prefWidth="74.0">
+         <children>
+      
+              <Circle fx:id="User3" disable="true" fill="DODGERBLUE" layoutX="37.0" layoutY="37.0" onMouseClicked="#AttemptAction" radius="38.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser3" layoutY="52.0" mouseTransparent="true" prefHeight="17.0" prefWidth="76.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="384.0" layoutY="236.0" prefHeight="78.0" prefWidth="78.0">
+         <children>
+              <Circle fx:id="User11" disable="true" fill="DODGERBLUE" layoutX="38.0" layoutY="38.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser11" layoutY="55.0" mouseTransparent="true" prefHeight="17.0" prefWidth="78.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="261.0" layoutY="255.0" prefHeight="73.0" prefWidth="78.0">
+         <children>
+              <Circle fx:id="User10" disable="true" fill="DODGERBLUE" layoutX="36.0" layoutY="36.0" onMouseClicked="#AttemptAction" radius="37.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser10" layoutY="50.0" mouseTransparent="true" prefHeight="17.0" prefWidth="78.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="477.0" layoutY="184.0" prefHeight="75.0" prefWidth="78.0">
+         <children>
+              <Circle fx:id="User9" disable="true" fill="DODGERBLUE" layoutX="40.0" layoutY="40.0" onMouseClicked="#AttemptAction" radius="39.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser9" layoutY="56.0" mouseTransparent="true" prefHeight="17.0" prefWidth="79.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="304.0" layoutY="182.0" prefHeight="73.0" prefWidth="75.0">
+         <children>
+              <Circle fx:id="User8" disable="true" fill="DODGERBLUE" layoutX="37.0" layoutY="37.0" onMouseClicked="#AttemptAction" radius="38.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser8" layoutY="52.0" mouseTransparent="true" prefHeight="17.0" prefWidth="75.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="210.0" layoutY="185.0" prefHeight="62.0" prefWidth="68.0">
+         <children>
+              <Label fx:id="labelForUser7" layoutX="-1.0" layoutY="44.0" mouseTransparent="true" prefHeight="17.0" prefWidth="68.0" />
+              <Circle fx:id="User7" disable="true" fill="DODGERBLUE" layoutX="33.0" layoutY="33.0" onMouseClicked="#AttemptAction" radius="34.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="314.0" layoutY="96.0" prefHeight="68.0" prefWidth="74.0">
+         <children>
+              <Circle fx:id="User5" disable="true" fill="DODGERBLUE" layoutX="35.0" layoutY="35.0" onMouseClicked="#AttemptAction" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser5" layoutX="1.0" layoutY="48.0" mouseTransparent="true" prefHeight="17.0" prefWidth="72.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="212.0" layoutY="98.0" prefHeight="62.0" prefWidth="68.0">
+         <children>
+              <Circle fx:id="User4" disable="true" fill="DODGERBLUE" layoutX="34.0" layoutY="34.0" onMouseClicked="#AttemptAction" radius="35.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+              <Label fx:id="labelForUser4" layoutY="46.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" />
+         </children>
+      </AnchorPane>
 
     </children>
 </Pane>
