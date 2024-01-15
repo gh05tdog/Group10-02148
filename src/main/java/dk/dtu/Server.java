@@ -412,7 +412,7 @@ public class Server implements Runnable {
                             case "Day" -> {
                                 stageCycle = "VotingTime";
                                 System.out.println(stageCycle);
-                                timeSeconds = 30; // Reset timer
+                                timeSeconds = 15; // Reset timer
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {

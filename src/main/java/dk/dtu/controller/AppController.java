@@ -38,6 +38,8 @@ public class AppController {
     public Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
 
     public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
+
+    public Image voteHammer = new Image("/dk/dtu/view/images/voteHammer.png");
     public TextArea roleBox;
     public TextArea infoTextField;
     private final Map<String, Integer> userToIndexMap = new HashMap<>();
@@ -95,7 +97,7 @@ public class AppController {
             } else if ("VotingTime".equals(state)) {
                 infoTextField.setText("Voting time");
                 config.setHasVoted(false);
-                counter.setImage(moon);
+                counter.setImage(voteHammer);
                 background.setImage(day);
             } else if ("Night".equals(state)) {
                 infoTextField.setText("");
