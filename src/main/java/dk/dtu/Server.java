@@ -21,13 +21,11 @@ public class Server implements Runnable {
     private int timeSeconds = 30;
     private boolean isTimerRunning = false;
     private final Thread actionThread;
+    private final Thread checkUsernameThread;
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
     public String[] nameList;
-
-    private final Set<String> reservedUsernames = new HashSet<>();
-
     public IdentityProvider identityProvider = new IdentityProvider();
 
     public Server() throws UnknownHostException {
@@ -40,14 +38,31 @@ public class Server implements Runnable {
         executeVoteMap = new HashMap<>();
         mafiaVoteMap = new HashMap<>();
         gameStarted = false;
+        checkUsernameThread = new Thread(this::checkUsername);
     }
 
+    private void checkUsername() {
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                Object[] request = gameSpace.get(new ActualField("checkUsername"), new FormalField(String.class));
+                String username = (String) request[1];
+                boolean isUsernameValid = !identityProvider.isPlayerInLobby(username);
+                gameSpace.put("checkUsername", username, isUsernameValid);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("Server thread interrupted");
+        } catch (Exception e) {
+            System.out.println("Server error: " + e);
+        }
+    }
 
-    public void startServer() {
+    public void startServer() throws InterruptedException {
+        gameSpace.put("CheckUsernameLock");
         serverThread.start();
         messageThread.start();
         actionThread.start();
-
+        checkUsernameThread.start();
     }
 
     @Override
@@ -87,20 +102,15 @@ public class Server implements Runnable {
     }
 
     void handleJoinLobby(String username) throws Exception {
-        if (reserveUsername(username)) {
             if (!gameStarted && !identityProvider.isPlayerInLobby(username)) {
                 gameSpace.put("connected", username);
                 identityProvider.addPlayer(username);
                 System.out.println("User " + username + " joined the lobby");
                 messages.add(username + " joined the lobby");
                 broadcastLobbyUpdate();
-                releaseUsername(username);
             } else {
                 throw new Exception("Game already started or user already in lobby");
             }
-        } else {
-            throw new Exception("Username already taken or reserved");
-        }
     }
 
     void startGame() throws InterruptedException {
@@ -254,23 +264,7 @@ public class Server implements Runnable {
             }
         }
     }
-    boolean reserveUsername(String username) {
-        synchronized (reservedUsernames) {
-            if (identityProvider.isPlayerInLobby(username) || reservedUsernames.contains(username)) {
-                return false; // Username is already taken or reserved
-            }
-            reservedUsernames.add(username);
-            return true; // Username reserved
-        }
-    }
 
-
-
-    void releaseUsername(String username) {
-        synchronized (reservedUsernames) {
-            reservedUsernames.remove(username);
-        }
-    }
 
     private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
@@ -398,6 +392,8 @@ public class Server implements Runnable {
         } catch (UnknownHostException e) {
             System.out.println("Could not determine local host IP");
             System.out.println("Error msg:" + e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
