@@ -7,12 +7,14 @@ import java.util.concurrent.TimeUnit;
 // Creates a thread which handles the players statuses and actions
 class Conductor extends Thread {
     int no;                         // Player number
+    String userName;                // Player name
     String role;                    // Player role
     boolean killed = false;         // Used to determine if player is still alive
     boolean secured = false;        // Used to determine if player is currently being protected
 
-    public Conductor(int no, String role) {
+    public Conductor(int no, String userName, String role) {
         this.no = no;
+        this.userName = userName;
         this.role = role;
     }
 
@@ -30,6 +32,10 @@ class Conductor extends Thread {
 
     String getRole() {
         return role;
+    }
+
+    String getUserName() {
+        return userName;
     }
 
     boolean isSecured() {
@@ -54,13 +60,13 @@ public class StatusControl {
     House houses;               // Houses
     int noOfPlayers;            // Number of players
 
-    public StatusControl(int noOfPlayers, String[] rolelist) throws InterruptedException {
+    public StatusControl(int noOfPlayers, String[] nameList, String[] rolelist) throws InterruptedException {
         this.noOfPlayers = noOfPlayers;
         conductor = new Conductor[noOfPlayers];
         houses = new House(noOfPlayers);
 
         for (int i = 0; i < noOfPlayers; i++) {
-            conductor[i] = new Conductor(i, rolelist[i]);
+            conductor[i] = new Conductor(i, nameList[i], rolelist[i]);
             conductor[i].start();
         }
 
@@ -106,6 +112,11 @@ public class StatusControl {
             return "[REDACTED]";
         }
     }
+
+    public String getPlayerName(int player) {
+        return conductor[player].getUserName();
+    }
+
 
     /*
     public List<String[]> getAlivePlayers () {

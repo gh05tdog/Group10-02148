@@ -16,9 +16,10 @@ class StatusControlTest {
     @BeforeEach
     void setUp() throws InterruptedException {
         int noOfPlayers = 5;
+        String[] nameList = {"Minnie", "Mickey", "Pluto", "Goofy", "Max"};
         String[] rolelist = {"Citizen", "Snitch", "Bodyguard", "Mafia", "Mafia"};
 
-        statusControl = new StatusControl(noOfPlayers, rolelist);
+        statusControl = new StatusControl(noOfPlayers, nameList, rolelist);
 
         executorService = Executors.newScheduledThreadPool(1);
     }

@@ -28,6 +28,7 @@ public class Server implements Runnable {
 
     private HashMap<String, String> executeVoteMap;
     public String[] roleList;
+    public String[] nameList;
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -134,7 +135,7 @@ public class Server implements Runnable {
                 System.out.println("Sending role update to: " + username);
                 broadcastRoleUpdate(username);
             }
-            statusControl = new StatusControl(playersInLobby.size(), roleList);
+            statusControl = new StatusControl(playersInLobby.size(), nameList, roleList);
 
             System.out.println("Game is starting with players: " + playersInLobby);
         } else {
@@ -146,6 +147,7 @@ public class Server implements Runnable {
         if (!gameStarted) {
             RandomSpace roles = new RandomSpace();
             roleList = new String[playersInLobby.size()];
+            nameList = new String[playersInLobby.size()];
             //int nrOfMafia = playersInLobby.size()/4;
             //for(int i = 0; i < nrOfMafia; i++){
             roles.put("Mafia");
@@ -162,6 +164,7 @@ public class Server implements Runnable {
             for (String username : playersInLobby) {
                 playerHandlers.get(username).setRole(Arrays.toString(roles.get(new FormalField(String.class))));
                 roleList[playerHandlers.get(username).getPlayerID()] = playerHandlers.get(username).getRole();
+                nameList[playerHandlers.get(username).getPlayerID()] = username;
                 System.out.println("Player " + username + "with ID: " + playerHandlers.get(username).getPlayerID() + " has role: " + playerHandlers.get(username).getRole());
             }
             System.out.println("Role list:" + Arrays.toString(roleList));
