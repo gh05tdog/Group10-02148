@@ -59,17 +59,27 @@ public class StatusControl {
     Conductor[] conductor;      // Status controllers
     House houses;               // Houses
     int noOfPlayers;            // Number of players
+    String[] nameList;          // List of all player's names
 
     public StatusControl(int noOfPlayers, String[] nameList, String[] rolelist) throws InterruptedException {
         this.noOfPlayers = noOfPlayers;
         conductor = new Conductor[noOfPlayers];
         houses = new House(noOfPlayers);
+        this.nameList = nameList;
 
         for (int i = 0; i < noOfPlayers; i++) {
             conductor[i] = new Conductor(i, nameList[i], rolelist[i]);
             conductor[i].start();
         }
+    }
 
+    public int getIDFromUserName(String userName) {
+        for (int i = 0; i < noOfPlayers; i++) {
+            if (nameList[i] == userName) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void attemptMurder(int victim) throws InterruptedException {
