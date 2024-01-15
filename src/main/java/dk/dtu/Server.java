@@ -18,7 +18,7 @@ public class Server implements Runnable {
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state
     private final List<String> messages = new ArrayList<>();
-    private int timeSeconds = 5;
+    private int timeSeconds = 30;
     private boolean isTimerRunning = false;
     private final Thread actionThread;
     private final HashMap<String, String> mafiaVoteMap;
@@ -416,7 +416,7 @@ public class Server implements Runnable {
                             case "Day" -> {
                                 stageCycle = "VotingTime";
                                 System.out.println(stageCycle);
-                                timeSeconds = 5; // Reset timer
+                                timeSeconds = 15; // Reset timer
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {
@@ -425,7 +425,7 @@ public class Server implements Runnable {
                             }
                             case "Night" -> {
                                 stageCycle = "Day";
-                                timeSeconds = 5; // Reset timer
+                                timeSeconds = 30; // Reset timer
                                 System.out.println(stageCycle);
                                 try {
                                     broadcastDayNightCycle();
@@ -435,7 +435,7 @@ public class Server implements Runnable {
                             }
                             case "VotingTime" -> {
                                 stageCycle = "Night";
-                                timeSeconds = 5; // Reset timer
+                                timeSeconds = 30; // Reset timer
                                 System.out.println(stageCycle);
                                 try {
                                     broadcastDayNightCycle();
