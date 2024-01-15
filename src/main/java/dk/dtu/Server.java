@@ -17,15 +17,12 @@ public class Server implements Runnable {
     private final Set<String> playersInLobby;
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state
-
     private final List<String> messages = new ArrayList<>();
     private int timeSeconds = 10;
     private boolean isTimerRunning = false;
     private final Map<String, PlayerHandler> playerHandlers;
     private final Thread actionThread;
-
     private HashMap<String, String> mafiaVoteMap;
-
     private HashMap<String, String> executeVoteMap;
     public String[] roleList;
     public String[] nameList;
@@ -68,7 +65,6 @@ public class Server implements Runnable {
 
                 switch (action) {
                     case "joinLobby" -> handleJoinLobby(username);
-                    case "leaveLobby" -> handleLeaveLobby(username);
                     case "startGame" -> startGame();
                 }
             }
@@ -100,27 +96,11 @@ public class Server implements Runnable {
 
             // Create a new PlayerHandler for this player and start its thread
             PlayerHandler playerHandler = new PlayerHandler(username, playersInLobby.size() - 1, gameSpace);
-            Thread playerThread = new Thread(playerHandler);
             playerHandlers.put(username, playerHandler); // Store the PlayerHandler
-            playerThread.start();
 
         } else {
             throw new Exception("Game already started or user already in lobby");
 
-        }
-    }
-
-    void handleLeaveLobby(String username) {
-        if (playersInLobby.remove(username)) {
-            System.out.println("User " + username + " left the lobby");
-            broadcastLobbyUpdate();
-
-            // Stop the player's handler
-            if (playerHandlers.containsKey(username)) {
-                PlayerHandler playerHandler = playerHandlers.get(username);
-                playerHandler.stop(); // Stop the PlayerHandler
-                playerHandlers.remove(username);
-            }
         }
     }
 
