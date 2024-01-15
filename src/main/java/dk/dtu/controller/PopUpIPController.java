@@ -46,4 +46,10 @@ public class PopUpIPController {
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
     }
+    public void returnToMenu(MouseEvent mouseEvent) throws IOException {
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/StartScreen.fxml")));
+        Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+        currentStage.setOnCloseRequest(e -> Platform.exit());
+        currentStage.setScene(new Scene(newRoot));
+    }
 }
