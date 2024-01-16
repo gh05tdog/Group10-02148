@@ -25,7 +25,9 @@ public class PopUpIPController {
     public void JoinGameBasedOnIP(MouseEvent actionEvent) throws IOException, InterruptedException {
         if (UserNameField.getText().isEmpty()) {
             System.out.println("Username is required to join the lobby.");
-        } else {
+        } else if (UserNameField.getText().length() > 20) {
+            System.out.println("Username is too long.");
+    } else {
             RemoteSpace server = new RemoteSpace("tcp://" + IpField.getText() + "/game?keep");
             System.out.println("Connected to server");
             server.get(new ActualField("lock"));

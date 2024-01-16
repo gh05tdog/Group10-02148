@@ -122,7 +122,7 @@ public class AppModel {
             System.out.println("You have already voted");
             return;
         }
-        //If the user click on themself, do nothing
+        //If the user click on themselves, do nothing
         if (username.equals(Victim)) {
             System.out.println("You cannot vote on yourself");
             return;
@@ -145,11 +145,10 @@ public class AppModel {
             while (true) {
                 try {
                     Object[] response = server.get(new ActualField("snitchMessage"), new ActualField(username),new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
-                    String snitcher = (String) response[1];
                     String snitcherRole = (String) response[2];
                     String victimUsername = (String) response[4];
-                    String RoleOfVictim = (String) response[3];
-                    Platform.runLater(() -> appController.updateSnitchMessage(snitcherRole, victimUsername, RoleOfVictim));
+                    String roleOfVictim = (String) response[3];
+                    Platform.runLater(() -> appController.updateSnitchMessage(snitcherRole, victimUsername, roleOfVictim));
 
                 } catch (Exception e) {
                     throw new RuntimeException(e);
