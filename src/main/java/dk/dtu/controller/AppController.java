@@ -52,8 +52,6 @@ public class AppController {
     public TextField yourUsername;
     @FXML
     private AnchorPane User11, User10, User9, User8, User7, User6, User5, User4, User3, User2, User1, User0;
-    @FXML
-    Rectangle rectangleForSnitch0, rectangleForSnitch1, rectangleForSnitch2, rectangleForSnitch3, rectangleForSnitch4, rectangleForSnitch5, rectangleForSnitch6, rectangleForSnitch7, rectangleForSnitch8, rectangleForSnitch9, rectangleForSnitch10, rectangleForSnitch11;
 
     @FXML
     private Label labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser3, labelForUser2, labelForUser1, labelForUser0;
@@ -208,7 +206,6 @@ public class AppController {
     public void updateSnitchMessage(String snitcher, String usernameOfSnitched, String roleOfVictim) {
         System.out.println("I was here" + snitcher + usernameOfSnitched + roleOfVictim);
         Label[] snitchLabels = {labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0};
-        Rectangle[] snitchRectangles = {rectangleForSnitch11, rectangleForSnitch10, rectangleForSnitch9, rectangleForSnitch8, rectangleForSnitch7, rectangleForSnitch6, rectangleForSnitch5, rectangleForSnitch4, rectangleForSnitch3, rectangleForSnitch2, rectangleForSnitch1, rectangleForSnitch0};
         if (snitcher.equals("[Snitch]")) {
             Integer index = userToIndexMap.get(usernameOfSnitched);
 
@@ -216,7 +213,6 @@ public class AppController {
                 // Update the label and rectangle for the snitched user
                 snitchLabels[index].setText(roleOfVictim);
                 snitchLabels[index].setVisible(true);
-                snitchRectangles[index].setVisible(true);
                 System.out.println("Snitch message received: " + usernameOfSnitched + " is a " + roleOfVictim);
             }
         }
