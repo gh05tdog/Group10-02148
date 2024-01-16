@@ -1,7 +1,5 @@
 package dk.dtu;
 
-import javafx.stage.Stage;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -17,7 +15,7 @@ public class config {
 
     static {
         try {
-            SERVER_IP = "tcp://"+ InetAddress.getLocalHost().getHostAddress() + ":9001/game?keep";
+            SERVER_IP = "tcp://" + InetAddress.getLocalHost().getHostAddress() + ":9001/game?keep";
 
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
@@ -32,20 +30,20 @@ public class config {
         lobbyLeader = lobbyLeaderBool;
     }
 
-    public static void setIp(String ip) {
-        SERVER_IP = "tcp://" + ip + "/game?keep";
-    }
-
     public static String getIp() {
         return SERVER_IP;
     }
 
-    public static void setUsername(String username) {
-        Username = username;
+    public static void setIp(String ip) {
+        SERVER_IP = "tcp://" + ip + "/game?keep";
     }
 
     public static String getUsername() {
         return Username;
+    }
+
+    public static void setUsername(String username) {
+        Username = username;
     }
 
     public static String getRole() {
@@ -56,12 +54,12 @@ public class config {
         role = newRole;
     }
 
+    public static String getUserList() {
+        return userList;
+    }
 
     public static void setUserList(String currentUserList) {
         userList = currentUserList;
-    }
-    public static String getUserList() {
-        return userList;
     }
 
     public static Boolean getHasVoted() {

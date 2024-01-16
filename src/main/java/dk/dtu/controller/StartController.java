@@ -1,6 +1,7 @@
 package dk.dtu.controller;
 
 import dk.dtu.Server;
+import dk.dtu.config;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,8 +14,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
-import dk.dtu.config;
-
 
 
 public class StartController {

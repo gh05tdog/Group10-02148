@@ -13,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,17 +21,13 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AppController {
+    private final AppModel model;
+    private final Map<String, Integer> userToIndexMap = new HashMap<>();
     public ImageView background;
-
     public TextField messageField;
     public TextArea messageArea;
     public ImageView counter;
     public Label timerLabel;
-
-    private String dayNightState = "Day";
-
-    private final AppModel model;
-
     public Image moon = new Image("/dk/dtu/view/images/Moon.png");
 
     public Image sun = new Image("/dk/dtu/view/images/sun.png");
@@ -44,12 +39,12 @@ public class AppController {
     public Image voteHammer = new Image("/dk/dtu/view/images/voteHammer.png");
     public TextArea roleBox;
     public TextArea infoTextField;
-    private final Map<String, Integer> userToIndexMap = new HashMap<>();
     @FXML
     public Label labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0;
     public Button sendButton;
     public TextArea killedList;
     public TextField yourUsername;
+    private String dayNightState = "Day";
     @FXML
     private AnchorPane User11, User10, User9, User8, User7, User6, User5, User4, User3, User2, User1, User0;
 
@@ -67,9 +62,9 @@ public class AppController {
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForTimeUpdate(this, config.getUsername());
-        model.startListenForSnitchUpdate(this,config.getUsername());
+        model.startListenForSnitchUpdate(this, config.getUsername());
         model.startListenForKilled(config.getUsername());
-        model.startListenForGameResult(this,config.getUsername());
+        model.startListenForGameResult(this, config.getUsername());
         Platform.runLater(() -> putUsersInCircles(config.getUserList()));
         Platform.runLater(() -> yourUsername.setText(config.getUsername()));
     }
@@ -78,9 +73,9 @@ public class AppController {
         String message = messageField.getText();
         if (!message.isEmpty()) {
             try {
-                if(dayNightState.equals("Night") & config.getRole().contains("Mafia")){
-                model.sendMessage(config.getUsername() + "(Mafia)" , message, "lobby");
-                }else {
+                if (dayNightState.equals("Night") & config.getRole().contains("Mafia")) {
+                    model.sendMessage(config.getUsername() + "(Mafia)", message, "lobby");
+                } else {
                     model.sendMessage(config.getUsername(), message, "lobby");
                 }
             } catch (Exception e) {
@@ -109,7 +104,7 @@ public class AppController {
                 showKilled(killed);
                 removeKilled(killed);
                 config.setHasVoted(false);
-                if(!Objects.equals(config.getRole(), "[Mafia]")){
+                if (!Objects.equals(config.getRole(), "[Mafia]")) {
                     messageArea.setVisible(false);
                 }
                 counter.setImage(moon);
@@ -117,7 +112,6 @@ public class AppController {
             }
         });
     }
-
 
 
     public void updateTimeLabel(String time) {
@@ -146,7 +140,7 @@ public class AppController {
     }
 
 
-    public void putUsersInCircles(String userList){
+    public void putUsersInCircles(String userList) {
         //split the userList into an array
         String[] users = userList.split(", ");
         System.out.println("User list from appController" + Arrays.toString(users));
@@ -159,7 +153,7 @@ public class AppController {
             anchorPanes[i].setVisible(true);
             anchorPanes[i].setDisable(false);
             labels[i].setText(users[i]);
-            userToIndexMap .put(users[i],i);
+            userToIndexMap.put(users[i], i);
             // Debugging output
             System.out.println("Assigning " + users[i] + " to circle " + anchorPanes[i].getId() + " and label " + labels[i].getId());
         }
@@ -179,10 +173,11 @@ public class AppController {
             }
         }
 
-        if(Objects.equals(config.getUsername(), killed)){
+        if (Objects.equals(config.getUsername(), killed)) {
             Platform.runLater(() -> sendButton.setDisable(true));
         }
     }
+
     public void AttemptAction(MouseEvent mouseEvent) throws InterruptedException {
         // Get the id of the clicked circle
         String circleId = ((AnchorPane) mouseEvent.getSource()).getId();
@@ -196,7 +191,7 @@ public class AppController {
             System.out.println("Label not found for " + circleId);
         }
         assert label != null;
-        model.AttemptAction(config.getUsername(),config.getRole(),label.getText());
+        model.AttemptAction(config.getUsername(), config.getRole(), label.getText());
     }
 
     public void showKilled(String killed) {

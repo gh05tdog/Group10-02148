@@ -9,20 +9,20 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="562.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/19"
       fx:controller="dk.dtu.controller.StartController">
     <MenuBar VBox.vgrow="NEVER">
-      <Menu mnemonicParsing="false" text="File">
-        <MenuItem mnemonicParsing="false" text="New"/>
-        <MenuItem mnemonicParsing="false" text="Open…"/>
-        <Menu mnemonicParsing="false" text="Open Recent"/>
-        <SeparatorMenuItem mnemonicParsing="false"/>
-        <MenuItem mnemonicParsing="false" text="Close"/>
-        <MenuItem mnemonicParsing="false" text="Save"/>
-        <MenuItem mnemonicParsing="false" text="Save As…"/>
-        <MenuItem mnemonicParsing="false" text="Revert"/>
-        <SeparatorMenuItem mnemonicParsing="false"/>
-        <MenuItem mnemonicParsing="false" text="Preferences…"/>
-        <SeparatorMenuItem mnemonicParsing="false"/>
-        <MenuItem mnemonicParsing="false" text="Quit"/>
-      </Menu>
+        <Menu mnemonicParsing="false" text="File">
+            <MenuItem mnemonicParsing="false" text="New"/>
+            <MenuItem mnemonicParsing="false" text="Open…"/>
+            <Menu mnemonicParsing="false" text="Open Recent"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" text="Close"/>
+            <MenuItem mnemonicParsing="false" text="Save"/>
+            <MenuItem mnemonicParsing="false" text="Save As…"/>
+            <MenuItem mnemonicParsing="false" text="Revert"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" text="Preferences…"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" text="Quit"/>
+        </Menu>
         <Menu mnemonicParsing="false" text="Edit">
             <MenuItem mnemonicParsing="false" text="Undo"/>
             <MenuItem mnemonicParsing="false" text="Redo"/>
@@ -40,9 +40,9 @@
         </Menu>
     </MenuBar>
     <AnchorPane prefHeight="495.0" prefWidth="559.0" VBox.vgrow="ALWAYS">
-      <ImageView fitHeight="537.0" fitWidth="587.0">
-        <Image url="@Images/moonlight_intro.png"/>
-      </ImageView>
+        <ImageView fitHeight="537.0" fitWidth="587.0">
+            <Image url="@Images/moonlight_intro.png"/>
+        </ImageView>
         <AnchorPane fx:id="joinGamePane" layoutX="105.0" layoutY="413.0" onMouseClicked="#JoinLobbyAction">
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#102f4d" height="78.0" stroke="BLACK" strokeType="INSIDE"
                        width="147.0"/>

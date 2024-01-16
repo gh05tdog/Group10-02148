@@ -2,9 +2,9 @@ package dk.dtu;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterEach;
 
 import java.net.UnknownHostException;
 
@@ -39,6 +39,7 @@ public class ServerTest {
 
     /**
      * Test that the server can join a lobby
+     *
      * @throws Exception if the server cannot join the lobby
      */
     @Test
@@ -50,6 +51,7 @@ public class ServerTest {
 
     /**
      * Test that the server can start a game
+     *
      * @throws Exception if the server cannot start the game
      */
     @Test
@@ -61,6 +63,7 @@ public class ServerTest {
 
     /**
      * Test that the server can send messages
+     *
      * @throws Exception if the server cannot send messages
      */
 
@@ -87,7 +90,7 @@ public class ServerTest {
             try {
                 server.getGameSpace().get(new ActualField("lock"));
                 server.getGameSpace().put("usernameCheck", "player1");
-                Object[] response =  server.getGameSpace().get(new ActualField("usernameCheck"), new FormalField(Boolean.class));
+                Object[] response = server.getGameSpace().get(new ActualField("usernameCheck"), new FormalField(Boolean.class));
                 assertTrue((Boolean) response[1]);
                 server.getGameSpace().put("joinLobby", "player1");
                 //Ensure that the server has time to add the user to the lobby
@@ -105,7 +108,7 @@ public class ServerTest {
             try {
                 server.getGameSpace().get(new ActualField("lock"));
                 server.getGameSpace().put("usernameCheck", "player1");
-                Object[] response =  server.getGameSpace().get(new ActualField("usernameCheck"), new FormalField(Boolean.class));
+                Object[] response = server.getGameSpace().get(new ActualField("usernameCheck"), new FormalField(Boolean.class));
                 assertFalse((Boolean) response[1]);
                 server.getGameSpace().put("lock");
             } catch (InterruptedException e) {
@@ -118,7 +121,7 @@ public class ServerTest {
             try {
                 server.getGameSpace().get(new ActualField("lock"));
                 server.getGameSpace().put("usernameCheck", "player2");
-                Object[] response =  server.getGameSpace().get(new ActualField("usernameCheck"), new FormalField(Boolean.class));
+                Object[] response = server.getGameSpace().get(new ActualField("usernameCheck"), new FormalField(Boolean.class));
                 assertTrue((Boolean) response[1]);
                 server.getGameSpace().put("joinLobby", "player2");
                 //Ensure that the server has time to add the user to the lobby
@@ -133,6 +136,7 @@ public class ServerTest {
 
     /**
      * Test that the server can assign roles to players
+     *
      * @throws Exception if the server cannot assign roles to players
      */
 
@@ -148,7 +152,7 @@ public class ServerTest {
 
 
     /**
-    * Test that the server can handle voteExecution
+     * Test that the server can handle voteExecution
      */
 
 

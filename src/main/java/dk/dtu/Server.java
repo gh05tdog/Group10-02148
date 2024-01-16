@@ -4,7 +4,6 @@ import org.jspace.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import java.util.*;
 
 public class Server implements Runnable {
@@ -13,19 +12,18 @@ public class Server implements Runnable {
     private final String serverIp;
     private final Thread serverThread;
     private final Thread messageThread;
-    private StatusControl statusControl;
-
-    private boolean gameStarted;
-    private String stageCycle = "Day"; // Initial state
     private final List<String> messages = new ArrayList<>();
-    private int timeSeconds = 30;
-    private boolean isTimerRunning = false;
     private final Thread actionThread;
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
     public String[] nameList;
     public IdentityProvider identityProvider = new IdentityProvider();
+    private StatusControl statusControl;
+    private boolean gameStarted;
+    private String stageCycle = "Day"; // Initial state
+    private int timeSeconds = 30;
+    private boolean isTimerRunning = false;
 
 
     public Server() throws UnknownHostException {
@@ -40,6 +38,16 @@ public class Server implements Runnable {
         gameStarted = false;
     }
 
+    public static void main(String[] args) {
+        try {
+            new Server().startServer();
+        } catch (UnknownHostException e) {
+            System.out.println("Could not determine local host IP");
+            System.out.println("Error msg:" + e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void startServer() throws InterruptedException {
         gameSpace.put("lock");
@@ -173,7 +181,6 @@ public class Server implements Runnable {
         }
     }
 
-
     private void runMessageListener() {
         System.out.println("Message listener running");
         try {
@@ -257,7 +264,6 @@ public class Server implements Runnable {
             }
         }
     }
-
 
     private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
@@ -381,18 +387,6 @@ public class Server implements Runnable {
         } else if (mafiaCount == 0) {
             endGame("Citizens win!");
             System.out.println("Citizens win!");
-        }
-    }
-
-
-    public static void main(String[] args) {
-        try {
-            new Server().startServer();
-        } catch (UnknownHostException e) {
-            System.out.println("Could not determine local host IP");
-            System.out.println("Error msg:" + e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 

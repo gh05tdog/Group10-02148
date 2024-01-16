@@ -140,11 +140,11 @@ public class AppModel {
         config.setHasVoted(true);
     }
 
-    public void startListenForSnitchUpdate(AppController appController,String username){
+    public void startListenForSnitchUpdate(AppController appController, String username) {
         new Thread(() -> {
             while (true) {
                 try {
-                    Object[] response = server.get(new ActualField("snitchMessage"), new ActualField(username),new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
+                    Object[] response = server.get(new ActualField("snitchMessage"), new ActualField(username), new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                     String snitcherRole = (String) response[2];
                     String victimUsername = (String) response[4];
                     String roleOfVictim = (String) response[3];
@@ -159,11 +159,11 @@ public class AppModel {
 
 
     //Listen for the result of the game
-    public void startListenForGameResult(AppController appController, String username){
+    public void startListenForGameResult(AppController appController, String username) {
         new Thread(() -> {
             while (true) {
                 try {
-                    Object[] response = server.get(new ActualField("gameEnd"), new ActualField(username),new FormalField(String.class));
+                    Object[] response = server.get(new ActualField("gameEnd"), new ActualField(username), new FormalField(String.class));
                     String result = (String) response[2];
                     System.out.println(result);
                     Platform.runLater(() -> appController.updateGameResult(result));

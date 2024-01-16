@@ -96,7 +96,6 @@ public class StatusControl {
     }
 
 
-
     public void protectPlayer(int player) throws InterruptedException {
         if (houses.enterHouse(player)) { // Something only happens if able to enter the house
             conductor[player].protectPlayer();

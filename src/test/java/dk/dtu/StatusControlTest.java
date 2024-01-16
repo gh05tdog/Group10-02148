@@ -2,6 +2,7 @@ package dk.dtu;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +26,7 @@ class StatusControlTest {
     }
 
     /**
-    An unprotected player should be killed when attemptMurder is called
+     * An unprotected player should be killed when attemptMurder is called
      */
     @Test
     void testMurderWithoutProtection() throws InterruptedException {
@@ -35,7 +36,7 @@ class StatusControlTest {
     }
 
     /**
-     A protected player should stay alive when attemptMurder is called
+     * A protected player should stay alive when attemptMurder is called
      */
     @Test
     void testMurderWithProtection() throws InterruptedException {
@@ -51,7 +52,7 @@ class StatusControlTest {
     }
 
     /**
-     If the protection experies, the player becomes unprotected and can be killed again
+     * If the protection experies, the player becomes unprotected and can be killed again
      */
     @Test
     void testMurderAfterProtectionExpires() throws InterruptedException {
@@ -72,8 +73,8 @@ class StatusControlTest {
     }
 
     /**
-     The duration of which a player is protected should not be extended
-     if .protectPlayer is called whilst already protected
+     * The duration of which a player is protected should not be extended
+     * if .protectPlayer is called whilst already protected
      */
     @Test
     void testDoubleProtectionNotPossible() throws InterruptedException {
@@ -92,7 +93,7 @@ class StatusControlTest {
     }
 
     /**
-     Multiple people can be protected at once
+     * Multiple people can be protected at once
      */
     @Test
     void testMultipleProtectedPeople() throws InterruptedException {
@@ -108,41 +109,41 @@ class StatusControlTest {
     }
 
     /**
-     If nobody is inside a player's house, their role can be revealed
+     * If nobody is inside a player's house, their role can be revealed
      */
     @Test
     void testSnitchOnUnprotectedPlayer() throws InterruptedException {
         assertTrue(statusControl.houses.lookInsideHouse(4));
         //assertEquals(statusControl.getPlayerRole(4),"Mafia");
-        assertEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
+        assertEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
     }
 
     /**
-     If someone is protected or someone is inside the house, their role will not be revealed
+     * If someone is protected or someone is inside the house, their role will not be revealed
      */
     @Test
     void testSnitchOnProtectedPlayer() throws InterruptedException {
         statusControl.protectPlayer(4);
         assertFalse(statusControl.houses.lookInsideHouse(4));
-        assertNotEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
+        assertNotEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
     }
 
     /**
-     If the protection expires (or someone leaves the house), a role can be revealed again
+     * If the protection expires (or someone leaves the house), a role can be revealed again
      */
     @Test
     void testSnitchAfterProtectionExpires() throws InterruptedException {
         statusControl.protectPlayer(4);
         assertFalse(statusControl.houses.lookInsideHouse(4));
-        assertNotEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
+        assertNotEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
         Thread.sleep(11000);
         assertTrue(statusControl.houses.lookInsideHouse(4));
-        assertEquals(statusControl.getPlayerRole(4),statusControl.conductor[4].getRole());
+        assertEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
     }
 
     /**
-     Whilst snitching on someone, they can still be killed
-     i.e. snitching does not protect a player
+     * Whilst snitching on someone, they can still be killed
+     * i.e. snitching does not protect a player
      */
     @Test
     void testKillAfterSnitch() throws InterruptedException {
@@ -154,26 +155,26 @@ class StatusControlTest {
     }
 
     /**
-     A player's name can be accessed
+     * A player's name can be accessed
      */
     @Test
     void testGetUnprotectedPlayerName() {
         assertFalse(statusControl.conductor[1].isSecured());
-        assertEquals(statusControl.getPlayerName(1),statusControl.conductor[1].getUserName());
+        assertEquals(statusControl.getPlayerName(1), statusControl.conductor[1].getUserName());
     }
 
     /**
-     The name of a protected player can also be accessed
+     * The name of a protected player can also be accessed
      */
     @Test
     void testGetProtectedPlayerName() {
         statusControl.conductor[1].protectPlayer();
         assertTrue(statusControl.conductor[1].isSecured());
-        assertEquals(statusControl.getPlayerName(1),statusControl.conductor[1].getUserName());
+        assertEquals(statusControl.getPlayerName(1), statusControl.conductor[1].getUserName());
     }
 
     /**
-     A player can be executed when unprotected
+     * A player can be executed when unprotected
      */
     @Test
     void testExecuteUnprotectedPlayer() throws InterruptedException {
@@ -184,7 +185,7 @@ class StatusControlTest {
     }
 
     /**
-     A player can also be executed when protected
+     * A player can also be executed when protected
      */
     @Test
     void testExecuteProtectedPlayer() throws InterruptedException {
@@ -196,23 +197,23 @@ class StatusControlTest {
     }
 
     /**
-     Returns ID based on the user name
+     * Returns ID based on the user name
      */
     @Test
     void testIDFromUserName() {
-        assertEquals(statusControl.getIDFromUserName("Minnie"),0);
-        assertEquals(statusControl.getIDFromUserName("Mickey"),1);
-        assertEquals(statusControl.getIDFromUserName("Pluto"),2);
-        assertEquals(statusControl.getIDFromUserName("Goofy"),3);
-        assertEquals(statusControl.getIDFromUserName("Max"),4);
+        assertEquals(statusControl.getIDFromUserName("Minnie"), 0);
+        assertEquals(statusControl.getIDFromUserName("Mickey"), 1);
+        assertEquals(statusControl.getIDFromUserName("Pluto"), 2);
+        assertEquals(statusControl.getIDFromUserName("Goofy"), 3);
+        assertEquals(statusControl.getIDFromUserName("Max"), 4);
     }
 
     /**
-     Returns -1 if player name does not exist
+     * Returns -1 if player name does not exist
      */
     @Test
     void testIDFromNotActualName() {
-        assertEquals(statusControl.getIDFromUserName("Daisy"),-1);
+        assertEquals(statusControl.getIDFromUserName("Daisy"), -1);
     }
 
 }

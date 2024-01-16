@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class LobbyController {
+    private final AppModel model;
     public TextArea usernameList;
     public TextField chatroomField;
     public Button StartGameButton;
@@ -26,12 +27,8 @@ public class LobbyController {
     public TextField usernameField;
     public Button connectButton;
     public AnchorPane lobbyAnchorPane;
-
     @FXML
     private TextField messageField;
-
-    private final AppModel model;
-
 
 
     public LobbyController() throws IOException {
@@ -55,7 +52,7 @@ public class LobbyController {
                 Stage currentStage = (Stage) lobbyAnchorPane.getScene().getWindow();
                 if (currentStage == null) {
                     System.out.println("Stage is null");
-                }else {
+                } else {
                     System.out.println("Stage is not null");
                     model.startListeningForGameStart(currentStage);
                 }
