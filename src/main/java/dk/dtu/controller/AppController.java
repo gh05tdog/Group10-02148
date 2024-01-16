@@ -38,7 +38,7 @@ public class AppController {
 
     public Image voteHammer = new Image("/dk/dtu/view/images/voteHammer.png");
     public TextArea roleBox;
-    public TextArea infoTextField;
+    public TextField infoTextField;
     @FXML
     public Label labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0;
     public Button sendButton;
@@ -198,7 +198,11 @@ public class AppController {
     }
 
     public void showKilled(String killed) {
-        Platform.runLater(() -> infoTextField.setText(killed + " was killed"));
+        if(killed != null) {
+            Platform.runLater(() -> infoTextField.setText(killed + " was killed"));
+        } else {
+            Platform.runLater(() -> infoTextField.setText("Nobody was killed"));
+        }
     }
 
     public void updateSnitchMessage(String snitcher, String usernameOfSnitched, String roleOfVictim) {

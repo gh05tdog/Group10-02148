@@ -283,6 +283,7 @@ public class Server implements Runnable {
                 broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
             } else {
                 System.out.println("Snitching failed");
+                broadCastToSnitch(yourUsername, victim,"[REDACTED]");
             }
         }
     }
@@ -360,7 +361,6 @@ public class Server implements Runnable {
             System.out.println("Sending snitch message to: " + username);
             gameSpace.put("snitchMessage", username, statusControl.getPlayerRole(statusControl.getIDFromUserName(username)), victimUsername, victimRole);
         }
-
     }
 
     private void endGame(String message) {
