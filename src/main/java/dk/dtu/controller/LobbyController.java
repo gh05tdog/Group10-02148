@@ -37,7 +37,7 @@ public class LobbyController {
     }
 
     @FXML
-    private void initialize() throws InterruptedException, IOException {
+    private void initialize() throws InterruptedException {
         if (config.getUsername() != null) {
             //Remove the connect button
             connectButton.setVisible(false);
