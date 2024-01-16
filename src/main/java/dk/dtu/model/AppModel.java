@@ -122,8 +122,14 @@ public class AppModel {
             System.out.println("You have already voted");
             return;
         }
+        //If the user click on themself, do nothing
+        if (username.equals(Victim)) {
+            System.out.println("You cannot vote on yourself");
+            return;
+        }
 
         server.put("action", "executeVote", username, Victim);
+
 
         switch (role) {
             case "[Mafia]" -> server.put("action", "MafiaVote", username, Victim);
