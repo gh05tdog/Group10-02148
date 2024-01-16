@@ -119,7 +119,6 @@ public class Server implements Runnable {
         for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
             broadcastRoleUpdate(identityProvider.getPlayersInLobby().toArray()[i].toString(), i);
         }
-        System.out.println("Game is starting with players: " + identityProvider.getPlayersInLobby());
 
     }
 
@@ -156,8 +155,6 @@ public class Server implements Runnable {
     public void broadcastRoleUpdate(String username, int playerID) {
         try {
             gameSpace.put("roleUpdate", username, statusControl.getPlayerRole(playerID));
-            // System.out.println("Role update sent to: " + username + "with role: " + playerHandlers.get(username).getRole());
-
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting role update: " + e);
         }

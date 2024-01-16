@@ -1,74 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="562.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/19"
+      fx:controller="dk.dtu.controller.StartController">
+    <MenuBar VBox.vgrow="NEVER">
+      <Menu mnemonicParsing="false" text="File">
+        <MenuItem mnemonicParsing="false" text="New"/>
+        <MenuItem mnemonicParsing="false" text="Open…"/>
+        <Menu mnemonicParsing="false" text="Open Recent"/>
+        <SeparatorMenuItem mnemonicParsing="false"/>
+        <MenuItem mnemonicParsing="false" text="Close"/>
+        <MenuItem mnemonicParsing="false" text="Save"/>
+        <MenuItem mnemonicParsing="false" text="Save As…"/>
+        <MenuItem mnemonicParsing="false" text="Revert"/>
+        <SeparatorMenuItem mnemonicParsing="false"/>
+        <MenuItem mnemonicParsing="false" text="Preferences…"/>
+        <SeparatorMenuItem mnemonicParsing="false"/>
+        <MenuItem mnemonicParsing="false" text="Quit"/>
+      </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+            <MenuItem mnemonicParsing="false" text="Undo"/>
+            <MenuItem mnemonicParsing="false" text="Redo"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" text="Cut"/>
+            <MenuItem mnemonicParsing="false" text="Copy"/>
+            <MenuItem mnemonicParsing="false" text="Paste"/>
+            <MenuItem mnemonicParsing="false" text="Delete"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" text="Select All"/>
+            <MenuItem mnemonicParsing="false" text="Unselect All"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp"/>
+        </Menu>
+    </MenuBar>
+    <AnchorPane prefHeight="495.0" prefWidth="559.0" VBox.vgrow="ALWAYS">
+      <ImageView fitHeight="537.0" fitWidth="587.0">
+        <Image url="@Images/moonlight_intro.png"/>
+      </ImageView>
+        <AnchorPane fx:id="joinGamePane" layoutX="105.0" layoutY="413.0" onMouseClicked="#JoinLobbyAction">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#102f4d" height="78.0" stroke="BLACK" strokeType="INSIDE"
+                       width="147.0"/>
+            <Label layoutX="30.0" layoutY="26.0" text="Join Game" textFill="#9d0101">
+                <font>
+                    <Font name="Gill Sans Ultra Bold Condensed" size="20.0"/>
+                </font>
+            </Label>
+        </AnchorPane>
 
-<VBox prefHeight="562.0" prefWidth="580.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="dk.dtu.controller.StartController">
-  <MenuBar VBox.vgrow="NEVER">
-    <Menu mnemonicParsing="false" text="File">
-      <items>
-        <MenuItem mnemonicParsing="false" text="New" />
-        <MenuItem mnemonicParsing="false" text="Open…" />
-        <Menu mnemonicParsing="false" text="Open Recent" />
-        <SeparatorMenuItem mnemonicParsing="false" />
-        <MenuItem mnemonicParsing="false" text="Close" />
-        <MenuItem mnemonicParsing="false" text="Save" />
-        <MenuItem mnemonicParsing="false" text="Save As…" />
-        <MenuItem mnemonicParsing="false" text="Revert" />
-        <SeparatorMenuItem mnemonicParsing="false" />
-        <MenuItem mnemonicParsing="false" text="Preferences…" />
-        <SeparatorMenuItem mnemonicParsing="false" />
-        <MenuItem mnemonicParsing="false" text="Quit" />
-      </items>
-    </Menu>
-    <Menu mnemonicParsing="false" text="Edit">
-      <MenuItem mnemonicParsing="false" text="Undo" />
-      <MenuItem mnemonicParsing="false" text="Redo" />
-      <SeparatorMenuItem mnemonicParsing="false" />
-      <MenuItem mnemonicParsing="false" text="Cut" />
-      <MenuItem mnemonicParsing="false" text="Copy" />
-      <MenuItem mnemonicParsing="false" text="Paste" />
-      <MenuItem mnemonicParsing="false" text="Delete" />
-      <SeparatorMenuItem mnemonicParsing="false" />
-      <MenuItem mnemonicParsing="false" text="Select All" />
-      <MenuItem mnemonicParsing="false" text="Unselect All" />
-    </Menu>
-    <Menu mnemonicParsing="false" text="Help">
-      <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-    </Menu>
-  </MenuBar>
-  <AnchorPane prefHeight="495.0" prefWidth="559.0" VBox.vgrow="ALWAYS">
-    <ImageView fitHeight="537.0" fitWidth="587.0">
-      <image>
-        <Image url="@Images/moonlight_intro.png" />
-      </image>
-    </ImageView>
-    <AnchorPane fx:id="joinGamePane" layoutX="105.0" layoutY="413.0" onMouseClicked="#JoinLobbyAction">
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#102f4d" height="78.0" stroke="BLACK" strokeType="INSIDE" width="147.0" />
-      <Label layoutX="30.0" layoutY="26.0" text="Join Game" textFill="#9d0101">
-        <font>
-          <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
-        </font>
-      </Label>
+        <AnchorPane fx:id="createGamePane" layoutX="337.0" layoutY="413.0" onMouseClicked="#CreateLobbyAction">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#102f4d" height="78.0" stroke="BLACK" strokeType="INSIDE"
+                       width="147.0"/>
+            <Label layoutX="20.0" layoutY="26.0" text="Create Game" textFill="#9d0101">
+                <font>
+                    <Font name="Gill Sans Ultra Bold Condensed" size="20.0"/>
+                </font>
+            </Label>
+        </AnchorPane>
     </AnchorPane>
-
-    <AnchorPane fx:id="createGamePane" layoutX="337.0" layoutY="413.0" onMouseClicked="#CreateLobbyAction">
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#102f4d" height="78.0" stroke="BLACK" strokeType="INSIDE" width="147.0" />
-      <Label layoutX="20.0" layoutY="26.0" text="Create Game" textFill="#9d0101">
-        <font>
-          <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
-        </font>
-      </Label>
-    </AnchorPane>
-  </AnchorPane>
 </VBox>
 
