@@ -1,241 +1,200 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<Pane xmlns:fx="http://javafx.com/fxml/1" prefHeight="521.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/21"
-      fx:controller="dk.dtu.controller.AppController">
-    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE"
-               width="302.0"/>
+
+<Pane prefHeight="521.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="302.0" />
     <ImageView fx:id="background" fitHeight="521.0" fitWidth="746.0">
-        <Image url="@Images/moonlit_main_day.jpg"/>
+        <Image url="@Images/moonlit_main_day.jpg" />
     </ImageView>
     <VBox layoutY="310.0" prefHeight="211.0" prefWidth="255.0">
-        <TextField fx:id="messageField" promptText="Enter message here"/>
-        <Button fx:id="sendButton" onAction="#handleSendAction" prefHeight="25.0" prefWidth="296.0"
-                text="Send"/>
-        <TextArea fx:id="messageArea" editable="false"/>
+        <TextField fx:id="messageField" promptText="Enter message here" />
+        <Button fx:id="sendButton" onAction="#handleSendAction" prefHeight="25.0" prefWidth="296.0" text="Send" />
+        <TextArea fx:id="messageArea" editable="false" />
     </VBox>
     <VBox layoutX="588.0" layoutY="95.0" prefHeight="211.0" prefWidth="144.0">
-        <TextArea fx:id="killedList" editable="false" prefHeight="213.0" prefWidth="144.0"/>
+        <TextArea fx:id="killedList" editable="false" prefHeight="213.0" prefWidth="144.0" />
     </VBox>
     <VBox layoutX="14.0" layoutY="142.0" prefHeight="153.0" prefWidth="144.0">
-        <TextField fx:id="yourUsername" editable="false"/>
-        <TextArea fx:id="roleBox" prefHeight="200.0" prefWidth="200.0" wrapText="true"/>
+        <TextField fx:id="yourUsername" editable="false" />
+        <TextArea fx:id="roleBox" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
     </VBox>
     <VBox layoutX="547.0" layoutY="403.0" prefHeight="118.0" prefWidth="199.0">
-        <TextField/>
-        <TextArea fx:id="infoTextField" prefHeight="200.0" prefWidth="200.0"/>
+        <TextField />
+        <TextArea fx:id="infoTextField" prefHeight="200.0" prefWidth="200.0" />
     </VBox>
-    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#06223b" height="45.0" layoutX="603.0" stroke="BLACK"
-               strokeType="INSIDE" width="144.0"/>
-    <Text fill="#7f0000" layoutX="630.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings"
-          textAlignment="CENTER" wrappingWidth="90.552001953125">
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#06223b" height="45.0" layoutX="603.0" stroke="BLACK" strokeType="INSIDE" width="144.0" />
+    <Text fill="#7f0000" layoutX="630.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" textAlignment="CENTER" wrappingWidth="90.552001953125">
         <font>
-            <Font name="Gill Sans Ultra Bold Condensed" size="20.0"/>
+            <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
         </font>
     </Text>
     <ImageView fx:id="counter" fitHeight="221.0" fitWidth="288.0" layoutX="-60.0" layoutY="-48.0">
-        <Image url="@Images/sun.png"/>
+        <Image url="@Images/sun.png" />
     </ImageView>
     <Label fx:id="timerLabel" layoutX="60.0" layoutY="52.0" text="02:00">
         <font>
-            <Font name="Gill Sans Ultra Bold Condensed" size="20.0"/>
+            <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
         </font>
     </Label>
 
     <!-- Example for labelForSnitch0 -->
 
-    <Label fx:id="labelForSnitch0" style="-fx-background-color: #4D2613;" layoutX="194.0" layoutY="66.0"
-           mouseTransparent="true" textFill="white"/>
+    <Label fx:id="labelForSnitch0" layoutX="194.0" layoutY="66.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch1 -->
 
-    <Label fx:id="labelForSnitch1" style="-fx-background-color: #4D2613;" layoutX="282.0" layoutY="66.0"
-           mouseTransparent="true" textFill="white"/>
+    <Label fx:id="labelForSnitch1" layoutX="282.0" layoutY="66.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch2 -->
 
-    <Label fx:id="labelForSnitch2" style="-fx-background-color: #4D2613;" layoutX="385.0" layoutY="86.0"
-           mouseTransparent="true" textFill="white"/>
+    <Label fx:id="labelForSnitch2" layoutX="385.0" layoutY="86.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch3 -->
 
-    <Label fx:id="labelForSnitch3" style="-fx-background-color: #4D2613;" layoutX="502.0" layoutY="96.0"
-           mouseTransparent="true" textFill="white"/>
+    <Label fx:id="labelForSnitch3" layoutX="502.0" layoutY="96.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch4 -->
 
-    <Label fx:id="labelForSnitch4" style="-fx-background-color: #4D2613;" layoutX="223.0" layoutY="155.0"
-           mouseTransparent="true"
-           textFill="white"/>
+    <Label fx:id="labelForSnitch4" layoutX="223.0" layoutY="155.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch5 -->
 
-    <Label fx:id="labelForSnitch5" style="-fx-background-color: #4D2613;" layoutX="332.0" layoutY="155.0"
-           mouseTransparent="true"
-           textFill="white"/>
+    <Label fx:id="labelForSnitch5" layoutX="332.0" layoutY="155.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch6 -->
 
-    <Label fx:id="labelForSnitch6" style="-fx-background-color: #4D2613;" layoutX="424.0" layoutY="184.0"
-           mouseTransparent="true"
-           textFill="white"/>
+    <Label fx:id="labelForSnitch6" layoutX="424.0" layoutY="184.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch7 -->
 
-    <Label fx:id="labelForSnitch7" style="-fx-background-color: #4D2613;" layoutX="217.0" layoutY="247.0"
-           mouseTransparent="true"
-           textFill="white"/>
+    <Label fx:id="labelForSnitch7" layoutX="217.0" layoutY="247.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch8 -->
 
-    <Label fx:id="labelForSnitch8" style="-fx-background-color: #4D2613;" layoutX="332.0" layoutY="252.0"
-           mouseTransparent="true"
-           textFill="white"/>
+    <Label fx:id="labelForSnitch8" layoutX="332.0" layoutY="252.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch9 -->
 
-    <Label fx:id="labelForSnitch9" style="-fx-background-color: #4D2613;" layoutX="491.0" layoutY="261.0"
-           mouseTransparent="true"
-           textFill="white"/>
+    <Label fx:id="labelForSnitch9" layoutX="491.0" layoutY="261.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch10 -->
 
-    <Label fx:id="labelForSnitch10" style="-fx-background-color: #4D2613;" layoutX="277.0" layoutY="326.0"
-           mouseTransparent="true"
-           textFill="white"/>
+    <Label fx:id="labelForSnitch10" layoutX="277.0" layoutY="326.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
     <!-- Example for labelForSnitch11 -->
-    <Label fx:id="labelForSnitch11" style="-fx-background-color: #4D2613;" layoutX="399.0" layoutY="308.0"
-           mouseTransparent="true"
-           textFill="white"/>
+    <Label fx:id="labelForSnitch11" layoutX="399.0" layoutY="308.0" mouseTransparent="true" style="-fx-background-color: #4D2613;" textFill="white" />
 
-    <AnchorPane fx:id="User6" disable="true" layoutX="430.0" layoutY="115.0" onMouseClicked="#AttemptAction"
-                prefHeight="69.0" prefWidth="71.0" visible="false">
+    <AnchorPane fx:id="User6" disable="true" layoutX="430.0" layoutY="115.0" onMouseClicked="#AttemptAction" prefHeight="69.0" prefWidth="71.0" visible="false">
         <ImageView fitHeight="69.0" fitWidth="72.0">
             <clip>
-                <Circle centerX="50" centerY="50" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="50" centerY="50" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar7.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar7.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser6" alignment="CENTER" layoutY="50.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="74.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser6" alignment="CENTER" layoutY="50.0" mouseTransparent="true" prefHeight="17.0" prefWidth="74.0" style="-fx-background-color: white;" />
     </AnchorPane>
 
-    <AnchorPane fx:id="User0" disable="true" layoutX="190.0" layoutY="12.0" onMouseClicked="#AttemptAction"
-                prefHeight="52.0" prefWidth="58.0" visible="false">
-        <ImageView fitHeight="80" fitWidth="80">
+    <AnchorPane fx:id="User0" disable="true" layoutX="190.0" layoutY="12.0" onMouseClicked="#AttemptAction" prefHeight="37.0" prefWidth="38.0" visible="false">
+        <ImageView fitHeight="53.0" fitWidth="59.0">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar1.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar1.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser0" alignment="CENTER" layoutX="-2.0" layoutY="34.0" mouseTransparent="true"
-               prefHeight="17.0" prefWidth="60.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser0" alignment="CENTER" layoutX="-2.0" layoutY="34.0" mouseTransparent="true" prefHeight="17.0" prefWidth="60.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User1" disable="true" layoutX="283.0" layoutY="11.0" onMouseClicked="#AttemptAction"
-                prefHeight="45.0" prefWidth="58.0" visible="false">
-        <ImageView fitHeight="80" fitWidth="80">
+    <AnchorPane fx:id="User1" disable="true" layoutX="283.0" layoutY="11.0" onMouseClicked="#AttemptAction" prefHeight="45.0" prefWidth="58.0" visible="false">
+        <ImageView fitHeight="53.0" fitWidth="59.0">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar2.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar2.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser1" alignment="CENTER" layoutY="36.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="59.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser1" alignment="CENTER" layoutY="36.0" mouseTransparent="true" prefHeight="17.0" prefWidth="59.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User2" disable="true" layoutX="385.0" layoutY="24.0" onMouseClicked="#AttemptAction"
-                prefHeight="59.0" prefWidth="61.0" visible="false">
-        <ImageView fitHeight="80" fitWidth="80">
+    <AnchorPane fx:id="User2" disable="true" layoutX="385.0" layoutY="24.0" onMouseClicked="#AttemptAction" prefHeight="59.0" prefWidth="61.0" visible="false">
+        <ImageView fitHeight="60.0" fitWidth="60.0">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar3.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar3.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser2" alignment="CENTER" layoutY="38.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="59.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser2" alignment="CENTER" layoutY="38.0" mouseTransparent="true" prefHeight="17.0" prefWidth="59.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User3" disable="true" layoutX="484.0" layoutY="34.0" onMouseClicked="#AttemptAction"
-                prefHeight="73.0" prefWidth="74.0" visible="false">
-        <ImageView fitHeight="80" fitWidth="80">
+    <AnchorPane fx:id="User3" disable="true" layoutX="484.0" layoutY="34.0" onMouseClicked="#AttemptAction" prefHeight="60.0" prefWidth="61.0" visible="false">
+        <ImageView fitHeight="69.0" fitWidth="72.0">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar4.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar4.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser3" alignment="CENTER" layoutY="52.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="76.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser3" alignment="CENTER" layoutY="52.0" mouseTransparent="true" prefHeight="17.0" prefWidth="76.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User11" disable="true" layoutX="384.0" layoutY="236.0" onMouseClicked="#AttemptAction"
-                prefHeight="59.0" prefWidth="59.0" visible="false">
+    <AnchorPane fx:id="User11" disable="true" layoutX="384.0" layoutY="236.0" onMouseClicked="#AttemptAction" prefHeight="59.0" prefWidth="59.0" visible="false">
         <ImageView fitHeight="80" fitWidth="80">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar12.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar12.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser11" alignment="CENTER" layoutY="55.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="78.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser11" alignment="CENTER" layoutY="55.0" mouseTransparent="true" prefHeight="17.0" prefWidth="78.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User10" disable="true" layoutX="261.0" layoutY="255.0" onMouseClicked="#AttemptAction"
-                prefHeight="73.0" prefWidth="78.0" visible="false">
-        <ImageView fitHeight="80" fitWidth="80">
+    <AnchorPane fx:id="User10" disable="true" layoutX="261.0" layoutY="255.0" onMouseClicked="#AttemptAction" prefHeight="69.0" prefWidth="70.0" visible="false">
+        <ImageView fitHeight="80" fitWidth="75.0">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar11.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar11.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser10" alignment="CENTER" layoutY="50.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="78.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser10" alignment="CENTER" layoutY="50.0" mouseTransparent="true" prefHeight="17.0" prefWidth="78.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User9" disable="true" layoutX="477.0" layoutY="184.0" onMouseClicked="#AttemptAction"
-                prefHeight="75.0" prefWidth="78.0" visible="false">
+    <AnchorPane fx:id="User9" disable="true" layoutX="477.0" layoutY="184.0" onMouseClicked="#AttemptAction" prefHeight="75.0" prefWidth="78.0" visible="false">
         <ImageView fitHeight="80" fitWidth="80">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar10.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar10.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser9" alignment="CENTER" layoutY="56.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="79.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser9" alignment="CENTER" layoutY="56.0" mouseTransparent="true" prefHeight="17.0" prefWidth="79.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User8" disable="true" layoutX="304.0" layoutY="182.0" onMouseClicked="#AttemptAction"
-                prefHeight="73.0" prefWidth="75.0" visible="false">
+    <AnchorPane fx:id="User8" disable="true" layoutX="304.0" layoutY="182.0" onMouseClicked="#AttemptAction" prefHeight="73.0" prefWidth="75.0" visible="false">
         <ImageView fitHeight="80" fitWidth="80">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar10.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar10.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label layoutY="46.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0"/>
-        <Label fx:id="labelForUser8" alignment="CENTER" layoutY="52.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="75.0" style="-fx-background-color: white;"/>
+        <Label layoutY="46.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" />
+        <Label fx:id="labelForUser8" alignment="CENTER" layoutY="52.0" mouseTransparent="true" prefHeight="17.0" prefWidth="75.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User7" disable="true" layoutX="210.0" layoutY="185.0" onMouseClicked="#AttemptAction"
-                prefHeight="62.0" prefWidth="68.0" visible="false">
-        <ImageView fitHeight="80" fitWidth="80">
+    <AnchorPane fx:id="User7" disable="true" layoutX="210.0" layoutY="185.0" onMouseClicked="#AttemptAction" prefHeight="62.0" prefWidth="68.0" visible="false">
+        <ImageView fitHeight="69.0" fitWidth="70.0">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar8.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar8.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser7" alignment="CENTER" layoutY="46.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="70.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser7" alignment="CENTER" layoutY="46.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User5" disable="true" layoutX="314.0" layoutY="96.0" onMouseClicked="#AttemptAction"
-                prefHeight="68.0" prefWidth="74.0" visible="false">
-        <ImageView fitHeight="80" fitWidth="80">
+    <AnchorPane fx:id="User5" disable="true" layoutX="314.0" layoutY="96.0" onMouseClicked="#AttemptAction" prefHeight="68.0" prefWidth="74.0" visible="false">
+        <ImageView fitHeight="69.0" fitWidth="72.0">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar6.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar6.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser5" alignment="CENTER" layoutX="1.0" layoutY="48.0" mouseTransparent="true"
-               prefHeight="17.0" prefWidth="72.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser5" alignment="CENTER" layoutX="1.0" layoutY="48.0" mouseTransparent="true" prefHeight="17.0" prefWidth="72.0" style="-fx-background-color: white;" />
     </AnchorPane>
-    <AnchorPane fx:id="User4" disable="true" layoutX="212.0" layoutY="98.0" onMouseClicked="#AttemptAction"
-                prefHeight="62.0" prefWidth="68.0" visible="false">
-        <ImageView fitHeight="80" fitWidth="80">
+    <AnchorPane fx:id="User4" disable="true" layoutX="212.0" layoutY="98.0" onMouseClicked="#AttemptAction" prefHeight="62.0" prefWidth="68.0" visible="false">
+        <ImageView fitHeight="60.0" fitWidth="70.0">
             <clip>
-                <Circle centerX="40" centerY="40" radius="35"/> <!-- Circle radius is half of fitWidth/fitHeight -->
+                <Circle centerX="40" centerY="40" radius="35" /> <!-- Circle radius is half of fitWidth/fitHeight -->
             </clip>
-            <Image url="@Images/Avatars/Avatar5.png"/> <!-- Replace with your image path -->
+            <Image url="@Images/Avatars/Avatar5.png" /> <!-- Replace with your image path -->
         </ImageView>
-        <Label fx:id="labelForUser4" alignment="CENTER" layoutY="46.0" mouseTransparent="true" prefHeight="17.0"
-               prefWidth="70.0" style="-fx-background-color: white;"/>
+        <Label fx:id="labelForUser4" alignment="CENTER" layoutY="46.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: white;" />
     </AnchorPane>
 
 </Pane>
