@@ -8,12 +8,10 @@ import java.net.UnknownHostException;
 public class config {
     public static String SERVER_IP;
     private static String Username = null;
-
     private static Boolean lobbyLeader = false;
 
     private static String role;
     private static String userList;
-
     private static Boolean hasVoted = false;
 
 

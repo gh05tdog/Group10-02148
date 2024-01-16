@@ -154,7 +154,6 @@ public class ServerTest {
 
     @Test
     void testExecuteVote() throws Exception {
-
         //Ads 3 players to the lobby
         server.handleJoinLobby("player1");
         server.handleJoinLobby("player2");

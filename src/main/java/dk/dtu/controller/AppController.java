@@ -5,6 +5,7 @@ import dk.dtu.model.AppModel;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -25,9 +26,10 @@ public class AppController {
 
     public TextField messageField;
     public TextArea messageArea;
-    public TextArea usernameList;
     public ImageView counter;
     public Label timerLabel;
+
+    private String dayNightState = "Day";
 
     private final AppModel model;
 
@@ -45,7 +47,9 @@ public class AppController {
     private final Map<String, Integer> userToIndexMap = new HashMap<>();
     @FXML
     public Label labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0;
-
+    public Button sendButton;
+    public TextArea killedList;
+    public TextField yourUsername;
     @FXML
     private AnchorPane User11, User10, User9, User8, User7, User6, User5, User4, User3, User2, User1, User0;
     @FXML
@@ -61,23 +65,26 @@ public class AppController {
 
     @FXML
     private void initialize() {
-
         model.listenforRoleUpdate(this, config.getUsername());
         model.startListeningForMessages(messageArea);
         model.startListeningForDayNightCycle(this, config.getUsername());
         model.startListeningForTimeUpdate(this, config.getUsername());
-        model.startListeningForUserUpdates(usernameList, config.getUsername());
         model.startListenForSnitchUpdate(this,config.getUsername());
         model.startListenForKilled(config.getUsername());
         model.startListenForGameResult(this,config.getUsername());
         Platform.runLater(() -> putUsersInCircles(config.getUserList()));
+        Platform.runLater(() -> yourUsername.setText(config.getUsername()));
     }
 
     public void handleSendAction() {
         String message = messageField.getText();
         if (!message.isEmpty()) {
             try {
-                model.sendMessage(config.getUsername(), message, "lobby");
+                if(dayNightState.equals("Night") & config.getRole().contains("Mafia")){
+                model.sendMessage(config.getUsername() + "(Mafia)" , message, "lobby");
+                }else {
+                    model.sendMessage(config.getUsername(), message, "lobby");
+                }
             } catch (Exception e) {
                 System.out.println("Error sending message: " + e);
             }
@@ -170,7 +177,12 @@ public class AppController {
                 anchorPanes[i].setVisible(false);
                 anchorPanes[i].setDisable(true);
                 labels[i].setText("");
+                killedList.appendText(killed + "\n");
             }
+        }
+
+        if(Objects.equals(config.getUsername(), killed)){
+            Platform.runLater(() -> sendButton.setDisable(true));
         }
     }
     public void AttemptAction(MouseEvent mouseEvent) throws InterruptedException {

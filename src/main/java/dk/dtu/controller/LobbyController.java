@@ -90,7 +90,6 @@ public class LobbyController {
         chatroomField.setVisible(false);
         connectButton.setVisible(false);
 
-
         //Join the lobby
         model.joinLobby(config.getUsername());
         // Start listening for messages
