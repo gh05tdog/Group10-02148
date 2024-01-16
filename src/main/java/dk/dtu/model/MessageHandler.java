@@ -13,14 +13,16 @@ public class MessageHandler {
     private final RemoteSpace server;
     private List<String> lastSeenMessages;
 
-
-
     public MessageHandler(RemoteSpace server) {
         this.server = server;
         this.lastSeenMessages = new ArrayList<>();
     }
 
     public void sendMessage(String clientID, String message, String roomId) throws InterruptedException {
+        //Make sure the message is not too long
+        if (message.length() > 100) {
+            message = message.substring(0, 100);
+        }
         server.put("message", clientID, message, roomId);
     }
 
