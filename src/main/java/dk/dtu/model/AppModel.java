@@ -36,7 +36,7 @@ public class AppModel {
         messageHandler.startListeningForMessages(messageAreaLobby);
     }
 
-    public void listenforRoleUpdate(AppController appController, String username) {
+    public void listenForRoleUpdate(AppController appController, String username) {
         Thread roleThread = new Thread(() -> {
             try {
                 while (true) {
