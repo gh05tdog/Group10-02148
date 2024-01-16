@@ -8,12 +8,12 @@ import java.util.*;
 
 public class Server implements Runnable {
     private final SpaceRepository repository;
-    private final SequentialSpace gameSpace;
+    private static SequentialSpace gameSpace;
     private final String serverIp;
-    private final Thread serverThread;
-    private final Thread messageThread;
+    private static Thread serverThread;
+    private static Thread messageThread;
     private final List<String> messages = new ArrayList<>();
-    private final Thread actionThread;
+    private static Thread actionThread;
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
@@ -37,6 +37,8 @@ public class Server implements Runnable {
         mafiaVoteMap = new HashMap<>();
         gameStarted = false;
     }
+
+
 
     public static void main(String[] args) {
         try {
@@ -253,8 +255,13 @@ public class Server implements Runnable {
                     mostVotedUser = entry.getKey();
                 }
             }
-
-            int divided = (identityProvider.getNumberOfPlayersInLobby() / 2) + 1;
+            int alivePlayers = 0;
+            for(int i = 0; i < identityProvider.getNumberOfPlayersInLobby();i++){
+                if(!statusControl.conductor[i].isKilled()){
+                    alivePlayers++;
+                }
+            }
+            int divided = (alivePlayers / 2) + 1;
 
             if (maxVotes >= divided) {
                 System.out.println("The town eliminated: " + mostVotedUser);
@@ -476,9 +483,12 @@ public class Server implements Runnable {
         }
     }
 
-    public void stopServer() {
+    public static void stopServer() {
+        Server.serverThread.interrupt();
         serverThread.interrupt();
         messageThread.interrupt();
+        actionThread.interrupt();
+        gameSpace.getAll();
     }
 
     public boolean isRunning() {

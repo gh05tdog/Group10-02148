@@ -1,5 +1,6 @@
 package dk.dtu.controller;
 
+import dk.dtu.Server;
 import dk.dtu.config;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -64,5 +65,20 @@ public class PopUpIPController {
         Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
+    }
+
+    public void loadMainMenu(AppController appController) throws IOException {
+        Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/StartScreen.fxml")));
+        Stage currentStage = (Stage) appController.messageArea.getScene().getWindow();
+        currentStage.setOnCloseRequest(e -> Platform.exit());
+        currentStage.setScene(new Scene(newRoot));
+        //close the connection to the server
+        config.setIp("");
+        config.setUsername("");
+        config.setRole("");
+        config.setLobbyLeader(false);
+        config.setHasVoted(false);
+        config.setUserList("");
+        Server.stopServer();
     }
 }

@@ -24,7 +24,6 @@ public class StartController {
     @FXML
     public void JoinLobbyAction(MouseEvent event) {
         try {
-
             // Load the new FXML file
             Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUpIP.fxml")));
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -52,7 +51,5 @@ public class StartController {
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
-
     }
-
 }

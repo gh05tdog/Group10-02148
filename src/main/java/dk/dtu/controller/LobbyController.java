@@ -56,9 +56,7 @@ public class LobbyController {
                 }
                 StartGameButton.setDisable(!config.getLobbyLeader());
             });
-
         }
-
     }
 
     // When you click the send button, send the message
