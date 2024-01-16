@@ -54,6 +54,7 @@ public class Server implements Runnable {
         serverThread.start();
         messageThread.start();
         actionThread.start();
+
     }
 
     @Override
@@ -127,6 +128,7 @@ public class Server implements Runnable {
         for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
             broadcastRoleUpdate(identityProvider.getPlayersInLobby().toArray()[i].toString(), i);
         }
+        messages.clear();
 
     }
 
@@ -391,7 +393,6 @@ public class Server implements Runnable {
     }
 
     void manageDayNightCycle() {
-
         isTimerRunning = true;
         new Timer().schedule(new TimerTask() {
             @Override
@@ -416,6 +417,7 @@ public class Server implements Runnable {
                                 stageCycle = "Day";
                                 timeSeconds = 30; // Reset timer
                                 System.out.println(stageCycle);
+                                messages.clear();
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {

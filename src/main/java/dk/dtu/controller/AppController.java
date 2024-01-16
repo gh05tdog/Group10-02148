@@ -89,17 +89,20 @@ public class AppController {
         System.out.println("Received state");
         Platform.runLater(() -> {
             if ("Day".equals(state)) {
+                dayNightState = "Day";
                 messageArea.setVisible(true);
                 counter.setImage(sun);
                 background.setImage(day);
                 showKilled(killed);
                 removeKilled(killed);
             } else if ("VotingTime".equals(state)) {
+                dayNightState = "VotingTime";
                 infoTextField.setText("Voting time");
                 config.setHasVoted(false);
                 counter.setImage(voteHammer);
                 background.setImage(day);
             } else if ("Night".equals(state)) {
+                dayNightState = "Night";
                 infoTextField.setText("");
                 showKilled(killed);
                 removeKilled(killed);
