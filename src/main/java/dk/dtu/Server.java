@@ -77,6 +77,11 @@ public class Server implements Runnable {
                     case "joinLobby" -> handleJoinLobby(username);
                     case "startGame" -> startGame();
                     case "usernameCheck" -> checkUsername(username);
+                    case "leaveLobby" -> {
+                        identityProvider.removePlayer(username);
+                        messages.add(username + " left the lobby");
+                        broadcastLobbyUpdate();
+                    }
                 }
             }
         } catch (InterruptedException e) {

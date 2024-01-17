@@ -56,8 +56,20 @@ public class PopUpIPController {
     public void loadLobbyUI(MouseEvent event) throws IOException {
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/lobby.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        currentStage.setOnCloseRequest(e -> Platform.exit());
+        currentStage.setOnCloseRequest(e -> closeProgram() );
         currentStage.setScene(new Scene(newRoot));
+    }
+
+    private void closeProgram() {
+        //Send message to server that the user has left the lobby
+        try {
+            RemoteSpace server = new RemoteSpace("tcp://" + IpField.getText() + "/game?keep");
+            server.put("leaveLobby", config.getUsername());
+        } catch (Exception e) {
+            System.out.println("Error creating lobby: " + e);
+        }
+        Platform.exit();
+        System.exit(0);
     }
 
     public void returnToMenu(MouseEvent mouseEvent) throws IOException {
