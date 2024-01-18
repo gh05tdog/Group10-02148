@@ -334,7 +334,9 @@ public class Server implements Runnable {
     }
 
 
+    //This function is used to handle the mafia vote
     private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
+        //First gets the number of mafia players alive
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
             int nrOfMafia = 0;
             for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
@@ -344,9 +346,13 @@ public class Server implements Runnable {
                     nrOfMafia++;
                 }
             }
+
+            //PUts each mafiavote into a hashmap with the mafia player as key and the victim as value
             mafiaVoteMap.put(yourUsername, victim);
+
+            //Once all mafia players have voted, count the votes for each player and put it into voteCount map
             if (nrOfMafia == mafiaVoteMap.size()) {
-                // Map to keep track of vote counts
+
                 HashMap<String, Integer> voteCount = new HashMap<>();
 
                 String mostVotedUser = null;
@@ -355,6 +361,7 @@ public class Server implements Runnable {
                 // Count the votes for each user
                 handleVotes(voteCount, mafiaVoteMap);
 
+                //Sets the maxVotes to the max amount of votes for a player and the mostVotedUser to the player with the most votes
                 for (Map.Entry<String, Integer> entry : voteCount.entrySet()) {
                     if (entry.getValue() > maxVotes) {
                         maxVotes = entry.getValue();
@@ -362,9 +369,12 @@ public class Server implements Runnable {
                     }
                 }
 
+                //If there is only 1 mafia in the game left, the mafia will automatically kill the player with the most votes
                 if (nrOfMafia == 1) {
                     voteCount.clear();
                     statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
+
+                    //This broadcaststhe message to the client for it to handle and checks if the game has endted
                     if ((statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled())) {
                         broadcastToAllClients("mafiaEliminated", mostVotedUser);
                         checkForVictory();
@@ -374,7 +384,7 @@ public class Server implements Runnable {
 
                 voteCount.clear();
                 if (!(maxVotes == 1)) {
-                    // Otherwise, print the victim with the most votes
+                    //If there isn't a tie, meaning someone has the most votes, the mafia will kill that player just like it does above with only 1 mafia
                     statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
                     if (statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled()) {
                         broadcastToAllClients("mafiaEliminated", mostVotedUser);
