@@ -24,7 +24,6 @@ public class LobbyController {
     public TextArea messageAreaLobby;
     public TextField usernameField;
     public AnchorPane connectButton;
-    public AnchorPane lobbyAnchorPane;
     @FXML
     private TextField messageField;
 
@@ -46,13 +45,15 @@ public class LobbyController {
 
             //Checks whether the game has started
             Platform.runLater(() -> {
-                Stage currentStage = (Stage) lobbyAnchorPane.getScene().getWindow();
+                Stage currentStage = (Stage) messageAreaLobby.getScene().getWindow();
                 if (currentStage == null) {
                     System.out.println("Stage is null");
                 } else {
                     model.startListeningForGameStart(currentStage);
                 }
-                StartGameButton.setDisable(!config.getLobbyLeader());
+                // If the user is the lobby leader, make the start game button visible
+                StartGameButton.setVisible(!config.getLobbyLeader());
+
             });
         }
     }
