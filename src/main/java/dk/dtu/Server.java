@@ -514,7 +514,6 @@ public class Server implements Runnable {
             }
         } catch (InterruptedException e) {
             System.out.println("Error broadcasting message: " + e.getMessage());
-            // Handle the exception appropriately
         }
     }
 
