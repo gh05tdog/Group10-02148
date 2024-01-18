@@ -15,7 +15,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -56,6 +55,7 @@ public class AppController {
         model = new AppModel();
     }
 
+    //Initializing the class with the necessary listeners(how the client gets the updates from the server)
     @FXML
     private void initialize() {
         model.listenForRoleUpdate(this, config.getUsername());
@@ -69,6 +69,8 @@ public class AppController {
         Platform.runLater(() -> yourUsername.setText(config.getUsername()));
     }
 
+    //This method is called when the user presses send, it then checks if it is night and if you are mafia.
+    //If you are mafia AND it is night, it will send the message with the name of the mafia in front of the message.
     public void handleSendAction() {
         String message = messageField.getText();
         if (!message.isEmpty()) {
@@ -85,6 +87,10 @@ public class AppController {
         }
     }
 
+
+    //This method takes care of the transitions between day/night and voting time.
+    //It handles remove, show and hide of the messageArea, the counter and the background.
+    //Also makes sure everyone can vote again, when it is time to do that
     public void updateDayNightCycle(String state, String killed) {
         System.out.println("Received state");
         Platform.runLater(() -> {
@@ -116,13 +122,13 @@ public class AppController {
         });
     }
 
-
+    //Updates the timer label for the client.
     public void updateTimeLabel(String time) {
         Platform.runLater(() -> timerLabel.setText(time));
     }
 
+    //This method puts the role of the user in a box, so the user can see it.
     public void appendRoles(String role) {
-        //System.out.println("Attempting to append role: " + role); // Log for debugging
         try {
             Platform.runLater(() -> {
                 switch (role) {
@@ -142,31 +148,30 @@ public class AppController {
         }
     }
 
-
+    //This method runs at the start of the game, and puts the users from the lobby into the circles in the family tree.
     public void putUsersInCircles(String userList) {
         //split the userList into an array
         String[] users = userList.split(", ");
-        System.out.println("User list from appController" + Arrays.toString(users));
 
         AnchorPane[] anchorPanes = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
         Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
 
-        //put the users in the circles
+        //Runs through every player and puts them in the circles based on their index in the array.
         for (int i = 0; i < users.length; i++) {
             anchorPanes[i].setVisible(true);
             anchorPanes[i].setDisable(false);
             labels[i].setText(users[i]);
             userToIndexMap.put(users[i], i);
-            // Debugging output
-            System.out.println("Assigning " + users[i] + " to circle " + anchorPanes[i].getId() + " and label " + labels[i].getId());
         }
     }
 
+    //This method runs everytime it is day, and checks if the killed person is in the circles.
+    //If it is, then it removest the player from tree and displays a message for everyone to see.
     private void removeKilled(String killed) {
         AnchorPane[] anchorPanes = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
         Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
 
-        //put the users in the circles
+        //put the users in the circles in the tree
         for (int i = 0; i < labels.length - 1; i++) {
             if (labels[i].getText().equals(killed)) {
                 anchorPanes[i].setVisible(false);
@@ -181,22 +186,20 @@ public class AppController {
         }
     }
 
+    //This method is called when the user clicks on a circle. It checks the user that is clicked on, based on the name beneath the circle.
     public void AttemptAction(MouseEvent mouseEvent) throws InterruptedException {
-        // Get the id of the clicked circle
         String circleId = ((AnchorPane) mouseEvent.getSource()).getId();
         String labelId = "labelFor" + circleId;
-        // Find the label in the scene graph
         Label label = (Label) ((Node) mouseEvent.getSource()).getScene().lookup("#" + labelId);
-        if (label != null) {
-            // Print the text of the label
-            System.out.println(label.getText());
-        } else {
-            System.out.println("Label not found for " + circleId);
+        if(label != null){
+            //Sends a message to the server, with the username and role of the player that clicked and the players that is clicked on.
+            model.AttemptAction(config.getUsername(), config.getRole(), label.getText(), infoTextField);
+        }else{
+            System.out.println("Label is null");
         }
-        assert label != null;
-        model.AttemptAction(config.getUsername(), config.getRole(), label.getText(), infoTextField);
     }
 
+    //This method is used to display in a box, who was killed in the night.
     public void showKilled(String killed) {
         if (killed != null) {
             Platform.runLater(() -> infoTextField.setText(killed + " was killed"));
@@ -205,21 +208,21 @@ public class AppController {
         }
     }
 
+    //This method is used to display the role of the player the snitch pressed on. It uses the userToIndexMap to find the index of the player,
+    // which is created when the "putUsersInCircles" method is called.
     public void updateSnitchMessage(String snitcher, String usernameOfSnitched, String roleOfVictim) {
-        System.out.println("I was here" + snitcher + usernameOfSnitched + roleOfVictim);
         Label[] snitchLabels = {labelForSnitch11, labelForSnitch10, labelForSnitch9, labelForSnitch8, labelForSnitch7, labelForSnitch6, labelForSnitch5, labelForSnitch4, labelForSnitch3, labelForSnitch2, labelForSnitch1, labelForSnitch0};
         if (snitcher.equals("[Snitch]")) {
             Integer index = userToIndexMap.get(usernameOfSnitched);
 
             if (index != null && index >= 0 && index < snitchLabels.length) {
-                // Update the label and rectangle for the snitched user
                 snitchLabels[index].setText(roleOfVictim);
                 snitchLabels[index].setVisible(true);
-                System.out.println("Snitch message received: " + usernameOfSnitched + " is a " + roleOfVictim);
             }
         }
     }
 
+    //Writes in the infoTextField, who won the game.
     public void updateGameResult(String result) {
         Platform.runLater(() -> infoTextField.setText(result));
     }
