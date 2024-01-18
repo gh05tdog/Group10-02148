@@ -18,7 +18,7 @@ public class Server implements Runnable {
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
     public String[] nameList;
-    public IdentityProvider identityProvider = new IdentityProvider();
+    public final IdentityProvider identityProvider = new IdentityProvider();
     private StatusControl statusControl;
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state

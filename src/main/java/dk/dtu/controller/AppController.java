@@ -27,15 +27,15 @@ public class AppController {
     public TextArea messageArea;
     public ImageView counter;
     public Label timerLabel;
-    public Image moon = new Image("/dk/dtu/view/images/Moon.png");
+    public final Image moon  = new Image("/dk/dtu/view/images/Moon.png");
 
-    public Image sun = new Image("/dk/dtu/view/images/sun.png");
+    public final Image sun = new Image("/dk/dtu/view/images/sun.png");
 
-    public Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
+    public final Image day = new Image("/dk/dtu/view/images/moonlit_main_day.jpg");
 
-    public Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
+    public final Image night = new Image("/dk/dtu/view/images/moonlit_main_night.jpg");
 
-    public Image voteHammer = new Image("/dk/dtu/view/images/voteHammer.png");
+    public final Image voteHammer = new Image("/dk/dtu/view/images/voteHammer.png");
     public TextArea roleBox;
     public TextField infoTextField;
     @FXML
@@ -166,7 +166,7 @@ public class AppController {
     }
 
     //This method runs everytime it is day, and checks if the killed person is in the circles.
-    //If it is, then it removest the player from tree and displays a message for everyone to see.
+    //If it is, then it removes the player from tree and displays a message for everyone to see.
     private void removeKilled(String killed) {
         AnchorPane[] anchorPanes = {User11, User10, User9, User8, User7, User6, User5, User4, User0, User3, User2, User1};
         Label[] labels = {labelForUser11, labelForUser10, labelForUser9, labelForUser8, labelForUser7, labelForUser6, labelForUser5, labelForUser4, labelForUser0, labelForUser3, labelForUser2, labelForUser1};
