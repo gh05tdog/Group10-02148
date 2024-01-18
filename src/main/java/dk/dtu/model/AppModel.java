@@ -170,10 +170,6 @@ public class AppModel {
                     String result = (String) response[2];
                     System.out.println(result);
                     Platform.runLater(() -> appController.updateGameResult(result));
-                    PopUpIPController popUpIPController = new PopUpIPController();
-                    //Return to the main menu
-                    //TODO: Fix return to mainMenu
-                    popUpIPController.loadMainMenu(appController);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
