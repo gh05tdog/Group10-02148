@@ -4,7 +4,6 @@ import dk.dtu.config;
 import dk.dtu.controller.AppController;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -91,8 +90,8 @@ public class AppModel {
     }
 
 
-    public void AttemptAction(String username, String role, String Victim, TextField infoTextField) throws InterruptedException {
-        gameLogicHandler.AttemptAction(username, role, Victim, infoTextField);
+    public void AttemptAction(String username, String role, String Victim) throws InterruptedException {
+        gameLogicHandler.AttemptAction(username, role, Victim);
     }
 
     public void startListenForSnitchUpdate(AppController appController, String username) {

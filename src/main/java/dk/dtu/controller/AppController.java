@@ -193,7 +193,7 @@ public class AppController {
         Label label = (Label) ((Node) mouseEvent.getSource()).getScene().lookup("#" + labelId);
         if(label != null){
             //Sends a message to the server, with the username and role of the player that clicked and the players that is clicked on.
-            model.AttemptAction(config.getUsername(), config.getRole(), label.getText(), infoTextField);
+            model.AttemptAction(config.getUsername(), config.getRole(), label.getText());
         }else{
             System.out.println("Label is null");
         }
