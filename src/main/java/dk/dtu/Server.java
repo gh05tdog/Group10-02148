@@ -7,13 +7,13 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 public class Server implements Runnable {
-    private final SpaceRepository repository;
     private static SequentialSpace gameSpace;
-    private final String serverIp;
     private static Thread serverThread;
     private static Thread messageThread;
-    private final List<String> messages = new ArrayList<>();
     private static Thread actionThread;
+    private final SpaceRepository repository;
+    private final String serverIp;
+    private final List<String> messages = new ArrayList<>();
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
@@ -38,7 +38,6 @@ public class Server implements Runnable {
     }
 
 
-
     public static void main(String[] args) {
         try {
             new Server().startServer();
@@ -50,6 +49,17 @@ public class Server implements Runnable {
         }
     }
 
+
+    //Used in tests to stop the server
+    public static void stopServer() {
+        Server.serverThread.interrupt();
+        serverThread.interrupt();
+        messageThread.interrupt();
+        actionThread.interrupt();
+        gameSpace.getAll();
+    }
+
+    //Used to start the server
     public void startServer() throws InterruptedException {
         gameSpace.put("lock");
         serverThread.start();
@@ -61,8 +71,11 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
+            // Create a repository for the gameSpace
             repository.add("game", gameSpace);
             String gateUri = "tcp://" + serverIp + ":9001/?keep";
+
+            // Create the gate and register the gameSpace to it
             repository.addGate(gateUri);
 
             System.out.println("Game server running at " + gateUri);
@@ -72,6 +85,7 @@ public class Server implements Runnable {
                 String action = (String) request[0];
                 String username = (String) request[1];
 
+                // Handle the request based on the action
                 switch (action) {
                     case "joinLobby" -> handleJoinLobby(username);
                     case "startGame" -> startGame();
@@ -107,7 +121,6 @@ public class Server implements Runnable {
         // Add message to the list
         String fullMessage = username + ": " + messageContent;
         messages.add(fullMessage);
-
         // Update the space with the new list of messages
         gameSpace.put("messages", messages);
     }
@@ -119,6 +132,7 @@ public class Server implements Runnable {
             System.out.println("User " + username + " joined the lobby");
             messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
+
         } else {
             throw new Exception("Game already started or user already in lobby");
         }
@@ -192,6 +206,9 @@ public class Server implements Runnable {
     private void runMessageListener() {
         System.out.println("Message listener running");
         try {
+            String gateUri = "tcp://" + serverIp + ":9001/?keep";
+            messages.add("Game server running at " + gateUri);
+            gameSpace.put("messages", messages);
             while (!Thread.currentThread().isInterrupted()) {
                 Object[] messageRequest = gameSpace.get(new ActualField("message"), new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String username = (String) messageRequest[1];
@@ -260,8 +277,8 @@ public class Server implements Runnable {
                 }
             }
             int alivePlayers = 0;
-            for(int i = 0; i < identityProvider.getNumberOfPlayersInLobby();i++){
-                if(!statusControl.conductor[i].isKilled()){
+            for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
+                if (!statusControl.conductor[i].isKilled()) {
                     alivePlayers++;
                 }
             }
@@ -294,7 +311,7 @@ public class Server implements Runnable {
                 broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
             } else {
                 System.out.println("Snitching failed");
-                broadCastToSnitch(yourUsername, victim,"[REDACTED]");
+                broadCastToSnitch(yourUsername, victim, "[REDACTED]");
             }
         }
     }
@@ -485,14 +502,6 @@ public class Server implements Runnable {
             System.out.println("Error broadcasting message: " + e.getMessage());
             // Handle the exception appropriately
         }
-    }
-
-    public static void stopServer() {
-        Server.serverThread.interrupt();
-        serverThread.interrupt();
-        messageThread.interrupt();
-        actionThread.interrupt();
-        gameSpace.getAll();
     }
 
     public boolean isRunning() {
