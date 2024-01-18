@@ -24,7 +24,7 @@
          <font>
             <Font name="Arial" size="17.0" />
          </font></Label>
-      <AnchorPane fx:id="StartGameButton" layoutX="424.0" layoutY="214.0" onMouseClicked="#StartGameAction" prefHeight="58.0" prefWidth="62.0">
+      <AnchorPane fx:id="StartGameButton" layoutX="424.0" layoutY="214.0" onMouseClicked="#StartGameAction" visible="false" prefHeight="58.0" prefWidth="62.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#102f4d" height="58.0" stroke="BLACK" strokeType="INSIDE" width="123.0" />
             <Text fill="#9d0101" layoutX="13.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start game">
