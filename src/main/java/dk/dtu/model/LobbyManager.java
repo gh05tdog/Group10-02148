@@ -29,11 +29,6 @@ public class LobbyManager {
         }
     }
 
-    public void startGame() throws InterruptedException {
-        server.put("startGame", "game_identifier");
-        System.out.println("Game is starting");
-    }
-
     public void startListeningForUserUpdates(TextArea userListArea, String clientID) {
         Thread userThread = new Thread(() -> {
             try {

@@ -1,11 +1,11 @@
 package dk.dtu;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class IdentityProvider {
-    private final Set<String> playersInLobby;
+    //This class is used to add, remove, get and check if a player is in the lobby
 
+    private final HashSet<String> playersInLobby;
 
     public IdentityProvider() {
         this.playersInLobby = new HashSet<>();
@@ -19,7 +19,7 @@ public class IdentityProvider {
         return playersInLobby.contains(username);
     }
 
-    public Set<String> getPlayersInLobby() {
+    public HashSet<String> getPlayersInLobby() {
         return playersInLobby;
     }
 

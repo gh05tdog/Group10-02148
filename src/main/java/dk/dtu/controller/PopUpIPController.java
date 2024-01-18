@@ -21,32 +21,35 @@ public class PopUpIPController {
     public TextField IpField;
     public TextField UserNameField;
 
+    //This method makes sure, that only 1 person can try to join at a time with an IP, and makes sure that no one can have the same username
     @FXML
     public void JoinGameBasedOnIP(MouseEvent actionEvent) throws IOException, InterruptedException {
         if (UserNameField.getText().isEmpty()) {
-            System.out.println("Username is required to join the lobby.");
+            UserNameField.setText("Please enter a username");
         } else if (UserNameField.getText().length() > 20) {
-            System.out.println("Username is too long.");
+            UserNameField.setText("Username is too long");
         } else {
+            //This connects to the server, so that the user can try to get the lock
             RemoteSpace server = new RemoteSpace("tcp://" + IpField.getText() + "/game?keep");
-            System.out.println("Connected to server");
+
             server.get(new ActualField("lock"));
-            System.out.println("Got lock");
+
+            //If the user got the lock, it then checks if the username is taken
             server.put("usernameCheck", UserNameField.getText());
-            System.out.println("Sent username check");
+
+            //If the username is taken, it will tell the user and put the lock back in the server for the next player.
             Object[] response = server.get(new ActualField("usernameCheck"), new FormalField(Boolean.class));
             if ((response[1]).equals(false)) {
-                System.out.println("Username is taken");
                 server.put("lock");
                 server.close();
                 UserNameField.setText("Username is taken");
                 return;
             }
+
             String ip = IpField.getText();
             config.setIp(ip);
             config.setUsername(UserNameField.getText());
-            System.out.println(UserNameField.getText());
-            System.out.println("Username: " + config.getUsername());
+
             loadLobbyUI(actionEvent);
         }
     }
@@ -59,8 +62,8 @@ public class PopUpIPController {
         currentStage.setScene(new Scene(newRoot));
     }
 
+
     private void closeProgram() {
-        //Send message to server that the user has left the lobby
         try {
             RemoteSpace server = new RemoteSpace("tcp://" + IpField.getText() + "/game?keep");
             server.put("leaveLobby", config.getUsername());
