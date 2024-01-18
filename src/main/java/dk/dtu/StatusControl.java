@@ -103,7 +103,7 @@ public class StatusControl {
                 try {
                     houses.leaveHouse(player);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println("Error:" + e);
                 }
             }, 30, TimeUnit.SECONDS);
 
