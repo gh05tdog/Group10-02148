@@ -124,7 +124,8 @@ public class AppModel {
             return;
         }
         //If the user click on themselves, do nothing
-        if (username.equals(Victim)) {
+        if (username.equals(Victim) || config.getRole().contains("Bodyguard") ){
+
             System.out.println("You cannot vote on yourself");
             return;
         }

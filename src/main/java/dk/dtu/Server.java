@@ -25,7 +25,6 @@ public class Server implements Runnable {
     private int timeSeconds = 30;
     private boolean isTimerRunning = false;
 
-
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
         repository = new SpaceRepository();
