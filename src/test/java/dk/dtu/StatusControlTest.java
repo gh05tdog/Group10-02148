@@ -31,6 +31,7 @@ class StatusControlTest {
     @Test
     void testMurderWithoutProtection() throws InterruptedException {
         assertFalse(statusControl.conductor[1].isSecured());
+        assertFalse(statusControl.conductor[1].isKilled());
         statusControl.attemptMurder(1);
         assertTrue(statusControl.conductor[1].isKilled());
     }
@@ -52,24 +53,20 @@ class StatusControlTest {
     }
 
     /**
-     * If the protection experies, the player becomes unprotected and can be killed again
+     * If the protection expires, the player becomes unprotected and can be killed again
      */
     @Test
     void testMurderAfterProtectionExpires() throws InterruptedException {
         assertFalse(statusControl.conductor[3].isSecured());
+        assertFalse(statusControl.conductor[3].isKilled());
         statusControl.protectPlayer(3);
         assertTrue(statusControl.conductor[3].isSecured());
 
-        executorService.schedule(() -> {
-            assertFalse(statusControl.conductor[3].isSecured());
-            try {
-                statusControl.attemptMurder(3);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            assertTrue(statusControl.conductor[3].isKilled());
-        }, 11, TimeUnit.SECONDS);
+        Thread.sleep(30001);
 
+        assertFalse(statusControl.conductor[3].isSecured());
+        statusControl.attemptMurder(3);
+        assertTrue(statusControl.conductor[3].isKilled());
     }
 
     /**
@@ -87,8 +84,7 @@ class StatusControlTest {
         statusControl.protectPlayer(4);
         assertTrue(statusControl.conductor[4].isSecured());
 
-        Thread.sleep(6000);
-
+        Thread.sleep(25001);
         assertFalse(statusControl.conductor[4].isSecured());
     }
 
@@ -114,7 +110,6 @@ class StatusControlTest {
     @Test
     void testSnitchOnUnprotectedPlayer() throws InterruptedException {
         assertTrue(statusControl.houses.lookInsideHouse(4));
-        //assertEquals(statusControl.getPlayerRole(4),"Mafia");
         assertEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
     }
 
@@ -136,7 +131,9 @@ class StatusControlTest {
         statusControl.protectPlayer(4);
         assertFalse(statusControl.houses.lookInsideHouse(4));
         assertNotEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
-        Thread.sleep(11000);
+
+        Thread.sleep(30000);
+
         assertTrue(statusControl.houses.lookInsideHouse(4));
         assertEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
     }
