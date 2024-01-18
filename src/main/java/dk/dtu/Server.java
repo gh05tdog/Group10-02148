@@ -105,8 +105,11 @@ public class Server implements Runnable {
         }
     }
 
+    // Check if the username is already in use by another player
+    // And send the result back to the client
     private void checkUsername(String username) {
         try {
+            //Check if the username is already in use
             if (identityProvider.isPlayerInLobby(username)) {
                 gameSpace.put("usernameCheck", false);
             } else {
@@ -117,6 +120,8 @@ public class Server implements Runnable {
         }
     }
 
+
+    // Handle a message from a client and add it to the list of messages in the gameSpace
     void handleMessage(String username, String messageContent) throws InterruptedException {
         // Add message to the list
         String fullMessage = username + ": " + messageContent;
@@ -125,6 +130,8 @@ public class Server implements Runnable {
         gameSpace.put("messages", messages);
     }
 
+
+    // Handle a request to join the lobby
     void handleJoinLobby(String username) throws Exception {
         if (!gameStarted && !identityProvider.isPlayerInLobby(username)) {
             gameSpace.put("connected", username);
@@ -132,15 +139,14 @@ public class Server implements Runnable {
             System.out.println("User " + username + " joined the lobby");
             messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
-
         } else {
             throw new Exception("Game already started or user already in lobby");
         }
     }
 
+    // Handle a request to start the game and assign roles to players
     void startGame() throws InterruptedException {
         broadcastToAllClients("startGame", "");
-        gameSpace.put("gameStarted");
         assignRolesToPlayers();
         gameStarted = true;
         manageDayNightCycle();
@@ -154,10 +160,13 @@ public class Server implements Runnable {
 
     private void assignRolesToPlayers() throws InterruptedException {
         if (!gameStarted) {
+            // Create a random space to randomly assign roles to players
             RandomSpace roles = new RandomSpace();
+            // Create a list of roles
             roleList = new String[identityProvider.getNumberOfPlayersInLobby()];
             nameList = new String[identityProvider.getNumberOfPlayersInLobby()];
 
+            // Add roles to the list
             int nrOfMafia = identityProvider.getNumberOfPlayersInLobby() / 4;
             for (int i = 0; i < nrOfMafia; i++) {
                 roles.put("Mafia");
@@ -169,6 +178,7 @@ public class Server implements Runnable {
                 roles.put("Citizen");
             }
 
+            //Assign roles to players
             for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
                 String role = Arrays.toString(roles.get(new FormalField(String.class)));
                 roleList[i] = role;
@@ -182,6 +192,7 @@ public class Server implements Runnable {
         }
     }
 
+    // Broadcast the role of a player to all clients
     public void broadcastRoleUpdate(String username, int playerID) {
         try {
             gameSpace.put("roleUpdate", username, statusControl.getPlayerRole(playerID));
@@ -190,6 +201,7 @@ public class Server implements Runnable {
         }
     }
 
+    // Broadcast the list of users in the lobby to all clients
     private void broadcastLobbyUpdate() {
         try {
             String userList = String.join(", ", identityProvider.getPlayersInLobby());
@@ -203,6 +215,8 @@ public class Server implements Runnable {
         }
     }
 
+
+    // Listen for messages from clients and add them to the list of messages in the gameSpace
     private void runMessageListener() {
         System.out.println("Message listener running");
         try {
@@ -213,6 +227,8 @@ public class Server implements Runnable {
                 Object[] messageRequest = gameSpace.get(new ActualField("message"), new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String username = (String) messageRequest[1];
                 String message = (String) messageRequest[2];
+
+                // Send the message to the client
                 handleMessage(username, message);
             }
         } catch (InterruptedException e) {
@@ -223,6 +239,8 @@ public class Server implements Runnable {
         }
     }
 
+
+    // Listen for actions from clients and execute them
     private void runActionsListener() {
         System.out.println("Action listener running");
         try {
@@ -251,6 +269,8 @@ public class Server implements Runnable {
             System.out.println("Message listener error: " + e);
         }
     }
+
+
 
     void executeVote(String yourUsername, String suspect) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
@@ -295,6 +315,7 @@ public class Server implements Runnable {
         }
     }
 
+    // Handle the bodyguard action and protect a player
     private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
             System.out.println("Protecting player: " + victim);
@@ -303,6 +324,7 @@ public class Server implements Runnable {
         }
     }
 
+    // Handle the snitch action and reveal the role of a player
     private void snitchAction(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
             System.out.println("Snitching on player: " + victim);
@@ -310,11 +332,13 @@ public class Server implements Runnable {
             if (!(statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured())) {
                 broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
             } else {
+                // If the player is protected, the snitch will not know their role
                 System.out.println("Snitching failed");
                 broadCastToSnitch(yourUsername, victim, "[REDACTED]");
             }
         }
     }
+
 
     private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
@@ -384,6 +408,7 @@ public class Server implements Runnable {
         }
     }
 
+    // Broadcast a message to the snitch
     public void broadCastToSnitch(String username, String victimRole, String victimUsername) throws InterruptedException {
         if (statusControl.getPlayerRole(statusControl.getIDFromUserName(username)).contains("Snitch")) {
             System.out.println("Sending snitch message to: " + username);
@@ -391,16 +416,19 @@ public class Server implements Runnable {
         }
     }
 
+    // End the game and broadcast the result to all clients
     private void endGame(String message) {
-        //Stop threads
+        //Stop timer
         isTimerRunning = false;
         broadcastToAllClients("gameEnd", message);
     }
 
+    // Check if the game has ended
     private void checkForVictory() {
         int mafiaCount = 0;
         int nonMafiaCount = 0;
 
+        // Count the number of mafia and non-mafia players
         for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
             if (statusControl.conductor[i].isKilled()) continue; // Skip dead players
 
@@ -411,6 +439,8 @@ public class Server implements Runnable {
             }
         }
 
+
+        // Check if the game has ended
         if (mafiaCount >= nonMafiaCount) {
             endGame("Mafia wins!");
             System.out.println("Mafia wins!");
@@ -487,6 +517,8 @@ public class Server implements Runnable {
         broadcastToAllClients("dayNightCycle", stageCycle);
     }
 
+
+    // Broadcast the time left in the current stage to all clients
     private void broadcastTimeUpdate(int timeSeconds) {
         // Format time as needed
         String time = String.format("%02d:%02d", timeSeconds / 60, timeSeconds % 60);
