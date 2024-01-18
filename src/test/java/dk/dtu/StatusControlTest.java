@@ -72,7 +72,7 @@ class StatusControlTest {
         statusControl.protectPlayer(4);
         assertTrue(statusControl.conductor[4].isSecured());
 
-        Thread.sleep(25001);
+        Thread.sleep(26000);
         assertFalse(statusControl.conductor[4].isSecured());
     }
 

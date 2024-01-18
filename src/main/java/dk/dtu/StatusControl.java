@@ -7,14 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 // Creates a thread which handles the players statuses and actions
 class Conductor extends Thread {
-    int no;                         // Player number
     String userName;                // Player name
     String role;                    // Player role
     boolean killed = false;         // Used to determine if player is still alive
     boolean secured = false;        // Used to determine if player is currently being protected
 
-    public Conductor(int no, String userName, String role) {
-        this.no = no;
+    public Conductor(String userName, String role) {
         this.userName = userName;
         this.role = role;
     }
@@ -62,7 +60,7 @@ public class StatusControl {
         this.nameList = nameList;
 
         for (int i = 0; i < noOfPlayers; i++) {
-            conductor[i] = new Conductor(i, nameList[i], rolelist[i]);
+            conductor[i] = new Conductor(nameList[i], rolelist[i]);
             conductor[i].start();
         }
     }
