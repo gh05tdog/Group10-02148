@@ -460,7 +460,7 @@ public class Server implements Runnable {
                                 }
                             }
                             // If the stage is night, when the timer runs out, switch to day,
-                            // clear all mesaages, and set the timer to 30 seconds
+                            // clear all messages, and set the timer to 30 seconds
                             case "Night" -> {
                                 stageCycle = "Day";
                                 timeSeconds = 30; // Reset timer
