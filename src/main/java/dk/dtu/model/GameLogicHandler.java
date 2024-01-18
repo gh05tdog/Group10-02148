@@ -3,7 +3,6 @@ package dk.dtu.model;
 import dk.dtu.config;
 import dk.dtu.controller.AppController;
 import javafx.application.Platform;
-import javafx.scene.control.TextField;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -15,17 +14,12 @@ public class GameLogicHandler {
         this.server = server;
     }
 
-    public void AttemptAction(String username, String role, String Victim, TextField infoTextField) throws InterruptedException {
+    public void AttemptAction(String username, String role, String Victim) throws InterruptedException {
         if (config.getHasVoted()) {
             System.out.println("You have already voted");
             return;
         }
-        //If the user click on themselves, do nothing
-        if (username.equals(Victim) || !config.getRole().contains("Bodyguard" )) {
-            infoTextField.setText("You cannot vote on yourself");
-            System.out.println("You cannot vote on yourself");
-            return;
-        }
+
 
         server.put("action", "executeVote", username, Victim);
 
