@@ -27,4 +27,7 @@ public class IdentityProvider {
         return playersInLobby.size();
     }
 
+    public void removePlayer(String username) {
+        playersInLobby.remove(username);
+    }
 }
