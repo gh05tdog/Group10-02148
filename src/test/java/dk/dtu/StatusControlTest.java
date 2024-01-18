@@ -2,17 +2,10 @@ package dk.dtu;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class StatusControlTest {
     private StatusControl statusControl;
-
-    private ScheduledExecutorService executorService;
 
     @BeforeEach
     void setUp() throws InterruptedException {
@@ -22,7 +15,6 @@ class StatusControlTest {
 
         statusControl = new StatusControl(noOfPlayers, nameList, rolelist);
 
-        executorService = Executors.newScheduledThreadPool(1);
     }
 
     /**
@@ -58,7 +50,7 @@ class StatusControlTest {
         statusControl.protectPlayer(3);
         assertTrue(statusControl.conductor[3].isSecured());
 
-        Thread.sleep(30001);
+        Thread.sleep(31000);
 
         assertFalse(statusControl.conductor[3].isSecured());
         statusControl.attemptMurder(3);
@@ -128,7 +120,7 @@ class StatusControlTest {
         assertFalse(statusControl.houses.lookInsideHouse(4));
         assertNotEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
 
-        Thread.sleep(30001);
+        Thread.sleep(31000);
 
         assertTrue(statusControl.houses.lookInsideHouse(4));
         assertEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
