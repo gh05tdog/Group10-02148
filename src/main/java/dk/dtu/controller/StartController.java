@@ -24,12 +24,11 @@ public class StartController {
     @FXML
     public void JoinLobbyAction(MouseEvent event) {
         try {
-
             // Load the new FXML file
             Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUpIP.fxml")));
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.setOnCloseRequest(e -> Platform.exit());
             currentStage.setScene(new Scene(newRoot));
+            currentStage.setOnCloseRequest(e -> Platform.exit());
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
@@ -50,9 +49,7 @@ public class StartController {
     public void loadLobbyUI(MouseEvent event) throws IOException {
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/lobby.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        currentStage.setOnCloseRequest(e -> Platform.exit());
         currentStage.setScene(new Scene(newRoot));
-
+        currentStage.setOnCloseRequest(e -> Platform.exit());
     }
-
 }

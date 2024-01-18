@@ -5,29 +5,20 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" spacing="10"
       fx:controller="dk.dtu.controller.LobbyController">
     <HBox>
-        <children>
-            <VBox>
-                <children>
-                    <TextField fx:id="usernameField" promptText="Enter your username"/>
-                    <TextField fx:id="chatroomField" promptText="Enter chat room" text="lobby"/>
-                    <Button fx:id="connectButton" onAction="#handleConnectAction" text="Connect"/>
-                    <TextField fx:id="messageField" promptText="Enter message here"/>
-                    <Button onAction="#handleSendAction" text="Send"/>
-                    <TextArea fx:id="messageAreaLobby" editable="false"/>
-                </children>
-            </VBox>
-            <VBox>
-                <children>
-                    <Label text="Usernames:"/>
-                    <TextArea fx:id="usernameList" editable="false" prefWidth="300.0"/>
-                    <AnchorPane fx:id="lobbyAnchorPane" prefHeight="100.0" prefWidth="300.0">
-                        <children>
-                            <Button fx:id="StartGameButton" layoutX="108.0" layoutY="37.0" mnemonicParsing="false"
-                                    onAction="#StartGameAction" text="StartGame"/>
-                        </children>
-                    </AnchorPane>
-                </children>
-            </VBox>
-        </children>
+        <VBox>
+            <TextField fx:id="usernameField" promptText="Enter your username"/>
+            <Button fx:id="connectButton" onAction="#handleConnectAction" text="Connect"/>
+            <TextField fx:id="messageField" promptText="Enter message here"/>
+            <Button onAction="#handleSendAction" text="Send"/>
+            <TextArea fx:id="messageAreaLobby" editable="false"/>
+        </VBox>
+        <VBox>
+            <Label text="Usernames:"/>
+            <TextArea fx:id="usernameList" editable="false" prefWidth="300.0"/>
+            <AnchorPane fx:id="lobbyAnchorPane" prefHeight="100.0" prefWidth="300.0">
+                <Button fx:id="StartGameButton" layoutX="108.0" layoutY="37.0" mnemonicParsing="false"
+                        onAction="#StartGameAction" text="StartGame"/>
+            </AnchorPane>
+        </VBox>
     </HBox>
 </VBox>

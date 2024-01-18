@@ -8,12 +8,12 @@ import java.util.*;
 
 public class Server implements Runnable {
     private final SpaceRepository repository;
-    private final SequentialSpace gameSpace;
+    private static SequentialSpace gameSpace;
     private final String serverIp;
-    private final Thread serverThread;
-    private final Thread messageThread;
+    private static Thread serverThread;
+    private static Thread messageThread;
     private final List<String> messages = new ArrayList<>();
-    private final Thread actionThread;
+    private static Thread actionThread;
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
@@ -37,6 +37,8 @@ public class Server implements Runnable {
         mafiaVoteMap = new HashMap<>();
         gameStarted = false;
     }
+
+
 
     public static void main(String[] args) {
         try {
@@ -75,6 +77,11 @@ public class Server implements Runnable {
                     case "joinLobby" -> handleJoinLobby(username);
                     case "startGame" -> startGame();
                     case "usernameCheck" -> checkUsername(username);
+                    case "leaveLobby" -> {
+                        identityProvider.removePlayer(username);
+                        messages.add(username + " left the lobby");
+                        broadcastLobbyUpdate();
+                    }
                 }
             }
         } catch (InterruptedException e) {
@@ -253,8 +260,13 @@ public class Server implements Runnable {
                     mostVotedUser = entry.getKey();
                 }
             }
-
-            int divided = (identityProvider.getNumberOfPlayersInLobby() / 2) + 1;
+            int alivePlayers = 0;
+            for(int i = 0; i < identityProvider.getNumberOfPlayersInLobby();i++){
+                if(!statusControl.conductor[i].isKilled()){
+                    alivePlayers++;
+                }
+            }
+            int divided = (alivePlayers / 2) + 1;
 
             if (maxVotes >= divided) {
                 System.out.println("The town eliminated: " + mostVotedUser);
@@ -283,6 +295,7 @@ public class Server implements Runnable {
                 broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
             } else {
                 System.out.println("Snitching failed");
+                broadCastToSnitch(yourUsername, victim,"[REDACTED]");
             }
         }
     }
@@ -360,7 +373,6 @@ public class Server implements Runnable {
             System.out.println("Sending snitch message to: " + username);
             gameSpace.put("snitchMessage", username, statusControl.getPlayerRole(statusControl.getIDFromUserName(username)), victimUsername, victimRole);
         }
-
     }
 
     private void endGame(String message) {
@@ -476,9 +488,12 @@ public class Server implements Runnable {
         }
     }
 
-    public void stopServer() {
+    public static void stopServer() {
+        Server.serverThread.interrupt();
         serverThread.interrupt();
         messageThread.interrupt();
+        actionThread.interrupt();
+        gameSpace.getAll();
     }
 
     public boolean isRunning() {

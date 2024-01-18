@@ -21,7 +21,6 @@ import java.util.Objects;
 public class LobbyController {
     private final AppModel model;
     public TextArea usernameList;
-    public TextField chatroomField;
     public Button StartGameButton;
     public TextArea messageAreaLobby;
     public TextField usernameField;
@@ -38,12 +37,11 @@ public class LobbyController {
     }
 
     @FXML
-    private void initialize() throws InterruptedException, IOException {
+    private void initialize() throws InterruptedException {
         if (config.getUsername() != null) {
             //Remove the connect button
             connectButton.setVisible(false);
             usernameField.setVisible(false);
-            chatroomField.setVisible(false);
             //Join the lobby
             handleConnectAction();
             System.out.println("Username: " + config.getUsername());
@@ -58,9 +56,7 @@ public class LobbyController {
                 }
                 StartGameButton.setDisable(!config.getLobbyLeader());
             });
-
         }
-
     }
 
     // When you click the send button, send the message
@@ -84,7 +80,6 @@ public class LobbyController {
         }
 
         usernameField.setVisible(false);
-        chatroomField.setVisible(false);
         connectButton.setVisible(false);
 
         //Join the lobby
