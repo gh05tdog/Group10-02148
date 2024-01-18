@@ -21,10 +21,11 @@ public class StartController {
     public AnchorPane joinGamePane;
     public AnchorPane createGamePane;
 
+
+    //Opens the view that lets the user join a game based on an IP
     @FXML
     public void JoinLobbyAction(MouseEvent event) {
         try {
-            // Load the new FXML file
             Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/PopUpIP.fxml")));
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.setScene(new Scene(newRoot));
@@ -34,6 +35,7 @@ public class StartController {
         }
     }
 
+    //Opens the view that lets the creator enter a username and create a lobby
     @FXML
     private void CreateLobbyAction(MouseEvent event) {
         try {
