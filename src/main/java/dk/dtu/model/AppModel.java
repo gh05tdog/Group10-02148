@@ -5,6 +5,7 @@ import dk.dtu.controller.AppController;
 import dk.dtu.controller.PopUpIPController;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -118,14 +119,14 @@ public class AppModel {
         lobbyManager.startListeningForUserUpdates(userListArea, clientID);
     }
 
-    public void AttemptAction(String username, String role, String Victim) throws InterruptedException {
+    public void AttemptAction(String username, String role, String Victim, TextField infoTextField) throws InterruptedException {
         if (config.getHasVoted()) {
             System.out.println("You have already voted");
             return;
         }
         //If the user click on themselves, do nothing
         if (username.equals(Victim) || config.getRole().contains("Bodyguard") ){
-
+            infoTextField.setText("You cannot vote on yourself");
             System.out.println("You cannot vote on yourself");
             return;
         }

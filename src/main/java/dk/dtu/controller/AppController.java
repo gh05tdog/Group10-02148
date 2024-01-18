@@ -194,7 +194,7 @@ public class AppController {
             System.out.println("Label not found for " + circleId);
         }
         assert label != null;
-        model.AttemptAction(config.getUsername(), config.getRole(), label.getText());
+        model.AttemptAction(config.getUsername(), config.getRole(), label.getText(), infoTextField);
     }
 
     public void showKilled(String killed) {
