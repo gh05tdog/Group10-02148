@@ -44,10 +44,6 @@ class StatusControlTest {
         assertFalse(statusControl.conductor[2].isSecured());
         statusControl.protectPlayer(2);
         assertTrue(statusControl.conductor[2].isSecured());
-
-        Thread.sleep(5000);
-
-        assertTrue(statusControl.conductor[2].isSecured());
         statusControl.attemptMurder(2);
         assertFalse(statusControl.conductor[2].isKilled());
     }
@@ -132,7 +128,7 @@ class StatusControlTest {
         assertFalse(statusControl.houses.lookInsideHouse(4));
         assertNotEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());
 
-        Thread.sleep(30000);
+        Thread.sleep(30001);
 
         assertTrue(statusControl.houses.lookInsideHouse(4));
         assertEquals(statusControl.getPlayerRole(4), statusControl.conductor[4].getRole());

@@ -18,7 +18,7 @@ public class Server implements Runnable {
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
     public String[] nameList;
-    public final IdentityProvider identityProvider = new IdentityProvider();
+    public IdentityProvider identityProvider = new IdentityProvider();
     private StatusControl statusControl;
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state
@@ -256,6 +256,7 @@ public class Server implements Runnable {
                         case "Bodyguard" -> bodyguardAction(yourUsername, Victim);
                     }
                 } else if (Objects.equals(stageCycle, "VotingTime")) {
+                    // if voting time, continually run executeVote, checking for votes
                     executeVote(yourUsername, Victim);
                 } else {
                     System.out.println("Not the right time to do that");
@@ -273,45 +274,57 @@ public class Server implements Runnable {
 
 
     void executeVote(String yourUsername, String suspect) throws InterruptedException {
+        // Check if the player is alive
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
+            // Check if the player is voting for themselves
             if (Objects.equals(yourUsername, suspect)) {
                 System.out.println("Dont vote for yourself, dummy!");
                 return;
             } else {
+                // Add the vote to the map
                 executeVoteMap.put(yourUsername, suspect);
                 System.out.println("Vote received from: " + yourUsername + " on: " + suspect);
             }
-
+            // create a map for counting votes
             HashMap<String, Integer> executeVoteCount = new HashMap<>();
+            handleVotes(executeVoteCount, executeVoteMap);
 
-            for (String vote : executeVoteMap.values()) {
-                executeVoteCount.put(vote, executeVoteCount.getOrDefault(vote, 0) + 1);
-            }
             String mostVotedUser = null;
             int maxVotes = 0;
 
+            // Determine if all votes are different or find the user with the most votes
             for (Map.Entry<String, Integer> entry : executeVoteCount.entrySet()) {
                 if (entry.getValue() > maxVotes) {
                     maxVotes = entry.getValue();
                     mostVotedUser = entry.getKey();
                 }
-            }
-            int alivePlayers = 0;
-            for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
-                if (!statusControl.conductor[i].isKilled()) {
-                    alivePlayers++;
+
+                int alivePlayers = 0;
+                // check the number of alive players
+                for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
+                    if (!statusControl.conductor[i].isKilled()) {
+                        alivePlayers++;
+                    }
+                }
+                int divided = (alivePlayers / 2) + 1;
+                // check if the number of votes is enough to execute
+                if (maxVotes >= divided) {
+                    System.out.println("The town eliminated: " + mostVotedUser);
+                    executeVoteCount.clear();
+                    // send a request to status control to execute the player
+                    statusControl.executeSuspect(statusControl.getIDFromUserName(mostVotedUser));
+                    // use the mafiaEliminated message to update the client
+                    broadcastToAllClients("mafiaEliminated", mostVotedUser);
+                    // Check if any win condition has been met
+                    checkForVictory();
                 }
             }
-            int divided = (alivePlayers / 2) + 1;
+        }
+    }
 
-            if (maxVotes >= divided) {
-                System.out.println("The town eliminated: " + mostVotedUser);
-                executeVoteCount.clear();
-                statusControl.executeSuspect(statusControl.getIDFromUserName(mostVotedUser));
-                broadcastToAllClients("mafiaEliminated", mostVotedUser);
-                checkForVictory();
-                System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
-            }
+    private void handleVotes(HashMap<String, Integer> votes, HashMap<String, String> votesMap) {
+        for (String vote : votesMap.values()) {
+            votes.put(vote, votes.getOrDefault(vote, 0) + 1);
         }
     }
 
@@ -356,14 +369,11 @@ public class Server implements Runnable {
                 // Map to keep track of vote counts
                 HashMap<String, Integer> voteCount = new HashMap<>();
 
-                // Count the votes for each user
-                for (String vote : mafiaVoteMap.values()) {
-                    voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1);
-                }
-
-                // Determine if all votes are different or find the user with the most votes
                 String mostVotedUser = null;
                 int maxVotes = 0;
+
+                // Count the votes for each user
+                handleVotes(voteCount, mafiaVoteMap);
 
                 for (Map.Entry<String, Integer> entry : voteCount.entrySet()) {
                     if (entry.getValue() > maxVotes) {
@@ -371,6 +381,8 @@ public class Server implements Runnable {
                         mostVotedUser = entry.getKey();
                     }
                 }
+
+
 
                 if (nrOfMafia == 1) {
                     System.out.println("Mafia eliminated: " + mostVotedUser);
@@ -451,15 +463,19 @@ public class Server implements Runnable {
     }
 
     void manageDayNightCycle() {
+        // Start the timer
         isTimerRunning = true;
         new Timer().schedule(new TimerTask() {
             @Override
+            // Use the timer to cycle between 3 different stages.
             public void run() {
                 if (isTimerRunning) {
                     if (timeSeconds > 0) {
                         timeSeconds--;
                         broadcastTimeUpdate(timeSeconds);
                     } else {
+                        // If the stage is day, when the timer runs out, switch to voting time,
+                        // and set the timer to 15 seconds
                         switch (stageCycle) {
                             case "Day" -> {
                                 stageCycle = "VotingTime";
@@ -471,6 +487,8 @@ public class Server implements Runnable {
                                     throw new RuntimeException(e);
                                 }
                             }
+                            // If the stage is night, when the timer runs out, switch to day,
+                            // clear all mesaages, and set the timer to 30 seconds
                             case "Night" -> {
                                 stageCycle = "Day";
                                 timeSeconds = 30; // Reset timer
@@ -482,6 +500,8 @@ public class Server implements Runnable {
                                     throw new RuntimeException(e);
                                 }
                             }
+                            // if the stage is voting time, when the timer runs out, switch to night,
+                            // and set the timer to 30 seconds.
                             case "VotingTime" -> {
                                 stageCycle = "Night";
                                 timeSeconds = 30; // Reset timer
@@ -501,12 +521,14 @@ public class Server implements Runnable {
     }
 
     void broadcastDayNightCycle() throws InterruptedException {
+        // when cycle becomes day, clear all messages and mafia votes
         if (Objects.equals(stageCycle, "Day")) {
             messages.clear();
             mafiaVoteMap.clear();
             for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
                 gameSpace.put("messages", messages);
             }
+        // when cycle becomes night, clear all messages and execute votes
         } else if (Objects.equals(stageCycle, "Night")) {
             messages.clear();
             executeVoteMap.clear();
