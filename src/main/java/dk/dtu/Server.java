@@ -7,13 +7,13 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 public class Server implements Runnable {
-    private final SpaceRepository repository;
     private static SequentialSpace gameSpace;
-    private final String serverIp;
     private static Thread serverThread;
     private static Thread messageThread;
-    private final List<String> messages = new ArrayList<>();
     private static Thread actionThread;
+    private final SpaceRepository repository;
+    private final String serverIp;
+    private final List<String> messages = new ArrayList<>();
     private final HashMap<String, String> mafiaVoteMap;
     private final HashMap<String, String> executeVoteMap;
     public String[] roleList;
@@ -38,7 +38,6 @@ public class Server implements Runnable {
     }
 
 
-
     public static void main(String[] args) {
         try {
             new Server().startServer();
@@ -48,6 +47,14 @@ public class Server implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void stopServer() {
+        Server.serverThread.interrupt();
+        serverThread.interrupt();
+        messageThread.interrupt();
+        actionThread.interrupt();
+        gameSpace.getAll();
     }
 
     public void startServer() throws InterruptedException {
@@ -260,8 +267,8 @@ public class Server implements Runnable {
                 }
             }
             int alivePlayers = 0;
-            for(int i = 0; i < identityProvider.getNumberOfPlayersInLobby();i++){
-                if(!statusControl.conductor[i].isKilled()){
+            for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
+                if (!statusControl.conductor[i].isKilled()) {
                     alivePlayers++;
                 }
             }
@@ -294,7 +301,7 @@ public class Server implements Runnable {
                 broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
             } else {
                 System.out.println("Snitching failed");
-                broadCastToSnitch(yourUsername, victim,"[REDACTED]");
+                broadCastToSnitch(yourUsername, victim, "[REDACTED]");
             }
         }
     }
@@ -485,14 +492,6 @@ public class Server implements Runnable {
             System.out.println("Error broadcasting message: " + e.getMessage());
             // Handle the exception appropriately
         }
-    }
-
-    public static void stopServer() {
-        Server.serverThread.interrupt();
-        serverThread.interrupt();
-        messageThread.interrupt();
-        actionThread.interrupt();
-        gameSpace.getAll();
     }
 
     public boolean isRunning() {

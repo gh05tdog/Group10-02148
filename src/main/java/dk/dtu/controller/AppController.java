@@ -198,7 +198,7 @@ public class AppController {
     }
 
     public void showKilled(String killed) {
-        if(killed != null) {
+        if (killed != null) {
             Platform.runLater(() -> infoTextField.setText(killed + " was killed"));
         } else {
             Platform.runLater(() -> infoTextField.setText("Nobody was killed"));
