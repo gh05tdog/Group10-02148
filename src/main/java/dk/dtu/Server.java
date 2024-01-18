@@ -22,7 +22,7 @@ public class Server implements Runnable {
     private StatusControl statusControl;
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state
-    private int timeSeconds = 30;
+    private int timeSeconds = 120;
     private boolean isTimerRunning = false;
 
     public Server() throws UnknownHostException {
@@ -452,7 +452,7 @@ public class Server implements Runnable {
                         switch (stageCycle) {
                             case "Day" -> {
                                 stageCycle = "VotingTime";
-                                timeSeconds = 15; // Reset timer
+                                timeSeconds = 120; // Reset timer
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {
@@ -475,7 +475,7 @@ public class Server implements Runnable {
                             // and set the timer to 30 seconds.
                             case "VotingTime" -> {
                                 stageCycle = "Night";
-                                timeSeconds = 30; // Reset timer
+                                timeSeconds = 120; // Reset timer
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {
