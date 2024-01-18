@@ -49,6 +49,8 @@ public class Server implements Runnable {
         }
     }
 
+
+    //Used in tests to stop the server
     public static void stopServer() {
         Server.serverThread.interrupt();
         serverThread.interrupt();
@@ -57,6 +59,7 @@ public class Server implements Runnable {
         gameSpace.getAll();
     }
 
+    //Used to start the server
     public void startServer() throws InterruptedException {
         gameSpace.put("lock");
         serverThread.start();
@@ -68,8 +71,11 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
+            // Create a repository for the gameSpace
             repository.add("game", gameSpace);
             String gateUri = "tcp://" + serverIp + ":9001/?keep";
+
+            // Create the gate and register the gameSpace to it
             repository.addGate(gateUri);
 
             System.out.println("Game server running at " + gateUri);
@@ -79,6 +85,7 @@ public class Server implements Runnable {
                 String action = (String) request[0];
                 String username = (String) request[1];
 
+                // Handle the request based on the action
                 switch (action) {
                     case "joinLobby" -> handleJoinLobby(username);
                     case "startGame" -> startGame();
@@ -114,7 +121,6 @@ public class Server implements Runnable {
         // Add message to the list
         String fullMessage = username + ": " + messageContent;
         messages.add(fullMessage);
-
         // Update the space with the new list of messages
         gameSpace.put("messages", messages);
     }
@@ -126,6 +132,7 @@ public class Server implements Runnable {
             System.out.println("User " + username + " joined the lobby");
             messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
+
         } else {
             throw new Exception("Game already started or user already in lobby");
         }
@@ -199,6 +206,9 @@ public class Server implements Runnable {
     private void runMessageListener() {
         System.out.println("Message listener running");
         try {
+            String gateUri = "tcp://" + serverIp + ":9001/?keep";
+            messages.add("Game server running at " + gateUri);
+            gameSpace.put("messages", messages);
             while (!Thread.currentThread().isInterrupted()) {
                 Object[] messageRequest = gameSpace.get(new ActualField("message"), new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
                 String username = (String) messageRequest[1];
