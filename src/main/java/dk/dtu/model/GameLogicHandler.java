@@ -20,9 +20,7 @@ public class GameLogicHandler {
             return;
         }
 
-
         server.put("action", "executeVote", username, Victim);
-
 
         switch (role) {
             case "[Mafia]" -> server.put("action", "MafiaVote", username, Victim);

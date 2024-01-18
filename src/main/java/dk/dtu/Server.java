@@ -136,7 +136,6 @@ public class Server implements Runnable {
         if (!gameStarted && !identityProvider.isPlayerInLobby(username)) {
             gameSpace.put("connected", username);
             identityProvider.addPlayer(username);
-            System.out.println("User " + username + " joined the lobby");
             messages.add(username + " joined the lobby");
             broadcastLobbyUpdate();
         } else {
@@ -183,12 +182,8 @@ public class Server implements Runnable {
                 String role = Arrays.toString(roles.get(new FormalField(String.class)));
                 roleList[i] = role;
                 nameList[i] = identityProvider.getPlayersInLobby().toArray()[i].toString();
-                System.out.println("Player " + nameList[i] + "with ID: " + i + " has role: " + roleList[i]);
             }
-            System.out.println("Role list:" + Arrays.toString(roleList));
 
-        } else {
-            System.out.println("Game already started");
         }
     }
 
@@ -218,7 +213,6 @@ public class Server implements Runnable {
 
     // Listen for messages from clients and add them to the list of messages in the gameSpace
     private void runMessageListener() {
-        System.out.println("Message listener running");
         try {
             String gateUri = "tcp://" + serverIp + ":9001/?keep";
             messages.add("Game server running at " + gateUri);
@@ -242,7 +236,6 @@ public class Server implements Runnable {
 
     // Listen for actions from clients and execute them
     private void runActionsListener() {
-        System.out.println("Action listener running");
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 Object[] actionRequest = gameSpace.get(new ActualField("action"), new FormalField(String.class), new FormalField(String.class), new FormalField(String.class));
@@ -258,9 +251,6 @@ public class Server implements Runnable {
                 } else if (Objects.equals(stageCycle, "VotingTime")) {
                     // if voting time, continually run executeVote, checking for votes
                     executeVote(yourUsername, Victim);
-                } else {
-                    System.out.println("Not the right time to do that");
-
                 }
             }
         } catch (InterruptedException e) {
@@ -272,18 +262,15 @@ public class Server implements Runnable {
     }
 
 
-
     void executeVote(String yourUsername, String suspect) throws InterruptedException {
         // Check if the player is alive
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
             // Check if the player is voting for themselves
             if (Objects.equals(yourUsername, suspect)) {
-                System.out.println("Dont vote for yourself, dummy!");
                 return;
             } else {
                 // Add the vote to the map
                 executeVoteMap.put(yourUsername, suspect);
-                System.out.println("Vote received from: " + yourUsername + " on: " + suspect);
             }
             // create a map for counting votes
             HashMap<String, Integer> executeVoteCount = new HashMap<>();
@@ -309,7 +296,6 @@ public class Server implements Runnable {
                 int divided = (alivePlayers / 2) + 1;
                 // check if the number of votes is enough to execute
                 if (maxVotes >= divided) {
-                    System.out.println("The town eliminated: " + mostVotedUser);
                     executeVoteCount.clear();
                     // send a request to status control to execute the player
                     statusControl.executeSuspect(statusControl.getIDFromUserName(mostVotedUser));
@@ -331,22 +317,17 @@ public class Server implements Runnable {
     // Handle the bodyguard action and protect a player
     private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
-            System.out.println("Protecting player: " + victim);
             statusControl.protectPlayer(statusControl.getIDFromUserName(victim));
-            System.out.println("BODYGUARD: " + statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured());
         }
     }
 
     // Handle the snitch action and reveal the role of a player
     private void snitchAction(String yourUsername, String victim) throws InterruptedException {
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
-            System.out.println("Snitching on player: " + victim);
-            System.out.println("SNITCH: " + statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
             if (!(statusControl.conductor[statusControl.getIDFromUserName(victim)].isSecured())) {
                 broadCastToSnitch(yourUsername, victim, statusControl.getPlayerRole(statusControl.getIDFromUserName(victim)));
             } else {
                 // If the player is protected, the snitch will not know their role
-                System.out.println("Snitching failed");
                 broadCastToSnitch(yourUsername, victim, "[REDACTED]");
             }
         }
@@ -363,7 +344,6 @@ public class Server implements Runnable {
                     nrOfMafia++;
                 }
             }
-            System.out.println(identityProvider.getPlayersInLobby());
             mafiaVoteMap.put(yourUsername, victim);
             if (nrOfMafia == mafiaVoteMap.size()) {
                 // Map to keep track of vote counts
@@ -382,48 +362,33 @@ public class Server implements Runnable {
                     }
                 }
 
-
-
                 if (nrOfMafia == 1) {
-                    System.out.println("Mafia eliminated: " + mostVotedUser);
                     voteCount.clear();
                     statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
                     if ((statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled())) {
                         broadcastToAllClients("mafiaEliminated", mostVotedUser);
                         checkForVictory();
-                    } else {
-                        System.out.println("Mafia kill failed");
                     }
-
-                    System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
                     return;
                 }
 
                 voteCount.clear();
-                if (maxVotes == 1) {
-                    // If all values are different, everyone has 1 vote
-                    System.out.println("All users have 1 vote.");
-                } else {
+                if (!(maxVotes == 1)) {
                     // Otherwise, print the victim with the most votes
-                    System.out.println("Victim with the most votes: " + mostVotedUser);
                     statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
-                    System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
                     if (statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled()) {
                         broadcastToAllClients("mafiaEliminated", mostVotedUser);
                         checkForVictory();
-                    } else {
-                        System.out.println("Mafia kill failed");
                     }
+
                 }
             }
-
         }
     }
 
     // Broadcast a message to the snitch
     public void broadCastToSnitch(String username, String victimRole, String victimUsername) throws InterruptedException {
         if (statusControl.getPlayerRole(statusControl.getIDFromUserName(username)).contains("Snitch")) {
-            System.out.println("Sending snitch message to: " + username);
             gameSpace.put("snitchMessage", username, statusControl.getPlayerRole(statusControl.getIDFromUserName(username)), victimUsername, victimRole);
         }
     }
@@ -455,10 +420,8 @@ public class Server implements Runnable {
         // Check if the game has ended
         if (mafiaCount >= nonMafiaCount) {
             endGame("Mafia wins!");
-            System.out.println("Mafia wins!");
         } else if (mafiaCount == 0) {
             endGame("Citizens win!");
-            System.out.println("Citizens win!");
         }
     }
 
@@ -479,7 +442,6 @@ public class Server implements Runnable {
                         switch (stageCycle) {
                             case "Day" -> {
                                 stageCycle = "VotingTime";
-                                System.out.println(stageCycle);
                                 timeSeconds = 15; // Reset timer
                                 try {
                                     broadcastDayNightCycle();
@@ -492,7 +454,6 @@ public class Server implements Runnable {
                             case "Night" -> {
                                 stageCycle = "Day";
                                 timeSeconds = 30; // Reset timer
-                                System.out.println(stageCycle);
                                 messages.clear();
                                 try {
                                     broadcastDayNightCycle();
@@ -505,7 +466,6 @@ public class Server implements Runnable {
                             case "VotingTime" -> {
                                 stageCycle = "Night";
                                 timeSeconds = 30; // Reset timer
-                                System.out.println(stageCycle);
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {
@@ -528,7 +488,7 @@ public class Server implements Runnable {
             for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
                 gameSpace.put("messages", messages);
             }
-        // when cycle becomes night, clear all messages and execute votes
+            // when cycle becomes night, clear all messages and execute votes
         } else if (Objects.equals(stageCycle, "Night")) {
             messages.clear();
             executeVoteMap.clear();
