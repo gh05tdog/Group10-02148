@@ -82,7 +82,6 @@ public class AppModel {
 
     public void startGame() throws InterruptedException {
         server.put("startGame", "game_identifier");
-        System.out.println("Game is starting");
     }
 
     public void startListeningForUserUpdates(TextArea userListArea, String clientID) {
