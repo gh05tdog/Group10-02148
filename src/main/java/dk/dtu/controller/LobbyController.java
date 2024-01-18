@@ -52,7 +52,7 @@ public class LobbyController {
                     model.startListeningForGameStart(currentStage);
                 }
                 // If the user is the lobby leader, make the start game button visible
-                StartGameButton.setVisible(!config.getLobbyLeader());
+                StartGameButton.setVisible(config.getLobbyLeader());
 
             });
         }
