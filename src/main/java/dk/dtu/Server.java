@@ -353,7 +353,9 @@ public class Server implements Runnable {
     }
 
 
+    // This function run everytime the mafia votes for someone to kill and makes sure there is mutual agreement
     private void mafiaVote(String yourUsername, String victim) throws InterruptedException {
+        //First of all the function finds out how many mafias are stil alive
         if (!statusControl.conductor[statusControl.getIDFromUserName(yourUsername)].isKilled()) {
             int nrOfMafia = 0;
             for (int i = 0; i < identityProvider.getNumberOfPlayersInLobby(); i++) {
@@ -363,10 +365,13 @@ public class Server implements Runnable {
                     nrOfMafia++;
                 }
             }
-            System.out.println(identityProvider.getPlayersInLobby());
+
+            //The function then adds the vote to the mafiVoteMap which takes who votes and whom they vote for
             mafiaVoteMap.put(yourUsername, victim);
+
+            //Once nrOfMafia is equal to the size of the mafiaVoteMap the function will continue meaning all mafias has voted
             if (nrOfMafia == mafiaVoteMap.size()) {
-                // Map to keep track of vote counts
+                // HashMap to keep track of vote counts for each player
                 HashMap<String, Integer> voteCount = new HashMap<>();
 
                 String mostVotedUser = null;
@@ -375,6 +380,8 @@ public class Server implements Runnable {
                 // Count the votes for each user
                 handleVotes(voteCount, mafiaVoteMap);
 
+
+                //Finds maxVotes, which is an int for how many times a player has been voted for, and setsthe mostVotedUser to the player with the most votes
                 for (Map.Entry<String, Integer> entry : voteCount.entrySet()) {
                     if (entry.getValue() > maxVotes) {
                         maxVotes = entry.getValue();
@@ -382,32 +389,30 @@ public class Server implements Runnable {
                     }
                 }
 
-
-
+                //If there is only 1 mafia, that means the mafia will kill the player they click for, unless they are protected by the bodyguard
                 if (nrOfMafia == 1) {
-                    System.out.println("Mafia eliminated: " + mostVotedUser);
                     voteCount.clear();
                     statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
+
+                    //If the player is killed, it broadcasts to all clients and checks if the game has ended
                     if ((statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled())) {
                         broadcastToAllClients("mafiaEliminated", mostVotedUser);
                         checkForVictory();
                     } else {
                         System.out.println("Mafia kill failed");
                     }
-
-                    System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
                     return;
                 }
 
                 voteCount.clear();
+
+                //If there are more than 1 mafia, and if there is a tie, the mafia will not kill anyone
                 if (maxVotes == 1) {
-                    // If all values are different, everyone has 1 vote
                     System.out.println("All users have 1 vote.");
                 } else {
-                    // Otherwise, print the victim with the most votes
-                    System.out.println("Victim with the most votes: " + mostVotedUser);
+                    // Otherwise, the same thing happens as above with only 1 mafia
                     statusControl.attemptMurder(statusControl.getIDFromUserName(mostVotedUser));
-                    System.out.println(statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled());
+
                     if (statusControl.conductor[statusControl.getIDFromUserName(mostVotedUser)].isKilled()) {
                         broadcastToAllClients("mafiaEliminated", mostVotedUser);
                         checkForVictory();
