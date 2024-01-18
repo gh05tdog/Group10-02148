@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -21,10 +22,10 @@ import java.util.Objects;
 public class LobbyController {
     private final AppModel model;
     public TextArea usernameList;
-    public Button StartGameButton;
+    public AnchorPane StartGameButton;
     public TextArea messageAreaLobby;
     public TextField usernameField;
-    public Button connectButton;
+    public AnchorPane connectButton;
     public AnchorPane lobbyAnchorPane;
     @FXML
     private TextField messageField;
@@ -92,7 +93,7 @@ public class LobbyController {
     }
 
     @FXML
-    private void StartGameAction(ActionEvent event) throws IOException, InterruptedException {
+    private void StartGameAction(MouseEvent event) throws IOException, InterruptedException {
         model.startGame();
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
