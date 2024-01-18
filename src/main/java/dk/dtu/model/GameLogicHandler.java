@@ -16,7 +16,6 @@ public class GameLogicHandler {
 
     public void AttemptAction(String username, String role, String Victim) throws InterruptedException {
         if (config.getHasVoted()) {
-            System.out.println("You have already voted");
             return;
         }
 
@@ -28,7 +27,6 @@ public class GameLogicHandler {
             case "[Mafia]" -> server.put("action", "MafiaVote", username, Victim);
             case "[Snitch]" -> server.put("action", "Snitch", username, Victim);
             case "[Bodyguard]" -> server.put("action", "Bodyguard", username, Victim);
-            default -> System.out.println("You are a Citizen");
         }
         config.setHasVoted(true);
     }
@@ -70,7 +68,6 @@ public class GameLogicHandler {
                 try {
                     Object[] response = server.get(new ActualField("gameEnd"), new ActualField(username), new FormalField(String.class));
                     String result = (String) response[2];
-                    System.out.println(result);
                     Platform.runLater(() -> appController.updateGameResult(result));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -87,7 +84,6 @@ public class GameLogicHandler {
                     Object[] response = server.get(new ActualField("roleUpdate"), new ActualField(username), new FormalField(String.class));
                     // Update the user list
                     String role = (String) response[2];
-                    System.out.println(username + " has role: " + role);
                     Platform.runLater(() -> appController.appendRoles(role));
                     config.setRole(role);
                 }
