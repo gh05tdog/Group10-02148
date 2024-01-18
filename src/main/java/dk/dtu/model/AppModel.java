@@ -59,7 +59,6 @@ public class AppModel {
         roleThread.start();
     }
 
-
     public void startListeningForDayNightCycle(AppController appController, String Username) {
 
         new Thread(() -> {
@@ -159,7 +158,6 @@ public class AppModel {
             }
         }).start();
     }
-
 
     //Listen for the result of the game
     public void startListenForGameResult(AppController appController, String username) {
