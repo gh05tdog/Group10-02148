@@ -214,7 +214,7 @@ public class Server implements Runnable {
     // Listen for messages from clients and add them to the list of messages in the gameSpace
     private void runMessageListener() {
         try {
-            String gateUri = "tcp://" + serverIp + ":9001/?keep";
+            String gateUri = serverIp + ":9001";
             messages.add("Game server running at " + gateUri);
             gameSpace.put("messages", messages);
             while (!Thread.currentThread().isInterrupted()) {
