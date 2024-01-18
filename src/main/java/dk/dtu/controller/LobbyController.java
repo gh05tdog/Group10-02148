@@ -94,6 +94,11 @@ public class LobbyController {
     //This runs, when the startGame button is pressed, and it then switches the view to App_view.fxml
     @FXML
     private void StartGameAction(MouseEvent event) throws IOException, InterruptedException {
+        // Check if the lobby leader has a username
+        if(config.getUsername() == null){
+            messageAreaLobby.appendText("You need to pick a username, and click connect! \n");
+            return;
+        }
         model.startGame();
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/dk/dtu/view/App_view.fxml")));
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
