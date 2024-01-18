@@ -19,7 +19,7 @@ class Conductor extends Thread {
         this.role = role;
     }
 
-    void murder() {
+    void murderPlayer() {
         killed = true;
     }
 
@@ -46,16 +46,9 @@ class Conductor extends Thread {
     boolean isKilled() {
         return killed;
     }
-
-    /*
-    public void run() {
-        while (!killed) {
-        }
-
-    }
-     */
 }
 
+// Handles the threads for the player's statuses
 public class StatusControl {
     Conductor[] conductor;      // Status controllers
     House houses;               // Houses
@@ -80,27 +73,30 @@ public class StatusControl {
                 return i;
             }
         }
-
         return -1;
     }
 
+    // If able to enter the house, the mafia will kill their victim
     public void attemptMurder(int victim) throws InterruptedException {
         if (houses.enterHouse(victim)) { // Something only happens if able to enter the house
-            conductor[victim].murder();
+            conductor[victim].murderPlayer();
             houses.leaveHouse(victim);
         }
     }
 
+    // After day voting, a suspect will be killed.
+    // No need to check if able to enter house as day protection is not a thing
     public void executeSuspect(int suspect) throws InterruptedException {
-        conductor[suspect].murder();
+        conductor[suspect].murderPlayer();
     }
 
 
+    // If able to enter the house, the bodyguard will protect a player for 30 seconds.
     public void protectPlayer(int player) throws InterruptedException {
         if (houses.enterHouse(player)) { // Something only happens if able to enter the house
             conductor[player].protectPlayer();
 
-            // Use a ScheduledExecutorService to schedule the stopProtectingPlayer action after 10 seconds
+            // Creates a new thread that handles that a player should stop being protected after 30 seconds
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
             executorService.schedule(() -> {
                 conductor[player].stopProtectingPlayer();
@@ -109,13 +105,15 @@ public class StatusControl {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }, 10, TimeUnit.SECONDS);
+            }, 30, TimeUnit.SECONDS);
 
-            // Shutdown the executor service to stop it when it's no longer needed
+            // Shuts down as no longer needed
             executorService.shutdown();
         }
     }
 
+    // If the snitch is able to look inside the house (i.e. nobody has the key), the role is returned
+    // Otherwise, the snitch will only get [REDACTED]. Done as a "funny" gimmick.
     public String getPlayerRole(int player) throws InterruptedException {
         if (houses.lookInsideHouse(player)) {
             return conductor[player].getRole();
@@ -128,19 +126,4 @@ public class StatusControl {
         return conductor[player].getUserName();
     }
 
-
-    /*
-    public List<String[]> getAlivePlayers () {
-        List<String[]> alivePlayers = new ArrayList<>();
-
-        for (int i = 0; i < noOfPlayers; i++) {
-            if (!conductor[i].isKilled()) {
-                alivePlayers.add(new String[] {i, conductor[i].getRole()} );
-            }
-
-        }
-        return alivePlayers;
-    }
-
-     */
 }
