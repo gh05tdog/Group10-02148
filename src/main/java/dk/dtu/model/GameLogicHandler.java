@@ -21,7 +21,7 @@ public class GameLogicHandler {
             return;
         }
         //If the user click on themselves, do nothing
-        if (username.equals(Victim) || config.getRole().contains("Bodyguard")) {
+        if (username.equals(Victim) || !config.getRole().contains("Bodyguard" )) {
             infoTextField.setText("You cannot vote on yourself");
             System.out.println("You cannot vote on yourself");
             return;
