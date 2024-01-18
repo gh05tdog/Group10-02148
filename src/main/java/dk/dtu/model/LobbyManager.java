@@ -23,7 +23,6 @@ public class LobbyManager {
 
     public void joinLobby(String username) throws InterruptedException {
         server.put("joinLobby", username);
-        System.out.println("User " + username + " joined the lobby");
         if (!config.getLobbyLeader()) {
             server.put("lock");
         }
@@ -58,7 +57,6 @@ public class LobbyManager {
                 while (true) {
                     // Listen for any type of message
                     Object[] response = server.get(new ActualField("startGame"), new FormalField(String.class), new FormalField(String.class));
-                    System.out.println("Received start game message");
                     // switch to game scene
                     if (response != null) {
                         // switch to game scene
