@@ -22,7 +22,7 @@ public class Server implements Runnable {
     private StatusControl statusControl;
     private boolean gameStarted;
     private String stageCycle = "Day"; // Initial state
-    private int timeSeconds = 120;
+    private int timeSeconds = 30;
     private boolean isTimerRunning = false;
     private HashMap<String, Integer> executeVoteCount = new HashMap<>();
 
@@ -249,7 +249,7 @@ public class Server implements Runnable {
                         case "Snitch" -> snitchAction(yourUsername, Victim);
                         case "Bodyguard" -> bodyguardAction(yourUsername, Victim);
                     }
-                } else if (Objects.equals(stageCycle, "VotingTime")) {
+                } else if (Objects.equals(action, "executeVote") && Objects.equals(stageCycle, "VotingTime")) {
                     // if voting time, continually run executeVote, checking for votes
                     executeVote(yourUsername, Victim);
                 }
@@ -273,9 +273,10 @@ public class Server implements Runnable {
                 // Add the vote to the map
                 executeVoteMap.put(yourUsername, suspect);
             }
-            // create a map for counting votes
 
-            handleVotes(executeVoteCount, executeVoteMap);
+            String currentVote = executeVoteMap.get(yourUsername);
+            executeVoteCount.put(currentVote, executeVoteCount.getOrDefault(currentVote, 0) + 1);
+
 
             String mostVotedUser = null;
             int maxVotes = 0;
@@ -285,6 +286,7 @@ public class Server implements Runnable {
                 if (entry.getValue() > maxVotes) {
                     maxVotes = entry.getValue();
                     mostVotedUser = entry.getKey();
+                    System.out.println("maxVotes first: " + maxVotes + " mostVotedUser: " + mostVotedUser);
                 }
 
                 int alivePlayers = 0;
@@ -298,6 +300,7 @@ public class Server implements Runnable {
 
                 // check if the number of votes is enough to execute
                 if (maxVotes >= divided) {
+                    System.out.println("maxVotes: " + maxVotes + " divided: " + divided);
                     // send a request to status control to execute the player
                     statusControl.executeSuspect(statusControl.getIDFromUserName(mostVotedUser));
                     // use the mafiaEliminated message to update the client
@@ -309,11 +312,6 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleVotes(HashMap<String, Integer> votes, HashMap<String, String> votesMap) {
-        for (String vote : votesMap.values()) {
-            votes.put(vote, votes.getOrDefault(vote, 0) + 1);
-        }
-    }
 
     // Handle the bodyguard action and protect a player
     private void bodyguardAction(String yourUsername, String victim) throws InterruptedException {
@@ -359,8 +357,11 @@ public class Server implements Runnable {
                 String mostVotedUser = null;
                 int maxVotes = 0;
 
+               for(String vote : mafiaVoteMap.values()) {
+                   voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1);
+               }
+
                 // Count the votes for each user
-                handleVotes(voteCount, mafiaVoteMap);
 
                 //Sets the maxVotes to the max amount of votes for a player and the mostVotedUser to the player with the most votes
                 for (Map.Entry<String, Integer> entry : voteCount.entrySet()) {
@@ -453,7 +454,7 @@ public class Server implements Runnable {
                         switch (stageCycle) {
                             case "Day" -> {
                                 stageCycle = "VotingTime";
-                                timeSeconds = 120; // Reset timer
+                                timeSeconds = 15; // Reset timer
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {
@@ -477,7 +478,7 @@ public class Server implements Runnable {
                             // and set the timer to 30 seconds.
                             case "VotingTime" -> {
                                 stageCycle = "Night";
-                                timeSeconds = 120; // Reset timer
+                                timeSeconds = 30; // Reset timer
                                 try {
                                     broadcastDayNightCycle();
                                 } catch (InterruptedException e) {

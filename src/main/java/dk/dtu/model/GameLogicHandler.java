@@ -20,6 +20,7 @@ public class GameLogicHandler {
         }
 
         server.put("action", "executeVote", username, Victim);
+        System.out.println("Action sent");
 
         switch (role) {
             case "[Mafia]" -> server.put("action", "MafiaVote", username, Victim);
