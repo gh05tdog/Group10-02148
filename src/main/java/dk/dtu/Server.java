@@ -294,9 +294,9 @@ public class Server implements Runnable {
                     }
                 }
                 int divided = (alivePlayers / 2) + 1;
+
                 // check if the number of votes is enough to execute
                 if (maxVotes >= divided) {
-                    executeVoteCount.clear();
                     // send a request to status control to execute the player
                     statusControl.executeSuspect(statusControl.getIDFromUserName(mostVotedUser));
                     // use the mafiaEliminated message to update the client
@@ -304,6 +304,7 @@ public class Server implements Runnable {
                     // Check if any win condition has been met
                     checkForVictory();
                 }
+                executeVoteCount.clear();
             }
         }
     }
