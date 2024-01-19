@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane prefHeight="521.0" prefWidth="746.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.dtu.controller.AppController">
+<Pane prefHeight="521.0" prefWidth="746.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="dk.dtu.controller.AppController">
     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="302.0" />
     <ImageView fx:id="background" fitHeight="521.0" fitWidth="746.0">
         <Image url="@Images/moonlit_main_day.jpg" />
@@ -40,19 +40,6 @@
             <Font name="Gill Sans Ultra Bold Condensed" size="20.0" />
         </font>
     </Label>
-
-    <Label fx:id="labelForSnitch0" layoutX="190.0" layoutY="59.0" visible = "false" alignment="CENTER" mouseTransparent="true" prefHeight="17.0" prefWidth="59.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch1" layoutX="278.0" layoutY="65.0" visible = "false" alignment="CENTER" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch2" layoutX="381.0" layoutY="77.0" visible = "false" alignment="CENTER"  mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch3" layoutX="487.0" layoutY="95.0" visible = "false" alignment="CENTER"  mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch4" layoutX="212.0" layoutY="155.0" visible = "false" alignment="CENTER"  mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch5" layoutX="316.0" layoutY="157.0" visible = "false" alignment="CENTER"  mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch6" layoutX="432.0" layoutY="177.0" visible = "false" alignment="CENTER"  mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch7" layoutX="210.0" layoutY="243.0" visible = "false"  alignment="CENTER" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch8" layoutX="307.0" layoutY="246.0" visible = "false" alignment="CENTER" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch9" layoutX="482.0" layoutY="252.0" visible = "false" alignment="CENTER"  mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch10" layoutX="265.0" layoutY="327.0" visible = "false" alignment="CENTER"  mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
-    <Label fx:id="labelForSnitch11" layoutX="389.0" layoutY="308.0" visible = "false"  alignment="CENTER" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" />
 
     <AnchorPane fx:id="User6" disable="true" layoutX="430.0" layoutY="115.0" onMouseClicked="#AttemptAction" prefHeight="69.0" prefWidth="71.0" visible="false">
         <ImageView fitHeight="80.0" fitWidth="80.0">
@@ -164,5 +151,18 @@
         </ImageView>
         <Label fx:id="labelForUser4" alignment="CENTER" layoutY="46.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: white;" />
     </AnchorPane>
+
+    <Label fx:id="labelForSnitch0" alignment="CENTER" layoutX="190.0" layoutY="59.0" mouseTransparent="true" prefHeight="17.0" prefWidth="59.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch1" alignment="CENTER" layoutX="278.0" layoutY="65.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch2" alignment="CENTER" layoutX="381.0" layoutY="77.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch3" alignment="CENTER" layoutX="487.0" layoutY="95.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch4" alignment="CENTER" layoutX="212.0" layoutY="155.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch5" alignment="CENTER" layoutX="316.0" layoutY="157.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch6" alignment="CENTER" layoutX="432.0" layoutY="177.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch7" alignment="CENTER" layoutX="210.0" layoutY="243.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch8" alignment="CENTER" layoutX="307.0" layoutY="246.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch9" alignment="CENTER" layoutX="482.0" layoutY="252.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch10" alignment="CENTER" layoutX="265.0" layoutY="327.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
+    <Label fx:id="labelForSnitch11" alignment="CENTER" layoutX="389.0" layoutY="308.0" mouseTransparent="true" prefHeight="17.0" prefWidth="70.0" style="-fx-background-color: #4D2613;" textFill="white" visible="false" />
 
 </Pane>
