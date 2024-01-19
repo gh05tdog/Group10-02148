@@ -24,6 +24,7 @@ public class Server implements Runnable {
     private String stageCycle = "Day"; // Initial state
     private int timeSeconds = 120;
     private boolean isTimerRunning = false;
+    private HashMap<String, Integer> executeVoteCount = new HashMap<>();
 
     public Server() throws UnknownHostException {
         serverIp = InetAddress.getLocalHost().getHostAddress();
@@ -273,7 +274,7 @@ public class Server implements Runnable {
                 executeVoteMap.put(yourUsername, suspect);
             }
             // create a map for counting votes
-            HashMap<String, Integer> executeVoteCount = new HashMap<>();
+
             handleVotes(executeVoteCount, executeVoteMap);
 
             String mostVotedUser = null;
@@ -304,7 +305,6 @@ public class Server implements Runnable {
                     // Check if any win condition has been met
                     checkForVictory();
                 }
-                executeVoteCount.clear();
             }
         }
     }
@@ -463,6 +463,7 @@ public class Server implements Runnable {
                             // If the stage is night, when the timer runs out, switch to day,
                             // clear all messages, and set the timer to 30 seconds
                             case "Night" -> {
+                                executeVoteCount.clear();
                                 stageCycle = "Day";
                                 timeSeconds = 30; // Reset timer
                                 messages.clear();
